@@ -1,0 +1,69 @@
+<ion-tabs class="tabs-striped tabs-top tabs-background-positive tabs-color-light">
+        <ion-tab title="Today">
+            <ion-view>
+                <ion-content>
+                    <h1>Tab #1</h1>
+                </ion-content>
+            </ion-view>
+        </ion-tab>
+        <ion-tab title="This Week">
+            <ion-view>
+                <ion-content>
+                    <h1>Tab #2</h1>
+                </ion-content>
+            </ion-view>
+        </ion-tab>
+        <ion-tab title="Next Week">
+            <ion-view>
+                <ion-content>
+                    <h1>Tab #3</h1>
+                </ion-content>
+            </ion-view>
+        </ion-tab>
+    </ion-tabs>
+
+
+/////////////////////////////////////////////////////////////////////////////////////////////
+
+
+ <div class="tabs-striped tabs-top tabs-background-positive tabs-color-light">
+            <div class="tabs">
+                <a class="tab-item active" href="#" ui-sref="app.timecard">
+                    Today
+                </a>
+                <a class="tab-item" href="#" >
+                    This Week
+                </a>
+                <a class="tab-item" href="#" >
+                    Next Week
+                </a>
+            </div>
+         </div> 
+
+/////////////////////////////////////////////////////////////////////////////////////////////
+<ion-list>
+                <ion-item menu-close ng-click="login()">
+                    Projects
+                </ion-item>
+                <ion-item menu-close href="#/app/search">
+                    Tasks
+                </ion-item>
+                <ion-item menu-close href="#/app/browse">
+                    Stories
+                </ion-item>
+                <ion-item menu-close href="#/app/playlists">
+                    Timesheets
+                </ion-item>
+                <ion-item-divider>
+                    Configuration
+                </ion-item-divider>
+                <ion-item menu-close href="#/app/playlists">
+                    Sync
+                </ion-item>
+                <ion-item menu-close href="#/app/playlists">
+                    Settings
+                </ion-item>
+                <ion-item menu-close href="#/app/playlists">
+                    Accounts
+                </ion-item>
+            </ion-list>

@@ -1,0 +1,1 @@
+1. if you install any front end components through bower, ionic bower will keep those repos into www/lib folder (ex: ionic-datepicker)

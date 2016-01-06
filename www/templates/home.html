@@ -1,0 +1,16 @@
+<ion-view view-title="VTime">
+    <ion-content>
+        <ion-list>
+            <ion-item ng-repeat="playlist in playlists" href="#/app/playlists/{{playlist.id}}">
+                {{playlist.title}}
+            </ion-item>
+        </ion-list>
+    </ion-content>
+    <ion-footer-bar class="bar bar-dark">
+        <div class="button-bar">
+            <a class="button button-dark icon-left ion-ios-timer-outline " href="#" ng-click="getTimeCardsPanel()">VTcard</a>
+            <a class="button button-dark icon-left ion-ios-analytics-outline" href="#" ng-click="getStatusPanel()">Status</a>
+            <a class="button button-dark icon-left ion-ios-stopwatch-outline" href="#" ng-click="getTimersPanel()">Timers</a>
+        </div>
+    </ion-footer-bar>
+</ion-view>
