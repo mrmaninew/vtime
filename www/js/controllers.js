@@ -69,13 +69,66 @@ angular.module('starter.controllers', [])
 
 })
 // tabs for today, this week and next week 
-.controller('TimecardsPanelCtrl',function($scope,$ionicTabsDelegate){
+.controller('TimecardsPanelCtrl',function($scope,$ionicTabsDelegate,$ionicModal){ // Timecard Tab
+  // footer item-right varibles 
+  $scope.totalHrsDay = "0.00";
+  $scope.totalHrsThisWeek = "0.00";
+  $scope.totalHrsNextWeek = "0.00";
+  
+  // Modal functions and properties 
+  $ionicModal.fromTemplateUrl('templates/timecardModal.html', {
+    scope: $scope,
+    animation: 'slide-in-up'
+  }).then(function(modal) {
+    $scope.modal = modal;
+  });
+
+  $scope.openModal = function() {
+    $scope.modal.show();
+  };
+  
+  $scope.closeModal = function() {
+    $scope.modal.hide();
+  };
+
+   // calendar config object
+  $scope.datepickerObject = {
+      todayLabel: 'Today',  
+      closeLabel: 'Close',  
+      setLabel: 'Set',  
+      setButtonType : 'button-assertive',  
+      todayButtonType : 'button-assertive',  
+      closeButtonType : 'button-assertive',  
+      inputDate: new Date(),  
+      mondayFirst: true,  
+      templateType: 'popup',
+      showTodayButton: 'true', 
+      modalHeaderColor: 'bar-positive', 
+      modalFooterColor: 'bar-positive', 
+      callback: function (val) {  //Mandatory 
+        datePickerCallback(val);
+      },
+      dateFormat: 'dd-MM-yyyy',
+      closeOnSelect: true
+    };
+    // get calendar popup
+    $scope.getCalendar = function(){
+       console.log('getCalendar');
+    };
+   
+    // functional Libs
+    var datePickerCallback = function (val) {
+      if (typeof(val) === 'undefined') {
+        console.log('No date selected');
+      } else {
+        console.log('Selected date is : ', val)
+      }
+    };
+})
+.controller('StatusCtrl',function($scope){ // Status Tab
 
 })
-.controller('StatusCtrl',function($scope){
-
-})
-.controller('TimersCtrl',function($scope){
+.controller('TimersCtrl',function($scope){  // Timers Tab
 
 })
 .controller('ProjectCtrl',function($scope){ // side menu

@@ -1,0 +1,37 @@
+<ion-modal-view>
+    <ion-header-bar class="bar-assertive">
+        <h1 class="title">Time Card</h1>
+    </ion-header-bar>
+    <ion-content>
+        <div class="list">
+            <label class="item item-input">
+            	<input type="date" placeholder="Date" readonly>
+            </label>
+            <label class="item item-input">
+                <input type="text" placeholder="Hours">
+                <!-- when timer button pressed save button will be 
+                un-changed -->
+                <button class="button icon ion-ios-clock-outline"></button>
+            </label>
+            <label class="item item-input">
+                <input type="text" placeholder="Projects">
+            </label>
+            <label class="item item-input">
+                <input type="text" placeholder="Stories">
+            </label>
+            <label class="item item-input">
+                <input type="text" placeholder="Tasks">
+            </label>
+            <label class="item item-input">
+                <textarea rows="3" placeholder="Comments"></textarea>
+            </label>
+        </div>
+    </ion-content>
+    <ion-footer-bar class="bar bar-dark">
+        <div class="button-bar">
+            <a class="button button-dark" href="#" ng-click="">Save</a>
+            <a class="button button-dark" href="#" ng-click="">Reset</a>
+            <a class="button button-dark" href="#" ng-click="closeModal()">Close</a>
+        </div>
+    </ion-footer-bar>
+</ion-modal-view>
