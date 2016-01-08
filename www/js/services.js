@@ -18,12 +18,12 @@ angular.module('starter.services', [])
         tokenHandler.get = function() {
             return token;
         };
-
         return tokenHandler;
     })
-    .factory('LoginService',function($http,$timout){
-
+    .factory('LoginService',function($http,$timeout,snCred){
+        var tokenUrl = "";
     })
+    // localstorage lib from Ionic framework
     .factory('LocalStorage',function(){
 
-    })
+    });

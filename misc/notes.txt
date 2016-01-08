@@ -3,7 +3,10 @@ General Notes:-
 2. Add navbar on flow, by adding <ion-nav-buttons><button></button></ion-nav-buttons>
 
 Developer Steps (Todo):-
-1.
+1. 
 
 Design Steps (Todo) :-
-1.
+1. 
+
+Maintenance Tools:-
+1. Twitter Flock (For app main)

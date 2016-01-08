@@ -4,3 +4,31 @@
 .sbmenu {
 	margin-right:5px;
 }
+/* home.html */
+.rect{
+	background-color: #f08080;
+	margin:10px 5px 10px 5px; /*Top right bottom left*/
+	height: 120px;
+	width: auto;
+	padding-bottom: 5px;
+	padding-top: 5px;
+}
+.rect > p {
+	color: white;
+	text-align: center;
+}
+.rect-box{
+   border-right: solid 1px;
+   border-right-color: white;
+}
+.larger {
+    font-size: 90px;
+    color:white;
+}
+.rect-box > p {
+	color: white;
+}
+.col > p {
+   color: white;	
+   text-align: center;
+}

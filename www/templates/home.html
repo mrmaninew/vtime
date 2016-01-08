@@ -1,10 +1,22 @@
 <ion-view view-title="VTime">
     <ion-content>
-        <ion-list>
-            <ion-item ng-repeat="playlist in playlists" href="#/app/playlists/{{playlist.id}}">
-                {{playlist.title}}
-            </ion-item>
-        </ion-list>
+        <div class="row rect">
+            <p>days</p>
+        </div>
+        <div class="row rect">
+            <p>week</p>
+        </div>
+        <div class="row rect">
+            <p>Month</p>
+        </div>
+        <div class="row rect">
+            <div class="col rect-box">
+                <p>Statistics</p>
+            </div>
+            <div class="col">
+                <p>Reports</p>
+            </div>
+        </div>
     </ion-content>
     <ion-footer-bar class="bar bar-dark">
         <div class="button-bar">

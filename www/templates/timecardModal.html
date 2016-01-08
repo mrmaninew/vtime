@@ -5,7 +5,7 @@
     <ion-content>
         <div class="list">
             <label class="item item-input">
-            	<input type="date" placeholder="Date" readonly>
+            	<input type="date" placeholder="Date" ng-model="selDate" readonly>
             </label>
             <label class="item item-input">
                 <input type="text" placeholder="Hours">
@@ -22,6 +22,7 @@
             <label class="item item-input">
                 <input type="text" placeholder="Tasks">
             </label>
+            <ion-checkbox>Billable</ion-checkbox>
             <label class="item item-input">
                 <textarea rows="3" placeholder="Comments"></textarea>
             </label>

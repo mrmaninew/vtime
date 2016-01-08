@@ -1,4 +1,4 @@
-<ion-view view-title="Time Sheets">
+<ion-view view-title="Time Sheets - {{selDate | date:'dd-MM-yy'}}">
     <ion-nav-buttons side="right">
         <ionic-datepicker input-obj="datepickerObject">
             <button class="button icon ion-calendar" ng-click="getCalendar()">
@@ -25,14 +25,7 @@
             <ion-tab title="This Week">
                 <ion-view>
                     <ion-content>
-                        <h1>Tab #2</h1>
-                    </ion-content>
-                </ion-view>
-            </ion-tab>
-            <ion-tab title="Next Week">
-                <ion-view>
-                    <ion-content>
-                        <h1>Tab #3</h1>
+                        <h4>Week</h4>
                     </ion-content>
                 </ion-view>
             </ion-tab>
