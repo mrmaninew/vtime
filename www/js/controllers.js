@@ -149,7 +149,10 @@ angular.module('starter.controllers', [])
         };
 
         // destory the modal (once view changed into new view)
-
+        $scope.$on('$destroy', function() {
+           $scope.modal.remove(); 
+        });
+        
         // calendar config object
         $scope.datepickerObject = {
             todayLabel: 'Today',
