@@ -1,7 +1,48 @@
 
+// get all dates after specified or selected date excluding selected date
+                function getAfterDays(arr) {
+                    console.log(arr);
+                    // for (var i = 1; i <= after; i++) {
+                    //     arr.push({
+                    //         'value': arr.length + 1,
+                    //         'date': (moment($scope.selDate).add(i, 'days'))._d
+                    //     });
+                    //     // arr.sort(function(a, b) {
+                    //     //     if (a.value < b.value) {
+                    //     //         return 1;
+                    //     //     }
+                    //     //     if (a.value > b.value) {
+                    //     //         return -1;
+                    //     //     }
+                    //     //     // a must be equal to b
+                    //     //     return 0;
+                    //     // });
+                    // }
+                    return arr;
+                }
+                // get all dates before specified or selected date including selected date
+                function getBeforeDays(callback) {
+                    for (var i = 0; i <= before; i++) {
+                        arr.push({
+                            'value': i,
+                            'date': (moment($scope.selDate).subtract(i, 'days'))._d
+                        });
+                    }
+                    return callback(arr.sort(function(a, b) {
+                        if (a.value > b.value) {
+                            return 1;
+                        }
+                        if (a.value < b.value) {
+                            return -1;
+                        }
+                        // a must be equal to b
+                        return 0;
+                    }));
+                };
+                console.log(getBeforeDays(getAfterDays));
+            }
 
-
-
+//////////////////////////
 <ion-list>
             <ion-item ng-repeat="playlist in playlists" href="#/app/playlists/{{playlist.id}}">
                 {{playlist.title}}

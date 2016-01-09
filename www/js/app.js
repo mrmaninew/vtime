@@ -70,8 +70,8 @@ angular.module('starter', ['ionic','ionic-datepicker','starter.controllers','sta
                  url: '/timersPanel',
                  views: {
                     'menuContent': {
-                        templateUrl: 'templates/Timers.html',
-                        controller: 'TimersCtrl'
+                        templateUrl: 'templates/approvals.html',
+                        controller: 'approvalsCtrl'
                     }
                 }
             })
@@ -79,8 +79,8 @@ angular.module('starter', ['ionic','ionic-datepicker','starter.controllers','sta
               url:'/statusPanel',
               views: {
                 'menuContent':{
-                  templateUrl: 'templates/Status.html',
-                  controller: 'StatusCtrl'
+                  templateUrl: 'templates/status.html',
+                  controller: 'statusCtrl'
                 }
               }
             })
@@ -88,8 +88,8 @@ angular.module('starter', ['ionic','ionic-datepicker','starter.controllers','sta
                   url: '/timecardPanel',
                   views: {
                         'menuContent': {
-                            templateUrl: 'templates/TimecardPanel.html',
-                            controller: 'TimecardsPanelCtrl'
+                            templateUrl: 'templates/timeCardPanel.html',
+                            controller: 'timeCardsPanelCtrl'
                         }
                     }
             })

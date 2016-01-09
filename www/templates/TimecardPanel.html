@@ -12,7 +12,7 @@
                     <ion-content>
                         <div class="padding">
                             <div class="list">
-                              <a class="item" href="#">No Saved Time Cards</a>
+                                <a class="item" href="#">No Saved Time Cards</a>
                             </div>
                         </div>
                     </ion-content>
@@ -22,11 +22,18 @@
                     </div>
                 </ion-view>
             </ion-tab>
-            <ion-tab title="This Week">
+            <ion-tab title="Weekly">
                 <ion-view>
                     <ion-content>
-                        <h4>Week</h4>
+                        <ul class="list">
+                            <li class="item" ng-repeat="day in selThisWeek">{{day|date:'dd-MM-yy'}}</li>
+                        </ul>
                     </ion-content>
+                        <div class="bar bar-footer">
+                            <button class="button icon-left ion-ios-analytics-outline" href="#" ng-click="">Save</button>
+                            <div class="title">Total: {{totalHrsWeekly}} hrs </div>
+                        </div>
+                    </ion-footer-bar>
                 </ion-view>
             </ion-tab>
         </ion-tabs>

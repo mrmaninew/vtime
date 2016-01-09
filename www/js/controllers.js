@@ -11,7 +11,7 @@ angular.module('starter.controllers', [])
         // To listen for when this page is active (for example, to refresh data),
         // listen for the $ionicView.enter event:
         $scope.$on('$ionicView.enter', function(e) {
-          console.log('Home page view entered');
+            //console.log('Home page view entered');
         });
 
         // Form data for the login modal
@@ -81,50 +81,52 @@ angular.module('starter.controllers', [])
 
     })
     // tabs for today, this week and next week 
-    .controller('TimecardsPanelCtrl', function($scope, $ionicTabsDelegate, $ionicModal, moment, daysWeek) { // Timecard Tab
+    .controller('timeCardsPanelCtrl', function($scope, $ionicTabsDelegate, $ionicModal, moment, daysWeek) { // Timecard Tab
 
         // footer item-right varibles 
         $scope.totalHrsDay = "0.00";
-        $scope.totalHrsThisWeek = "0.00";
-        $scope.totalHrsNextWeek = "0.00";
+        $scope.totalHrsWeekly = "0.00";
 
         // selected date for Time cards
         $scope.selDate = new Date();
-        $scope.$watch('selDate', DayChanged);
+        // selected week by selected date
+        $scope.selThisWeek = [];
+        // selected date of day in a week (sun:0, mon:1..,)
         $scope.selDay = $scope.selDate.getDay();
 
 
-        function DayChanged() {
+        function onDayChanged() {
             var daysBefore, dayAfter;
             if ($scope.selDay === 0) {
                 $scope.selThisWeek = getDaysInWeekBySelDate($scope.selDay);
-                console.log('DayChanged'+$scope.selThisWeek);
             } else {
-                $scope.selThisWeek = getDaysInWeekBySelDate($scope.selDay, daysWeek.weekEnd - $scope.selDay)
-                console.log('DayChanged'+$scope.selThisWeek);
+                $scope.selThisWeek = getDaysInWeekBySelDate($scope.selDay, daysWeek.weekEnd - $scope.selDay);
             }
         }
-        DayChanged();
+        onDayChanged();
 
         function getDaysInWeekBySelDate(before, after) {
             console.log('in getDaysInWeekBySelDate()' + before, after);
             var week = [];
-            var weekEnd = daysWeek.weekEnd + 1;
+            var weekEnd = daysWeek.weekEnd;
             //if before:value is zero get all days in week, i.e sunday to saturday 
             if (before === 0) {
-                for (i = 1; i <= weekEnd; i++) {
+                for (i = 0; i <= weekEnd; i++) {
                     week.push((moment($scope.selDate).add(i, 'days'))._d);
                 }
-                return week.reverse();
+                return week;
             } else {
                 var arr = [];
-
+                // get all dates after specified or selected date excluding selected date
                 function getAfterDays(arr) {
+                    for (var i = 1; i <= after; i++) {
+                        arr.push((moment($scope.selDate).add(i, 'days'))._d);
+                    }
                     return arr;
                 }
-
+                // get all dates before specified or selected date including selected date
                 function getBeforeDays(callback) {
-                    for (var i = 1; i <= before; i++) {
+                    for (var i = 0; i <= before; i++) {
                         arr.push((moment($scope.selDate).subtract(i, 'days'))._d);
                     }
                     return callback(arr.reverse());
@@ -133,7 +135,7 @@ angular.module('starter.controllers', [])
             }
         };
         // Modal functions and properties 
-        $ionicModal.fromTemplateUrl('templates/timecardModal.html', {
+        $ionicModal.fromTemplateUrl('templates/timeCardModal.html', {
             scope: $scope,
             animation: 'slide-in-up'
         }).then(function(modal) {
@@ -150,9 +152,9 @@ angular.module('starter.controllers', [])
 
         // destory the modal (once view changed into new view)
         $scope.$on('$destroy', function() {
-           $scope.modal.remove(); 
+            $scope.modal.remove();
         });
-        
+
         // calendar config object
         $scope.datepickerObject = {
             todayLabel: 'Today',
@@ -183,39 +185,40 @@ angular.module('starter.controllers', [])
             if (typeof(val) === 'undefined') {
                 console.log('No date selected');
             } else {
-                console.log('Selected date is : ', val)
                 $scope.selDate = new Date(val);
                 $scope.selDay = $scope.selDate.getDay();
+                // as selected date changes call DayChanged function to change date array
+                onDayChanged();
             }
         };
     })
-    .controller('StatusCtrl', function($scope) { // Status Tab
+    .controller('statusCtrl', function($scope) { // Status Tab
 
     })
-    .controller('TimersCtrl', function($scope) { // Timers Tab
+    .controller('approvalsCtrl', function($scope) { // Timers Tab
 
     })
-    .controller('ProjectCtrl', function($scope) { // side menu
+    .controller('projectCtrl', function($scope) { // side menu
 
     })
-    .controller('TaskCtrl', function($scope) { // side menu
+    .controller('taskCtrl', function($scope) { // side menu
 
     })
-    .controller('SettingCtrl', function($scope) { // side menu
+    .controller('settingCtrl', function($scope) { // side menu
 
     })
-    .controller('AccountCtrl', function($scope) { // side menu
+    .controller('accountCtrl', function($scope) { // side menu
 
     })
-    .controller('StoriesCtrl', function($scope) { // side menu
+    .controller('storiesCtrl', function($scope) { // side menu
 
     })
-    .controller('TimeSheetsCtrl', function($scope) { // side menu
+    .controller('timeSheetsCtrl', function($scope) { // side menu
 
     })
-    .controller('ConfigCtrl', function($scope) { // side menu
+    .controller('configCtrl', function($scope) { // side menu
 
     })
-    .controller('SyncCtrl', function($scope) { // side manu
+    .controller('syncCtrl', function($scope) { // side manu
 
     });
