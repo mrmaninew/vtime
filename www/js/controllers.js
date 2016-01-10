@@ -52,6 +52,10 @@ angular.module('starter.controllers', [])
         $scope.getStatusPanel = function() {
             $state.go('app.statusPanel');
         };
+        // Route to Approvals
+        $scope.getApprovalsPanel = function(){
+            $state.go('app.approvalsPanel')
+        }
         $scope.playlists = [{
             title: 'Reggae',
             id: 1
@@ -102,7 +106,6 @@ angular.module('starter.controllers', [])
         onDayChanged();
 
         function getDaysInWeekBySelDate(before, after) {
-            console.log('in getDaysInWeekBySelDate()' + before, after);
             var week = [];
             var weekEnd = daysWeek.weekEnd;
             //if before:value is zero get all days in week, i.e sunday to saturday 
@@ -127,7 +130,7 @@ angular.module('starter.controllers', [])
                     }
                     return callback(arr.reverse());
                 };
-                console.log(getBeforeDays(getAfterDays));
+                return getBeforeDays(getAfterDays);
             }
         };
         // Modal functions and properties 
