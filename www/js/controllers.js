@@ -52,10 +52,6 @@ angular.module('starter.controllers', [])
         $scope.getStatusPanel = function() {
             $state.go('app.statusPanel');
         };
-        // Route to Timers Panel
-        $scope.getTimersPanel = function() {
-            $state.go('app.timersPanel');
-        };
         $scope.playlists = [{
             title: 'Reggae',
             id: 1
@@ -81,7 +77,7 @@ angular.module('starter.controllers', [])
 
     })
     // tabs for today, this week and next week 
-    .controller('timeCardsPanelCtrl', function($scope, $ionicTabsDelegate, $ionicModal, moment, daysWeek) { // Timecard Tab
+    .controller('timeCardsPanelCtrl', function($scope, $state, $ionicTabsDelegate, $ionicModal, moment, daysWeek) { // Timecard Tab
 
         // footer item-right varibles 
         $scope.totalHrsDay = "0.00";

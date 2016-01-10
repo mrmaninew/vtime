@@ -25,14 +25,17 @@
             <ion-tab title="Weekly">
                 <ion-view>
                     <ion-content>
-                        <ul class="list">
-                            <li class="item" ng-repeat="day in selThisWeek">{{day|date:'dd-MM-yy'}}</li>
-                        </ul>
+                        <ion-list>
+                            <ion-item ng-repeat="day in selThisWeek" href="#/app/card">
+                               {{day|date:'dd-MM-yy'}}</a>
+                            </ion-item>
+                        </ion-list>
                     </ion-content>
-                        <div class="bar bar-footer">
-                            <button class="button icon-left ion-ios-analytics-outline" href="#" ng-click="">Save</button>
-                            <div class="title">Total: {{totalHrsWeekly}} hrs </div>
-                        </div>
+                    <div class="bar bar-footer">
+                        <button class="button" href="#" ng-click="">Save</button>
+                        <div class="title">Total: {{totalHrsWeekly}} hrs </div>
+                        <button class="button" href="#" ng-click="">Submit</button>
+                    </div>
                     </ion-footer-bar>
                 </ion-view>
             </ion-tab>

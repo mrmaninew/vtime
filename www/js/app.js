@@ -1,10 +1,4 @@
-// Ionic Starter App
-
-// angular.module is a global place for creating, registering and retrieving Angular modules
-// 'starter' is the name of this angular module example (also set in a <body> attribute in index.html)
-// the 2nd parameter is an array of 'requires'
-// 'starter.controllers' is found in controllers.js
-angular.module('starter', ['ionic','ionic-datepicker','starter.controllers','starter.services','angularMoment','ngCordova'])
+angular.module('starter', ['ionic', 'ionic-datepicker', 'starter.controllers', 'starter.services', 'angularMoment', 'ngCordova'])
 
 .run(function($ionicPlatform) {
         $ionicPlatform.ready(function() {
@@ -21,79 +15,87 @@ angular.module('starter', ['ionic','ionic-datepicker','starter.controllers','sta
         });
     })
     .config(function($stateProvider, $urlRouterProvider) {
-            $stateProvider
+        $stateProvider
 
             .state('app', {
-                url: '/app',
-                abstract: true,
-                templateUrl: 'templates/menu.html',
-                controller: 'AppCtrl'
-            })
+            url: '/app',
+            abstract: true,
+            templateUrl: 'templates/menu.html',
+            controller: 'AppCtrl'
+        })
 
-            .state('app.search', {
-                url: '/search',
+        .state('app.search', {
+            url: '/search',
+            views: {
+                'menuContent': {
+                    templateUrl: 'templates/search.html'
+                }
+            }
+        })
+
+        .state('app.browse', {
+                url: '/browse',
                 views: {
                     'menuContent': {
-                        templateUrl: 'templates/search.html'
+                        templateUrl: 'templates/browse.html'
+                    }
+                }
+            })
+            .state('app.home', {
+                url: '/home',
+                views: {
+                    'menuContent': {
+                        templateUrl: 'templates/home.html',
+                        controller: 'HomeCtrl'
                     }
                 }
             })
 
-            .state('app.browse', {
-                  url: '/browse',
-                  views: {
-                        'menuContent': {
-                            templateUrl: 'templates/browse.html'
-                        }
-                    }
-                })
-            .state('app.home', {
-                  url: '/home',
-                  views: {
-                        'menuContent': {
-                            templateUrl: 'templates/home.html',
-                            controller: 'HomeCtrl'
-                        }
-                    }
-                })
-
-            .state('app.single', {
-                 url: '/playlists/:playlistId',
-                 views: {
+        .state('app.single', {
+                url: '/playlists/:playlistId',
+                views: {
                     'menuContent': {
                         templateUrl: 'templates/playlist.html',
                         controller: 'PlaylistCtrl'
                     }
                 }
             })
-            .state('app.timersPanel', {
-                 url: '/timersPanel',
-                 views: {
+            .state('app.approvalsPanel', {
+                url: '/approvalsPanel',
+                views: {
                     'menuContent': {
                         templateUrl: 'templates/approvals.html',
                         controller: 'approvalsCtrl'
                     }
                 }
             })
-            .state('app.statusPanel',{
-              url:'/statusPanel',
-              views: {
-                'menuContent':{
-                  templateUrl: 'templates/status.html',
-                  controller: 'statusCtrl'
+            .state('app.statusPanel', {
+                url: '/statusPanel',
+                views: {
+                    'menuContent': {
+                        templateUrl: 'templates/status.html',
+                        controller: 'statusCtrl'
+                    }
                 }
-              }
             })
             .state('app.timecardPanel', {
-                  url: '/timecardPanel',
-                  views: {
-                        'menuContent': {
-                            templateUrl: 'templates/timeCardPanel.html',
-                            controller: 'timeCardsPanelCtrl'
-                        }
+                url: '/timecardPanel',
+                views: {
+                    'menuContent': {
+                        templateUrl: 'templates/timeCardPanel.html',
+                        controller: 'timeCardsPanelCtrl'
                     }
+                }
             })
-            
+            .state('app.timeCard', {
+                url: '/card',
+                views: {
+                    'menuContent': {
+                        templateUrl: 'templates/timeCard.html'
+                    }
+                }
+            })
+
         // if none of the above states are matched, use this as the fallback
         $urlRouterProvider.otherwise('/app/home');
     });
