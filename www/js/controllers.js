@@ -53,7 +53,7 @@ angular.module('starter.controllers', [])
             $state.go('app.statusPanel');
         };
         // Route to Approvals
-        $scope.getApprovalsPanel = function(){
+        $scope.getApprovalsPanel = function() {
             $state.go('app.approvalsPanel')
         }
     })
@@ -61,7 +61,7 @@ angular.module('starter.controllers', [])
 
     })
     // tabs for today, this week and next week 
-    .controller('timeCardsPanelCtrl', function($scope, $state, $ionicTabsDelegate, $ionicModal, moment, daysWeek) { // Timecard Tab
+    .controller('timeCardsPanelCtrl', function($scope, $cordovaToast, $ionicPlatform, $state, $ionicTabsDelegate, $ionicModal, moment, daysWeek) { // Timecard Tab
 
         // footer item-right varibles 
         $scope.totalHrsDay = "0.00";
@@ -73,7 +73,6 @@ angular.module('starter.controllers', [])
         $scope.selThisWeek = [];
         // selected date of day in a week (sun:0, mon:1..,)
         $scope.selDay = $scope.selDate.getDay();
-
 
         function onDayChanged() {
             var daysBefore, dayAfter;
@@ -171,7 +170,7 @@ angular.module('starter.controllers', [])
             }
         };
     })
-    .controller('timeCardCtrl',function($scope,$stateParams){ // single timecard 
+    .controller('timeCardCtrl', function($scope, $stateParams) { // single timecard 
 
     })
     .controller('statusCtrl', function($scope) { // Status Tab
