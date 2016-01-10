@@ -4,6 +4,44 @@
 .sbmenu {
 	margin-right:5px;
 }
+.sbmenu-noborder{
+  border:none 0px;
+}
+
+.bar.bar-profile {              /* side menu profile avatar */
+    background-color: #444;
+    height: 170px;
+}
+
+.bar .profile {
+    top: 0;
+    right: 0;
+    left: 0;
+    z-index: 0;
+    overflow: hidden;
+    text-align: center;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    width: 100%;
+    padding-top: 15px;
+}
+
+.profile .name {
+    color: #FFFFFF;
+    margin-top: 10px !important;
+    margin-bottom: 10px !important;
+}
+
+.profile-picture {
+    border-radius: 50%;
+}
+
+.menu .has-header            /*  end of side menu profile avatar */
+{
+    top: 169px;
+}
+                              
+
 /* home.html */
 .rect{
 	background-color: #f08080;
@@ -39,8 +77,9 @@
 	display:inline-block;
 	padding-right: 3px;
 }
-.day-display-sizing {
-	position: absolute;
+
+.day-display-sizing {     /* list item with side border radius for day and prefix day name */
+	position: absolute;     /* suffix month, year and hours and navigation icon */
     top: 16px;
     left: 16px;
     padding-top: 10px;
