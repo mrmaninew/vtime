@@ -50,16 +50,6 @@ angular.module('starter', ['ionic', 'ionic-datepicker', 'starter.controllers', '
                     }
                 }
             })
-
-        .state('app.single', {
-                url: '/playlists/:playlistId',
-                views: {
-                    'menuContent': {
-                        templateUrl: 'templates/playlist.html',
-                        controller: 'PlaylistCtrl'
-                    }
-                }
-            })
             .state('app.approvalsPanel', {
                 url: '/approvalsPanel',
                 views: {
@@ -91,7 +81,8 @@ angular.module('starter', ['ionic', 'ionic-datepicker', 'starter.controllers', '
                 url: '/card',
                 views: {
                     'menuContent': {
-                        templateUrl: 'templates/timeCard.html'
+                        templateUrl: 'templates/timeCard.html',
+                        controller: 'timeCardCtrl'
                     }
                 }
             })

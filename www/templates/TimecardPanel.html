@@ -1,4 +1,4 @@
-<ion-view view-title="Time Sheets - {{selDate | date:'dd-MM'}}">
+<ion-view view-title="Time Sheets - {{selDate | date:'dd/MM'}}">
     <ion-nav-buttons side="right">
         <ionic-datepicker input-obj="datepickerObject">
             <button class="button icon ion-calendar" ng-click="getCalendar()">
@@ -24,10 +24,16 @@
             </ion-tab>
             <ion-tab title="Weekly">
                 <ion-view>
+                   <!--add header here for the view and place title as "1/10 - 7/10"-->
                     <ion-content>
                         <ion-list>
-                            <ion-item ng-repeat="day in selThisWeek" href="#/app/card">
-                               {{day|date:'dd-MM-yy'}}</a>
+                            <ion-item class="item-avatar" ng-repeat="day in selThisWeek" href="#/app/card">
+                                    <span class="day-display-sizing">{{day|date:'dd'}}</span>
+                                    <h2> {{ day | date:'EEEE'}}</h2> 
+                                    <span class="text-align-right"> 0.00  <i class="icon ion-ios-arrow-forward"></i> 
+                                    </span> 
+                                    <p>{{day|date:'MMM yyyy'}}</p>
+
                             </ion-item>
                         </ion-list>
                     </ion-content>

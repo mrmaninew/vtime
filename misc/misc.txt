@@ -1,4 +1,8 @@
-
+{{day|date:'dd-MM-yy'}}
+                               <span class="day-display-sizing">
+                                    <a href="#"> {{day | date:'EEEE'}}</a>
+                                </span> 
+              background-color: #387ef5;                  <span class="text-align-right">0.00</span>
 // get all dates after specified or selected date excluding selected date
                 function getAfterDays(arr) {
                     console.log(arr);

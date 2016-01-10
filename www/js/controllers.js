@@ -56,27 +56,7 @@ angular.module('starter.controllers', [])
         $scope.getApprovalsPanel = function(){
             $state.go('app.approvalsPanel')
         }
-        $scope.playlists = [{
-            title: 'Reggae',
-            id: 1
-        }, {
-            title: 'Chill',
-            id: 2
-        }, {
-            title: 'Dubstep',
-            id: 3
-        }, {
-            title: 'Indie',
-            id: 4
-        }, {
-            title: 'Rap',
-            id: 5
-        }, {
-            title: 'Cowbell',
-            id: 6
-        }];
     })
-    .controller('PlaylistCtrl', function($scope, $stateParams) {})
     .controller('LoginCtrl', function($scope) {
 
     })
@@ -190,6 +170,9 @@ angular.module('starter.controllers', [])
                 onDayChanged();
             }
         };
+    })
+    .controller('timeCardCtrl',function($scope,$stateParams){ // single timecard 
+
     })
     .controller('statusCtrl', function($scope) { // Status Tab
 
