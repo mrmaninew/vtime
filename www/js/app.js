@@ -18,20 +18,52 @@ angular.module('starter', ['ionic', 'ionic-datepicker', 'starter.controllers', '
         $stateProvider
 
             .state('app', {
-            url: '/app',
-            abstract: true,
-            templateUrl: 'templates/menu.html',
-            controller: 'AppCtrl'
-        })
-
-        .state('app.search', {
-            url: '/search',
-            views: {
-                'menuContent': {
-                    templateUrl: 'templates/search.html'
+                url: '/app',
+                abstract: true,
+                templateUrl: 'templates/menu.html',
+                controller: 'AppCtrl'
+            })
+            // side menu
+            .state('app.projects', {
+                url: '/projects',
+                views: {
+                    'menuContent': {
+                        templateUrl: 'templates/projects.html'
+                    }
                 }
-            }
-        })
+            })
+            .state('app.tasks', {
+                url: '/tasks',
+                views: {
+                    'menuContent': {
+                        templateUrl: 'templates/tasks.html'    
+                    }
+                }
+            })
+            .state('app.stories',{
+                url:'/stories',
+                views:{
+                    'menuContent':{
+                        templateUrl: 'templates/stories.html'
+                    }
+                }
+            })
+            .state('app.timecards',{
+                url:'/timecards',
+                views:{
+                    'menuContent':{
+                        templateUrl:'templates/timecards.html'
+                    }
+                }
+            })
+            .state('app.search', {
+                url: '/search',
+                views: {
+                    'menuContent': {
+                        templateUrl: 'templates/search.html'
+                    }
+                }
+            })
 
         .state('app.browse', {
                 url: '/browse',
