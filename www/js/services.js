@@ -13,7 +13,11 @@ angular.module('starter.services', [])
 
     })
     .factory('InstanceUrl',function(){
-        var url_oauth = ""+'oauth_token.do';
+        var url =""
+        var url_oauth = url+'oauth_token.do';
+
+    })
+    .factory('UserDetails',function(){
 
     })
     .factory('TokenService', function() {
