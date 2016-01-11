@@ -28,7 +28,7 @@ angular.module('starter', ['ionic', 'ionic-datepicker', 'starter.controllers', '
                 url: '/projects',
                 views: {
                     'menuContent': {
-                        templateUrl: 'templates/projects.html'.  // side menu
+                        templateUrl: 'templates/projects.html',  // side menu
                         controller: 'projectsCtrl'
                     }
                 }
@@ -57,6 +57,33 @@ angular.module('starter', ['ionic', 'ionic-datepicker', 'starter.controllers', '
                     'menuContent':{
                         templateUrl:'templates/timecards.html', // side menu
                         controller: 'timecardsCtrl'
+                    }
+                }
+            })
+            .state('app.sync',{
+                url:'/sync',
+                views:{
+                    'menuContent':{
+                        templateUrl:'templates/sync.html',  // side menu 
+                        controller: 'syncCtrl'
+                    }
+                }
+            })
+            .state('app.settings',{
+                url: '/settings',
+                views: {
+                    'menuContent':{
+                        templateUrl: 'templates/settings.html', // side menu 
+                        controller: 'settingsCtrl'
+                    }
+                }    
+            })
+            .state('app.accounts',{
+                url: '/accounts',
+                views: {
+                    'menuContent':{
+                        templateUrl: 'templates/accounts.html', // side menu
+                        controller: 'accountsCtrl'
                     }
                 }
             })
@@ -104,7 +131,7 @@ angular.module('starter', ['ionic', 'ionic-datepicker', 'starter.controllers', '
                         controller: 'timeCardCtrl'
                     }
                 }
-            })
+            });
 
         // if none of the above states are matched, use this as the fallback
         $urlRouterProvider.otherwise('/app/home');

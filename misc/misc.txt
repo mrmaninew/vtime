@@ -1,3 +1,7 @@
+
+src="http://ionicframework.com/img/docs/mcfly.jpg"
+/////
+
 {{day|date:'dd-MM-yy'}}
                                <span class="day-display-sizing">
                                     <a href="#"> {{day | date:'EEEE'}}</a>

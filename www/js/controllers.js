@@ -153,6 +153,9 @@ angular.module('starter.controllers', [])
 
     })
     .controller('projectsCtrl', function($scope) { // side menu
+        $scope.closeSideMenu = function(){
+            
+        }
 
     })
     .controller('storiesCtrl', function($scope) { // side menu
