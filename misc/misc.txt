@@ -1,4 +1,6 @@
 
+use modals for time cards display from weekly navigation 
+///////
 src="http://ionicframework.com/img/docs/mcfly.jpg"
 /////
 
