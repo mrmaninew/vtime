@@ -28,7 +28,8 @@ angular.module('starter', ['ionic', 'ionic-datepicker', 'starter.controllers', '
                 url: '/projects',
                 views: {
                     'menuContent': {
-                        templateUrl: 'templates/projects.html'
+                        templateUrl: 'templates/projects.html'.  // side menu
+                        controller: 'projectsCtrl'
                     }
                 }
             })
@@ -36,7 +37,8 @@ angular.module('starter', ['ionic', 'ionic-datepicker', 'starter.controllers', '
                 url: '/tasks',
                 views: {
                     'menuContent': {
-                        templateUrl: 'templates/tasks.html'    
+                        templateUrl: 'templates/tasks.html',    // side menu
+                        controller: 'tasksCtrl'
                     }
                 }
             })
@@ -44,7 +46,8 @@ angular.module('starter', ['ionic', 'ionic-datepicker', 'starter.controllers', '
                 url:'/stories',
                 views:{
                     'menuContent':{
-                        templateUrl: 'templates/stories.html'
+                        templateUrl: 'templates/stories.html',  // side menu
+                        controller: 'storiesCtrl'
                     }
                 }
             })
@@ -52,24 +55,8 @@ angular.module('starter', ['ionic', 'ionic-datepicker', 'starter.controllers', '
                 url:'/timecards',
                 views:{
                     'menuContent':{
-                        templateUrl:'templates/timecards.html'
-                    }
-                }
-            })
-            .state('app.search', {
-                url: '/search',
-                views: {
-                    'menuContent': {
-                        templateUrl: 'templates/search.html'
-                    }
-                }
-            })
-
-        .state('app.browse', {
-                url: '/browse',
-                views: {
-                    'menuContent': {
-                        templateUrl: 'templates/browse.html'
+                        templateUrl:'templates/timecards.html', // side menu
+                        controller: 'timecardsCtrl'
                     }
                 }
             })

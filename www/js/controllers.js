@@ -1,8 +1,8 @@
 angular.module('starter.controllers', [])
     .constant('daysWeek', {
         'weekDays': ['sun', 'mon', 'tue', 'wed', 'thu', 'fri', 'sat'],
-        'weekStart': 0,
-        'weekEnd': 6
+        'weekStart': 0, // sunday 
+        'weekEnd': 6 // saturady
     })
     .controller('AppCtrl', function($scope, $ionicModal, $timeout) {
 
@@ -13,34 +13,7 @@ angular.module('starter.controllers', [])
         $scope.$on('$ionicView.enter', function(e) {
             //console.log('Home page view entered');
         });
-
-        // Form data for the login modal
-        $scope.loginData = {};
-
-        // Create the login modal that we will use later
-        $ionicModal.fromTemplateUrl('templates/login.html', {
-            scope: $scope
-        }).then(function(modal) {
-            $scope.modal = modal;
-        });
-
-        // Triggered in the login modal to close it
-        $scope.closeLogin = function() {
-            $scope.modal.hide();
-        };
-
-        // Open the login modal
-        $scope.login = function() {
-            $scope.modal.show();
-        };
-
-        // Perform the login action when the user submits the login form
-        $scope.doLogin = function() {
-            console.log('Doing login', $scope.loginData);
-            $timeout(function() {
-                $scope.closeLogin();
-            }, 1000);
-        };
+       
     })
     .controller('HomeCtrl', function($scope, $state) {
 
@@ -176,13 +149,19 @@ angular.module('starter.controllers', [])
     .controller('statusCtrl', function($scope) { // Status Tab
 
     })
-    .controller('approvalsCtrl', function($scope) { // Timers Tab
+    .controller('approvalsCtrl', function($scope) { // approvals Tab
 
     })
-    .controller('projectCtrl', function($scope) { // side menu
+    .controller('projectsCtrl', function($scope) { // side menu
 
     })
-    .controller('taskCtrl', function($scope) { // side menu
+    .controller('storiesCtrl', function($scope) { // side menu
+
+    })
+    .controller('tasksCtrl', function($scope) { // side menu
+
+    })
+    .controller('timecardsCtrl',function($scope){ // sidemmenu
 
     })
     .controller('settingCtrl', function($scope) { // side menu
@@ -191,15 +170,9 @@ angular.module('starter.controllers', [])
     .controller('accountCtrl', function($scope) { // side menu
 
     })
-    .controller('storiesCtrl', function($scope) { // side menu
-
-    })
-    .controller('timeSheetsCtrl', function($scope) { // side menu
-
-    })
     .controller('configCtrl', function($scope) { // side menu
 
     })
-    .controller('syncCtrl', function($scope) { // side manu
+    .controller('syncCtrl', function($scope) { // side menu
 
     });
