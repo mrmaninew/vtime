@@ -22,10 +22,9 @@ angular.module('starter.services', [])
                 return _token;
             },
             setToken: function(token) {
-                _token = token
+                _token = token;
             }
         }
-        //return tokenHandler;
     })
     .factory('snService', function($http, $q, snCred, TokenService) {
 
@@ -44,7 +43,6 @@ angular.module('starter.services', [])
                         }
                     })
                     .success(function(data) {
-                        //console.log(JSON.stringify(data.result));
                         defer.resolve(data.result);
                     })
                     .error(function(error) {
@@ -104,6 +102,10 @@ angular.module('starter.services', [])
 
     })
     .factory('UserDetailsService', function() {
+        var user = {
+           'username':'',
+           'email':''
+        };
 
     })
     .factory('LoginService', function($http, $timeout, snCred) {
