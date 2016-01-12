@@ -4,6 +4,7 @@ angular.module('starter.controllers', [])
         'weekStart': 0, // sunday 
         'weekEnd': 6 // saturady
     })
+    .constant('timeCardCategories',['Training','Task Work','Admin','Meeting','KTLO','Out of office','External Labor','Time Off','Appointment','Phone Call'])
     .controller('AppCtrl', function($scope, $ionicModal, $timeout) {
 
         // With the new view caching in Ionic, Controllers are only called
@@ -129,12 +130,13 @@ angular.module('starter.controllers', [])
             });
         }
     })
-    .controller('CardCtrl', function($scope, $filter, $stateParams) { // single timecard 
+    .controller('CardCtrl', function($scope, $filter, $stateParams,timeCardCategories) { // single timecard 
         $scope.tc = {
             'passDate': new Date($stateParams.param1),
             'task': '',
             'story': '',
             'project': '',
+            'category':'',
             'hours': '',
             'billable': '',
             'comments': ''
@@ -143,7 +145,7 @@ angular.module('starter.controllers', [])
             console.log($scope.tc);
         };
         $scope.submitTC = function() {
-
+           
         };
         $scope.resetTC = function() {
             $scope.tc = {};
@@ -197,15 +199,13 @@ angular.module('starter.controllers', [])
     .controller('timecardsCtrl', function($scope) { // sidemmenu
 
     })
+    .controller('syncCtrl', function($scope) { // side menu
+
+    })
     .controller('settingCtrl', function($scope) { // side menu
 
     })
     .controller('accountCtrl', function($scope) { // side menu
 
     })
-    .controller('configCtrl', function($scope) { // side menu
-
-    })
-    .controller('syncCtrl', function($scope) { // side menu
-
-    });
+   
