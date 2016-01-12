@@ -1,0 +1,35 @@
+<ion-view title="TimeCard">
+    <ion-content>
+        <div class="list">
+            <label class="item item-input">
+                <input type="date" placeholder="Date" ng-model="tc.passDate" >
+            </label>
+            <label class="item item-input">
+                <input type="text" placeholder="Hours" ng-model="tc.hours">
+                <!-- when timer button pressed save button will be 
+                un-changed -->
+                <button class="button icon ion-ios-clock-outline"></button>
+            </label>
+            <label class="item item-input">
+                <input type="text" placeholder="Projects" ng-model="tc.project">
+            </label>
+            <label class="item item-input">
+                <input type="text" placeholder="Stories" ng-model="tc.story">
+            </label>
+            <label class="item item-input">
+                <input type="text" placeholder="Tasks" ng-model="tc.task">
+            </label>
+            <ion-checkbox ng-model="tc.billable">Billable</ion-checkbox>
+            <label class="item item-input">
+                <textarea rows="3" placeholder="Comments" ng-model="tc.comments"></textarea>
+            </label>
+        </div>
+    </ion-content>
+    <ion-footer-bar class="bar bar-dark">
+        <div class="button-bar">
+            <a class="button button-dark" href="#" ng-click="saveTC()">save</a>
+            <a class="button button-dark" href="#" ng-click="resetTc()">reset</a>
+            <a class="button button-dark" href="#" ng-click="submitTC()">Submit</a>
+        </div>
+    </ion-footer-bar>
+</ion-view>
