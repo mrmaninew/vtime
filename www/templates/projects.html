@@ -1,5 +1,9 @@
 <ion-view view-title="Projects">
-  <ion-content>
-    <h1>Projects</h1>
-  </ion-content>
+    <ion-content>
+        <ion-list>
+            <ion-item ng-repeat="project in projects">
+                {{project.short_description}} <span class="text-align-right"><i class="icon ion-ios-circle-filled"></i></span>
+            </ion-item>
+        </ion-list>
+    </ion-content>
 </ion-view>

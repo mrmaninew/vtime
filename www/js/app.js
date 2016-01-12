@@ -16,7 +16,6 @@ angular.module('starter', ['ionic', 'ionic-datepicker', 'starter.controllers', '
     })
     .config(function($stateProvider, $urlRouterProvider) {
         $stateProvider
-
             .state('app', {
                 url: '/app',
                 abstract: true,
@@ -119,16 +118,16 @@ angular.module('starter', ['ionic', 'ionic-datepicker', 'starter.controllers', '
                 views: {
                     'menuContent': {
                         templateUrl: 'templates/timeCardPanel.html',
-                        controller: 'timeCardsPanelCtrl'
+                        controller: 'timeCardsPanelCtrl',
                     }
                 }
             })
-            .state('app.timeCard', {
-                url: '/card',
+            .state('app.card', {
+                url: '/card:param1,',
                 views: {
                     'menuContent': {
-                        templateUrl: 'templates/timeCard.html',
-                        controller: 'timeCardCtrl'
+                        templateUrl: 'templates/Card.html',
+                        controller: 'CardCtrl'
                     }
                 }
             });

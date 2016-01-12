@@ -13,7 +13,7 @@ angular.module('starter.controllers', [])
         $scope.$on('$ionicView.enter', function(e) {
             //console.log('Home page view entered');
         });
-       
+
     })
     .controller('HomeCtrl', function($scope, $state) {
 
@@ -85,26 +85,6 @@ angular.module('starter.controllers', [])
                 return getBeforeDays(getAfterDays);
             }
         };
-        // Modal functions and properties 
-        $ionicModal.fromTemplateUrl('templates/timeCardModal.html', {
-            scope: $scope,
-            animation: 'slide-in-up'
-        }).then(function(modal) {
-            $scope.modal = modal;
-        });
-
-        $scope.openModal = function() {
-            $scope.modal.show();
-        };
-
-        $scope.closeModal = function() {
-            $scope.modal.hide();
-        };
-
-        // destory the modal (once view changed into new view)
-        $scope.$on('$destroy', function() {
-            $scope.modal.remove();
-        });
 
         // calendar config object
         $scope.datepickerObject = {
@@ -142,9 +122,16 @@ angular.module('starter.controllers', [])
                 onDayChanged();
             }
         };
-    })
-    .controller('timeCardCtrl', function($scope, $stateParams) { // single timecard 
 
+        $scope.routeCard = function() {
+            $state.go('app.card', {
+                param1: $scope.selDate
+            });
+        }
+    })
+    .controller('CardCtrl', function($scope, $filter, $stateParams) { // single timecard 
+
+        $scope.passDate = new Date($stateParams.param1);
     })
     .controller('statusCtrl', function($scope) { // Status Tab
 
@@ -152,17 +139,40 @@ angular.module('starter.controllers', [])
     .controller('approvalsCtrl', function($scope) { // approvals Tab
 
     })
-    .controller('projectsCtrl', function($scope,snService) { // side menu
-         snService.getProjects();
-         //console.log($scope.projects);
+    .controller('projectsCtrl', function($scope, snService) { // side menu
+        $scope.projects = [];
+        snService.getProjects()
+            .then(function(result) {
+                console.log(result);
+                $scope.projects = result;
+            }, function(error) {
+                console.log(error)
+            });
+
     })
     .controller('storiesCtrl', function($scope) { // side menu
+        $scope.stories = [];
+        snService.getStories()
+            .then(function(result) {
+                console.log(result);
+                $scope.projects = result;
+            }, function(error) {
+                console.log(error)
+            });
 
     })
     .controller('tasksCtrl', function($scope) { // side menu
+        $scope.tasks = [];
+        snService.getTasks()
+            .then(function(result) {
+                console.log(result);
+                $scope.projects = result;
+            }, function(error) {
+                console.log(error)
+            });
 
     })
-    .controller('timecardsCtrl',function($scope){ // sidemmenu
+    .controller('timecardsCtrl', function($scope) { // sidemmenu
 
     })
     .controller('settingCtrl', function($scope) { // side menu
