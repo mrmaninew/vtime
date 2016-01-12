@@ -106,12 +106,12 @@ angular.module('starter.services', [])
            'username':'',
            'email':''
         };
-
     })
     .factory('LoginService', function($http, $timeout, snCred) {
         var tokenUrl = "";
     })
     // localstorage lib from Ionic framework
-    .factory('LocalStorage', function() {
+    .factory('DB', function($q,Loki) {
+
 
     });

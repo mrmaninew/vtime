@@ -130,8 +130,24 @@ angular.module('starter.controllers', [])
         }
     })
     .controller('CardCtrl', function($scope, $filter, $stateParams) { // single timecard 
+        $scope.tc = {
+            'passDate': new Date($stateParams.param1),
+            'task': '',
+            'story': '',
+            'project': '',
+            'hours': '',
+            'billable': '',
+            'comments': ''
+        };
+        $scope.saveTC = function() {
+            console.log($scope.tc);
+        };
+        $scope.submitTC = function() {
 
-        $scope.passDate = new Date($stateParams.param1);
+        };
+        $scope.resetTC = function() {
+            $scope.tc = {};
+        };
     })
     .controller('statusCtrl', function($scope) { // Status Tab
 
@@ -141,14 +157,20 @@ angular.module('starter.controllers', [])
     })
     .controller('projectsCtrl', function($scope, snService) { // side menu
         $scope.projects = [];
-        snService.getProjects()
-            .then(function(result) {
-                console.log(result);
-                $scope.projects = result;
-            }, function(error) {
-                console.log(error)
-            });
 
+        function showProjects() {
+            snService.getProjects()
+                .then(function(result) {
+                    console.log(result);
+                    $scope.projects = result;
+                }, function(error) {
+                    console.log(error)
+                });
+        };
+       showProjects();
+       $scope.syncProjects = function(){
+          showProjects();
+       };
     })
     .controller('storiesCtrl', function($scope) { // side menu
         $scope.stories = [];

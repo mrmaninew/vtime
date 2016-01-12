@@ -1,4 +1,4 @@
-angular.module('starter', ['ionic', 'ionic-datepicker', 'starter.controllers', 'starter.services', 'angularMoment', 'ngCordova'])
+angular.module('starter', ['ionic', 'lokijs', 'ionic-datepicker', 'starter.controllers', 'starter.services', 'angularMoment', 'ngCordova'])
 
 .run(function($ionicPlatform) {
         $ionicPlatform.ready(function() {
@@ -12,6 +12,9 @@ angular.module('starter', ['ionic', 'ionic-datepicker', 'starter.controllers', '
                 // org.apache.cordova.statusbar required
                 StatusBar.styleDefault();
             }
+            // intialize and load LokiDB and refresh Projects, Tasks, Stories , Timecards , Collections
+            // here 
+            
         });
     })
     .config(function($stateProvider, $urlRouterProvider) {
@@ -27,7 +30,7 @@ angular.module('starter', ['ionic', 'ionic-datepicker', 'starter.controllers', '
                 url: '/projects',
                 views: {
                     'menuContent': {
-                        templateUrl: 'templates/projects.html',  // side menu
+                        templateUrl: 'templates/projects.html', // side menu
                         controller: 'projectsCtrl'
                     }
                 }
@@ -36,51 +39,51 @@ angular.module('starter', ['ionic', 'ionic-datepicker', 'starter.controllers', '
                 url: '/tasks',
                 views: {
                     'menuContent': {
-                        templateUrl: 'templates/tasks.html',    // side menu
+                        templateUrl: 'templates/tasks.html', // side menu
                         controller: 'tasksCtrl'
                     }
                 }
             })
-            .state('app.stories',{
-                url:'/stories',
-                views:{
-                    'menuContent':{
-                        templateUrl: 'templates/stories.html',  // side menu
+            .state('app.stories', {
+                url: '/stories',
+                views: {
+                    'menuContent': {
+                        templateUrl: 'templates/stories.html', // side menu
                         controller: 'storiesCtrl'
                     }
                 }
             })
-            .state('app.timecards',{
-                url:'/timecards',
-                views:{
-                    'menuContent':{
-                        templateUrl:'templates/timecards.html', // side menu
+            .state('app.timecards', {
+                url: '/timecards',
+                views: {
+                    'menuContent': {
+                        templateUrl: 'templates/timecards.html', // side menu
                         controller: 'timecardsCtrl'
                     }
                 }
             })
-            .state('app.sync',{
-                url:'/sync',
-                views:{
-                    'menuContent':{
-                        templateUrl:'templates/sync.html',  // side menu 
+            .state('app.sync', {
+                url: '/sync',
+                views: {
+                    'menuContent': {
+                        templateUrl: 'templates/sync.html', // side menu 
                         controller: 'syncCtrl'
                     }
                 }
             })
-            .state('app.settings',{
+            .state('app.settings', {
                 url: '/settings',
                 views: {
-                    'menuContent':{
+                    'menuContent': {
                         templateUrl: 'templates/settings.html', // side menu 
                         controller: 'settingsCtrl'
                     }
-                }    
+                }
             })
-            .state('app.accounts',{
+            .state('app.accounts', {
                 url: '/accounts',
                 views: {
-                    'menuContent':{
+                    'menuContent': {
                         templateUrl: 'templates/accounts.html', // side menu
                         controller: 'accountsCtrl'
                     }
