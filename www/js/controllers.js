@@ -153,7 +153,8 @@ angular.module('starter.controllers', [])
 
     })
     .controller('projectsCtrl', function($scope,snService) { // side menu
-         $scope.projects = snService.getProjects();
+         snService.getProjects();
+         //console.log($scope.projects);
     })
     .controller('storiesCtrl', function($scope) { // side menu
 
