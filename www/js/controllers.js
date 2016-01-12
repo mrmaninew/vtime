@@ -152,11 +152,8 @@ angular.module('starter.controllers', [])
     .controller('approvalsCtrl', function($scope) { // approvals Tab
 
     })
-    .controller('projectsCtrl', function($scope) { // side menu
-        $scope.closeSideMenu = function(){
-            
-        }
-
+    .controller('projectsCtrl', function($scope,snService) { // side menu
+         $scope.projects = snService.getProjects();
     })
     .controller('storiesCtrl', function($scope) { // side menu
 

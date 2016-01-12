@@ -26,7 +26,7 @@ angular.module('starter.services', [])
             // get 
             getProjects: function(){
                 //$http.defaults.headers.common.Authorization = "Bearer"+TokenServ
-                console.log(TokenService.tokenHandler.get());
+                return; 
             },
             getTasks: function(){},
             getStories: function(){},
