@@ -7,12 +7,8 @@ angular.module('starter.controllers', [])
     .constant('timeCardCategories',['Training','Task Work','Admin','Meeting','KTLO','Out of office','External Labor','Time Off','Appointment','Phone Call'])
     .controller('AppCtrl', function($scope, $ionicModal, $timeout) {
 
-        // With the new view caching in Ionic, Controllers are only called
-        // when they are recreated or on app start, instead of every page change.
-        // To listen for when this page is active (for example, to refresh data),
-        // listen for the $ionicView.enter event:
         $scope.$on('$ionicView.enter', function(e) {
-            //console.log('Home page view entered');
+            console.log('Home page view entered');
         });
 
     })
@@ -157,9 +153,9 @@ angular.module('starter.controllers', [])
 
         //  Functional libs 
 
-        $scope.getPendingTimeCardsForCurrentDate(){
+        $scope.getPendingTimeCardsForCurrentDate = function(){
             
-        }
+        };
     })
     .controller('statusCtrl', function($scope) { // Status Tab
 
@@ -179,6 +175,15 @@ angular.module('starter.controllers', [])
                     console.log(error)
                 });
         };
+        // function showProjects(){
+        //     DBService.getProjectsFromDB()
+        //         .then(function(result){
+        //             console.log(result);
+        //             $scope.projects = result;
+        //         }, function(error){
+        //             console.log(error);
+        //         })
+        // };
        showProjects();
        $scope.syncProjects = function(){
           showProjects();

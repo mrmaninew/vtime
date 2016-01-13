@@ -1,4 +1,4 @@
-angular.module('starter', ['ionic', 'lokijs', 'ionic-datepicker', 'starter.controllers', 'starter.services', 'angularMoment', 'ngCordova'])
+angular.module('starter', ['ionic', 'ionic-datepicker', 'starter.controllers', 'starter.services', 'angularMoment', 'ngCordova'])
 
 .run(function($ionicPlatform) {
         $ionicPlatform.ready(function() {
@@ -14,6 +14,7 @@ angular.module('starter', ['ionic', 'lokijs', 'ionic-datepicker', 'starter.contr
             }
             // intialize and load LokiDB and refresh Projects, Tasks, Stories , Timecards , Collections
             // here 
+            //DBService.initDB();
             
         });
     })
