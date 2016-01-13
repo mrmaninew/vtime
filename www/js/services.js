@@ -90,6 +90,26 @@ angular.module('starter.services', [])
             },
             getApprovals: function() {},
             getTimeCards: function() {},
+            getPendingTimeCardForCurrentDate: function(){
+                var url = 'api/now/table'+snCred.TimecardTable;
+                var token = "Bearer " + TokenService.getToken();
+                var defer = $q.defer;
+                $http({
+                    method: 'GET',
+                    url: url,
+                    headers:{
+                        'Authorization':token
+                    }
+                })
+                .success(function(data){
+                    console.log(data.result);
+                    defer.resolve(data.result);
+                })
+                .error(function(error){
+                    defer.reject(error);
+                })
+                return defer.promise;
+            }
             //set functions 
             setTimeCard: function() {},
             submitTimeCard: function() {},
@@ -104,7 +124,8 @@ angular.module('starter.services', [])
     .factory('UserDetailsService', function() {
         var user = {
            'username':'',
-           'email':''
+           'email':'',
+           'sys_id'
         };
     })
     .factory('LoginService', function($http, $timeout, snCred) {

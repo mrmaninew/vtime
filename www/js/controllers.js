@@ -131,6 +131,10 @@ angular.module('starter.controllers', [])
         }
     })
     .controller('CardCtrl', function($scope, $filter, $stateParams,timeCardCategories) { // single timecard 
+        // varibles
+        $scope.cards = [];
+
+        // Form model
         $scope.tc = {
             'passDate': new Date($stateParams.param1),
             'task': '',
@@ -150,6 +154,12 @@ angular.module('starter.controllers', [])
         $scope.resetTC = function() {
             $scope.tc = {};
         };
+
+        //  Functional libs 
+
+        $scope.getPendingTimeCardsForCurrentDate(){
+            
+        }
     })
     .controller('statusCtrl', function($scope) { // Status Tab
 
