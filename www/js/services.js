@@ -145,7 +145,7 @@ angular.module('starter.services', [])
         };
 
         function setUser(user) {
-            user.username = "";
+            user.user_id= "";
             user.email = "";
             user.sys_id = ""
         };

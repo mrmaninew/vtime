@@ -1,8 +1,8 @@
 angular.module('starter.controllers', [])
     .constant('daysWeek', {
-        'weekDays': ['sun', 'mon', 'tue', 'wed', 'thu', 'fri', 'sat'],
+        'weekDays': ['sunday', 'monday', 'tuesday', 'wednesday', 'thursday', 'friday', 'saturday'],
         'weekStart': 0, // sunday 
-        'weekEnd': 6 // saturady
+        'weekEnd': 6 // saturday
     })
     .constant('timeCardCategories', [{
         name: 'Training',
@@ -143,33 +143,55 @@ angular.module('starter.controllers', [])
             });
         }
     })
-    .controller('CardCtrl', function($scope, $filter, $stateParams, timeCardCategories, LocalStorageService) { // single timecard 
+    .controller('CardCtrl', function($scope, $filter, $stateParams, moment, daysWeek, timeCardCategories, LocalStorageService, UserService) { // single timecard 
         // varibles
         $scope.cards = [];
-        // Projects 
+
         $scope.projects = LocalStorageService.getProjectsLocal();
         $scope.tasks = LocalStorageService.getTasksLocal();
         $scope.stories = LocalStorageService.getStoriesLocal();
         $scope.category = timeCardCategories;
 
-        // Form timecard model
+        // timecard model
         $scope.tc = {
             'passDate': new Date($stateParams.param1),
             'task': '',
-            'story': '',
-            'project': '',
+            'u_project': '',
             'category': '',
             'hours': '',
-            'billable': '',
+            'u_billable': '',
             'comments': ''
+            // 'story': '',
         };
         $scope.saveTC = function() {
-            console.log($scope.tc);
+            var dayNum =  $scope.tc.passDate.getDay();
+            var _day = daysWeek.weekDays[dayNum];
+            var _dayNotesKey = "u_" + _day + "_work_notes";
+            // "week_starts_on": "2015-11-22", [yyyy-MM-dd]
+            var generateWeekStartsOn = function(){
+               var weekStartOn = (moment($scope.tc.passDate).subtract(dayNum, 'days'))._d;
+               console.log(weekStartOn);
+               return weekStartOn;
+            }
+            var data = {
+                'week_starts_on': generateWeekStartsOn(),
+                'task':$scope.tc.task,
+                [_day]:$scope.tc.hours,
+                [_dayNotesKey]:$scope.tc.comments,
+                'u_project':$scope.tc.u_project,
+                'u_billable':$scope.tc.u_billable,
+                'user': UserService.getUser().sys_id,
+                'sys_created_by': UserService.getUser().user_id
+            };
+            console.log(data);
+
         };
         $scope.submitTC = function() {
 
         };
-        $scope.resetTC = function() {};
+        $scope.resetTC = function() {
+            $scope.tc = {};
+        };
 
         //  Functional libs 
         $scope.getPendingTimeCardsForCurrentDate = function() {
@@ -214,7 +236,7 @@ angular.module('starter.controllers', [])
             $scope.stories = LocalStorageService.getStoriesLocal();
         };
         showStories();
-        $scope.syncStories = function(){};
+        $scope.syncStories = function() {};
 
     })
     .controller('tasksCtrl', function($scope, snService, LocalStorageService) { // side menu
@@ -224,7 +246,7 @@ angular.module('starter.controllers', [])
             $scope.tasks = LocalStorageService.getTasksLocal();
         };
         showTasks();
-        $scope.syncTasks = function(){};
+        $scope.syncTasks = function() {};
     })
     .controller('timecardsCtrl', function($scope, snService, LocalStorageService) { // sidemmenu
         $scope.timecards = [];
@@ -233,7 +255,7 @@ angular.module('starter.controllers', [])
             $scope.timecards = LocalStorageService.getTimecardsLocal();
         };
         showTimecards();
-        $scope.syncTimecards = function(){};
+        $scope.syncTimecards = function() {};
     })
     .controller('syncCtrl', function($scope) { // side menu
 

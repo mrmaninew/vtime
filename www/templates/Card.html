@@ -6,23 +6,20 @@
             </label>
             <label class="item item-input">
                 <input type="text" placeholder="Hours" ng-model="tc.hours">
-                <!-- when timer button pressed save button will be 
-                un-changed -->
-                <button class="button icon ion-ios-clock-outline"></button>
             </label>
             <label class="item item-input item-select">
                 <div class="input-label">
-                    Projects
+                    <h3>Projects</h3>
                 </div>
-                <select ng-model="tc.project">
-                    <option ng-repeat="item in projects" value="{{inumbertem.sys_id}}">
+                <select ng-model="tc.u_project">
+                    <option ng-repeat="item in projects" value="{{item.sys_id}}">
                         {{item.short_description}}
                     </option>
                 </select>
             </label>
             <label class="item item-input item-select">
                 <div class="input label">
-                    Stories
+                    <h3>Stories</h3>
                 </div>
                 <select ng-model="tc.story">
                     <option ng-repeat="item in stories" value="{{item.sys_id}}">
@@ -32,7 +29,7 @@
             </label>
             <label class="item item-input item-select">
                 <div class="input label">
-                    Tasks
+                    <h3>Tasks</h3>
                 </div>
                 <select ng-model="tc.task">
                     <option ng-repeat="item in tasks" value="{{item.sys_id}}">
@@ -42,7 +39,7 @@
             </label>
             <label class="item item-input item-select">
                 <div class="input label">
-                    Category
+                    <h3>Category</h3>
                 </div>
                 <select ng-model="tc.category">
                     <option ng-repeat="item in category" value="{{item.value}}">
@@ -50,17 +47,17 @@
                     </option>
                 </select>
             </label>
-            <ion-checkbox ng-model="tc.billable">Billable</ion-checkbox>
+            <ion-checkbox ng-model="tc.u_billable">Billable</ion-checkbox>
             <label class="item item-input">
-                <textarea rows="3" placeholder="Comments" ng-model="tc.comments"></textarea>
+                <textarea rows="3" placeholder="Notes" ng-model="tc.comments"></textarea>
             </label>
         </div>
     </ion-content>
     <ion-footer-bar class="bar bar-dark">
         <div class="button-bar">
-            <button class="button button-dark" href="#" ng-click="saveTC()">save</button>
-            <button class="button button-dark" href="#" ng-click="resetTc()">reset</button>
-            <button class="button button-dark" href="#" ng-click="submitTC()">Submit</button>
+            <button class="button button-dark" ng-click="saveTC()">Save</button>
+            <button class="button button-dark" ng-click="resetTC()">Reset</button>
+            <button class="button button-dark" ng-click="submitTC()">Submit</button>
         </div>
     </ion-footer-bar>
 </ion-view>
