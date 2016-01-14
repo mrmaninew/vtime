@@ -12,11 +12,11 @@ angular.module('starter', ['ionic', 'ionic-datepicker', 'starter.controllers', '
                 // org.apache.cordova.statusbar required
                 StatusBar.styleDefault();
             }
-            // intialize and load LokiDB and refresh Projects, Tasks, Stories , Timecards , Collections
+            // intialize and load LokiDB and refresh Projects, Tasks, Users, Stories , Timecards , Collections
             // here 
             //DBService.initDB();
             
-            // Get Projects, Tasks, Stories, Timecards and store it locally 
+            // Get Projects, Tasks, Stories, Timecards, Users and store it locally 
             snService.getProjects()
                 .then(function(result) {
                     LocalStorageService.setProjectsLocal(result);
@@ -34,7 +34,13 @@ angular.module('starter', ['ionic', 'ionic-datepicker', 'starter.controllers', '
                     LocalStorageService.setStoriesLocal(result);
                  },function(error){
                     console.log(error);
-                 })        
+                 });
+            snService.getTimecards()
+                 .then(function(result){
+                    LocalStorageService.setTimecardsLocal(result);
+                 },function(error){
+                    console.log(error);
+                 });             
         });
     })
     .config(function($stateProvider, $urlRouterProvider) {

@@ -152,7 +152,7 @@ angular.module('starter.controllers', [])
         $scope.stories = LocalStorageService.getStoriesLocal();
         $scope.category = timeCardCategories;
 
-        // Form model
+        // Form timecard model
         $scope.tc = {
             'passDate': new Date($stateParams.param1),
             'task': '',
@@ -205,19 +205,35 @@ angular.module('starter.controllers', [])
         //         })
         // };
         showProjects();
-        $scope.syncProjects = function() {
-            showProjects();
-        };
+        $scope.syncProjects = function() {};
     })
-    .controller('storiesCtrl', function($scope) { // side menu
+    .controller('storiesCtrl', function($scope, snService, LocalStorageService) { // side menu
         $scope.stories = [];
 
-    })
-    .controller('tasksCtrl', function($scope) { // side menu
-        $scope.tasks = [];
-    })
-    .controller('timecardsCtrl', function($scope) { // sidemmenu
+        function showStories() {
+            $scope.stories = LocalStorageService.getStoriesLocal();
+        };
+        showStories();
+        $scope.syncStories = function(){};
 
+    })
+    .controller('tasksCtrl', function($scope, snService, LocalStorageService) { // side menu
+        $scope.tasks = [];
+
+        function showTasks() {
+            $scope.tasks = LocalStorageService.getTasksLocal();
+        };
+        showTasks();
+        $scope.syncTasks = function(){};
+    })
+    .controller('timecardsCtrl', function($scope, snService, LocalStorageService) { // sidemmenu
+        $scope.timecards = [];
+
+        function showTimecards() {
+            $scope.timecards = LocalStorageService.getTimecardsLocal();
+        };
+        showTimecards();
+        $scope.syncTimecards = function(){};
     })
     .controller('syncCtrl', function($scope) { // side menu
 
@@ -227,4 +243,4 @@ angular.module('starter.controllers', [])
     })
     .controller('accountCtrl', function($scope) { // side menu
 
-    })
+    });

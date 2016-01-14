@@ -1,5 +1,19 @@
-<ion-view view-title="TimeCards">
-  <ion-content>
-    <h1>Timecards</h1>
-  </ion-content>
+<ion-view view-title="Timecards">
+    <ion-nav-buttons side="right">
+        <button class="button icon ion-ios-loop-strong" ng-click="syncTimecards()">
+        </button>
+    </ion-nav-buttons>
+    <ion-content>
+        <ion-list>
+            <ion-item ng-repeat="timecard in timecards">
+                <span class="text-align-left">
+                     <i class="icon icon ion-ios-timer TCitem"></i>
+                </span>
+                {{timecard.week_starts_on}} 
+                <span class="text-align-right">
+                	<i class="icon ion-ios-circle-filled"></i>
+                </span>
+            </ion-item>
+        </ion-list>
+    </ion-content>
 </ion-view>

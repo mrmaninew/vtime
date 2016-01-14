@@ -1,5 +1,16 @@
 <ion-view view-title="Stories">
-  <ion-content>
-    <h1>Stories</h1>
-  </ion-content>
+    <ion-nav-buttons side="right">
+        <button class="button icon ion-ios-loop-strong" ng-click="syncStories()">
+        </button>
+    </ion-nav-buttons>
+    <ion-content>
+        <ion-list>
+            <ion-item ng-repeat="story in stories">
+                <span class="text-align-left">
+                    <i class="icon ion-ios-list TCmenu"></i>
+                </span>
+                {{story.number}} <span class="text-align-right"><i class="icon ion-ios-circle-filled"></i></span>
+            </ion-item>
+        </ion-list>
+    </ion-content>
 </ion-view>

@@ -3,15 +3,13 @@ angular.module('starter.services', [])
         'Client_id': 'ac0dd3408c1031006907010c2cc6ef6d',
         'Client_secret': '1yihwfk2xbl686v45s8a',
         'grant_type': ['password', 'access'],
-        /* this url, might be changed from setting panel, so we have to set this url and to _url
-           and add "oauth_token.do" as additive so wer can access tokens and same with access to 
-           tables  */
         'PRODURL': 'https://volteollcdemo1.service-now.com/', // Servicenow Instance URL
-        'DEVURL': '',
+        'DEVURL': '', // Temp URL for development environment and this will changed when deploying PROD
         'PrjTableName': 'pm_project', // Servicenow Project Table
         'TasksTableName': 'pm_project_task', // Servicenow Tasks Table
         'StoriesTableName': 'rm_story', // Servicenow Stories Table
-        'TimecardTable': 'time_card' // Servicenow Timecard Table
+        'TimecardTable': 'time_card', // Servicenow Timecard Table
+        'ApprovalsTable': 'demo' // Servicenow Approvals Table
     })
     .factory('TokenService', function() {
         //var token = "none";
@@ -52,7 +50,7 @@ angular.module('starter.services', [])
             },
             getTasks: function() {
                 // get all tasks assigned_to = user (and) state = open or pending or work in progress
-                var query ="?sysparm_limit=10&sysparm_query=state=2^ORstate=1^ORstate=-5^assigned_to="+UserService.getUser().sys_id;
+                var query = "?sysparm_limit=10&sysparm_query=state=2^ORstate=1^ORstate=-5^assigned_to=" + UserService.getUser().sys_id;
                 var url = snCred.DEVURL + 'api/now/table/' + snCred.TasksTableName + query;
                 var token = "Bearer " + TokenService.getToken();
                 var defer = $q.defer();
@@ -72,7 +70,7 @@ angular.module('starter.services', [])
                 return defer.promise;
             },
             getStories: function() {
-                var query = "?sysparm_limit=10&sysparm_query=state!=3^ORstate!=4^ORstate!=20^assigned_to="+UserService.getUser().sys_id;
+                var query = "?sysparm_limit=10&sysparm_query=state!=3^ORstate!=4^ORstate!=20^assigned_to=" + UserService.getUser().sys_id;
                 var url = snCred.DEVURL + 'api/now/table/' + snCred.StoriesTableName + query;
                 var token = "Bearer " + TokenService.getToken();
                 var defer = $q.defer();
@@ -84,7 +82,26 @@ angular.module('starter.services', [])
                         }
                     })
                     .success(function(data) {
-                        console.log(data.result);
+                        defer.resolve(data.result);
+                    })
+                    .error(function(error) {
+                        defer.reject(error);
+                    })
+                return defer.promise;
+            },
+            getTimecards: function() {
+                var query = "?sysparm_limit=10&sysparm_query=user=" + UserService.getUser().sys_id;
+                var url = snCred.DEVURL + '/api/now/table/' + snCred.TimecardTable + query;
+                var token = "Bearer " + TokenService.getToken();
+                var defer = $q.defer();
+                $http({
+                        method: 'GET',
+                        url: url,
+                        headers: {
+                            'Authorization': token
+                        }
+                    })
+                    .success(function(data) {
                         defer.resolve(data.result);
                     })
                     .error(function(error) {
@@ -93,7 +110,6 @@ angular.module('starter.services', [])
                 return defer.promise;
             },
             getApprovals: function() {},
-            getTimeCards: function() {},
             getPendingTimeCardForCurrentDate: function() {
                 var url = snCred.DEVURL + 'api/now/table/' + snCred.TimecardTable;
                 var token = "Bearer " + TokenService.getToken();
@@ -106,7 +122,6 @@ angular.module('starter.services', [])
                         }
                     })
                     .success(function(data) {
-                        console.log(data.result);
                         defer.resolve(data.result);
                     })
                     .error(function(error) {
@@ -114,9 +129,10 @@ angular.module('starter.services', [])
                     })
                 return defer.promise;
             },
-            //set functions 
-            setTimeCard: function() {},
-            submitTimeCard: function() {},
+            //set (insert, update) functions 
+            insertTimecard: function(timecard) {},
+            editTimecard: function(timecard) {},
+            submitTimeCard: function(timecard) {},
             //delete functions 
             deleteTimeCard: function() {}
         }
@@ -149,7 +165,7 @@ angular.module('starter.services', [])
 
         function setProjectsLocal(result) {
             localStorage.setItem('projects', JSON.stringify(result));
-            console.log('Projects Stored locally')
+            //console.log('Projects Stored locally')
         };
 
         function getProjectsLocal() {
@@ -158,7 +174,7 @@ angular.module('starter.services', [])
 
         function setTasksLocal(result) {
             localStorage.setItem('tasks', JSON.stringify(result));
-            console.log('Tasks Stored locally')
+            //console.log('Tasks Stored locally')
         };
 
         function getTasksLocal() {
@@ -167,30 +183,62 @@ angular.module('starter.services', [])
 
         function setStoriesLocal(result) {
             localStorage.setItem('stories', JSON.stringify(result));
-            console.log('Stories Stored locally')
+            //console.log('Stories Stored locally')
         }
 
         function getStoriesLocal() {
             return JSON.parse(localStorage.getItem('stories'));
         };
 
-        function setTimecardsLocal() {
+        function setTimecardsLocal(result) {
             localStorage.setItem('timecards', JSON.stringify(result));
-            console.log('Timecards Stored locally')
+            //console.log('Timecards Stored locally')
         };
 
         function getTimecardsLocal() {
             return JSON.parse(localStorage.getItem('timecards'));
+        };
+
+        function setUserLocal(user) {
+            var _user = {
+                'user_id': user.user_id,
+                'email': user.email,
+                'sys_id': user.sys_id
+            };
+            localStorage.setItem('user', JSON.stringify(_user));
+            // console.log('User stored locally');
+        };
+
+        function getUserLocal() {
+            return JSON.parse(localStorage.getItem('user'));
+        };
+
+        function setApprovalsLocal(result) {
+            localStorage.setItem('approvals', JSON.stringify(result));
         }
+
+        function getApprovalsLocal() {
+            return JSON.parse(localStorage.getItem('approvals'));
+        };
         return {
+            // Projects 
             setProjectsLocal: setProjectsLocal,
             getProjectsLocal: getProjectsLocal,
+            // Tasks
             setTasksLocal: setTasksLocal,
             getTasksLocal: getTasksLocal,
+            // Stories
             setStoriesLocal: setStoriesLocal,
             getStoriesLocal: getStoriesLocal,
+            // Timecards
             setTimecardsLocal: setTimecardsLocal,
-            getTimecardsLocal: getTimecardsLocal
+            getTimecardsLocal: getTimecardsLocal,
+            // Users
+            setUserLocal: setUserLocal,
+            getUserLocal: getUserLocal,
+            // Approvals
+            setApprovalsLocal: setApprovalsLocal,
+            getApprovalsLocal: getApprovalsLocal
         }
     })
     // Loki DB storage lib from Ionic framework

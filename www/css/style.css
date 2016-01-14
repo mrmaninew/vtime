@@ -8,7 +8,8 @@
   border:none 0px;
 }
 
-.bar.bar-profile {              /* side menu profile avatar */
+/* side menu */
+.bar.bar-profile {
     background-color: #444;
     height: 170px;
 }
@@ -36,11 +37,24 @@
     border-radius: 50%;
 }
 
-.menu .has-header            /*  end of side menu profile avatar */
+.menu .has-header
 {
     top: 169px;
+}              
+
+/* timecards.html */
+
+.TCitem {
+    margin-left:5px;
 }
-                              
+
+/* projects.html */
+
+/* stories.html */
+
+/* tasks.html */
+
+
 
 /* home.html */
 .rect{
