@@ -130,9 +130,48 @@ angular.module('starter.services', [])
                 return defer.promise;
             },
             //set (insert, update) functions 
-            insertTimecard: function(timecard) {},
-            editTimecard: function(timecard) {},
-            submitTimecard: function(timecard) {},
+            insertTimecard: function(timecard) {
+                var url = snCred.DEVURL + '/api/now/table' + snCred.TimecardTable;
+                var token = "Bearer " + TokenService.getToken();
+                var defer = $q.defer();
+                $http({
+                        method: 'POST',
+                        url: url,
+                        headers: {
+                            'Authorization': token
+                        },
+                        data: timecard
+                    })
+                    .success(function(data) {
+                        defer.resolve(data.result);
+                    })
+                    .error(function(error) {
+                        defer.reject(error);
+                    })
+                return defer.promise;
+            },
+            editTimecard: function(timecard) {
+                var url = snCred.DEVURL + '/api/now/table' + snCred.TimecardTable;
+                var token = "Bearer " + TokenService.getToken();
+                var defer = $q.defer();
+                $http({
+                        method: 'PUT',
+                        url: url,
+                        headers: {
+                            'Authorization': token
+                        }
+                    })
+                    .success(function(data) {
+                        defer.resolve(data.result);
+                    })
+                    .error(function(error) {
+                        defer.reject(error);
+                    })
+                return defer.promise;
+            },
+            // only edit state value and use sys_id as param 
+            submitTimecard: function(timecard) {
+            },
             //delete functions 
             deleteTimecard: function() {}
         }
@@ -145,7 +184,7 @@ angular.module('starter.services', [])
         };
 
         function setUser(user) {
-            user.user_id= "";
+            user.user_id = "";
             user.email = "";
             user.sys_id = ""
         };
@@ -241,4 +280,3 @@ angular.module('starter.services', [])
             getApprovalsLocal: getApprovalsLocal
         }
     })
-    

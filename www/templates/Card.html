@@ -21,7 +21,7 @@
                 <div class="input label">
                     <h3>Stories</h3>
                 </div>
-                <select ng-model="tc.story">
+                <select ng-model="tc.story" readonly>
                     <option ng-repeat="item in stories" value="{{item.sys_id}}">
                         {{item.number}}
                     </option>

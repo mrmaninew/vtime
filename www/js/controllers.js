@@ -143,7 +143,7 @@ angular.module('starter.controllers', [])
             });
         }
     })
-    .controller('CardCtrl', function($scope, $filter, $stateParams, moment, daysWeek, timeCardCategories, LocalStorageService, UserService) { // single timecard 
+    .controller('CardCtrl', function($scope, $filter, $stateParams, moment, daysWeek, snService, timeCardCategories, LocalStorageService, UserService) { // single timecard 
         // varibles
         $scope.cards = [];
 
@@ -174,7 +174,7 @@ angular.module('starter.controllers', [])
                return weekStartOn;
             }
             var data = {
-                'week_starts_on': generateWeekStartsOn(),
+                //'week_starts_on': generateWeekStartsOn(),
                 'task':$scope.tc.task,
                 [_day]:$scope.tc.hours,
                 [_dayNotesKey]:$scope.tc.comments,
@@ -183,8 +183,6 @@ angular.module('starter.controllers', [])
                 'user': UserService.getUser().sys_id,
                 'sys_created_by': UserService.getUser().user_id
             };
-            console.log(data);
-
         };
         $scope.submitTC = function() {
 
