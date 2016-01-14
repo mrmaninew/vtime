@@ -15,13 +15,26 @@ angular.module('starter', ['ionic', 'ionic-datepicker', 'starter.controllers', '
             // intialize and load LokiDB and refresh Projects, Tasks, Stories , Timecards , Collections
             // here 
             //DBService.initDB();
+            
+            // Get Projects, Tasks, Stories, Timecards and store it locally 
             snService.getProjects()
                 .then(function(result) {
                     LocalStorageService.setProjectsLocal(result);
                 }, function(error) {
                     console.log(error)
                 });
-
+            snService.getTasks()
+                .then(function(result){
+                    LocalStorageService.setTasksLocal(result);
+                },function(error){
+                    console.log(error);
+                });
+            snService.getStories()
+                 .then(function(result){
+                    LocalStorageService.setStoriesLocal(result);
+                 },function(error){
+                    console.log(error);
+                 })        
         });
     })
     .config(function($stateProvider, $urlRouterProvider) {

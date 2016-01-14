@@ -148,8 +148,8 @@ angular.module('starter.controllers', [])
         $scope.cards = [];
         // Projects 
         $scope.projects = LocalStorageService.getProjectsLocal();
-        $scope.tasks = "";
-        $scope.stories = "";
+        $scope.tasks = LocalStorageService.getTasksLocal();
+        $scope.stories = LocalStorageService.getStoriesLocal();
         $scope.category = timeCardCategories;
 
         // Form model
@@ -211,25 +211,10 @@ angular.module('starter.controllers', [])
     })
     .controller('storiesCtrl', function($scope) { // side menu
         $scope.stories = [];
-        snService.getStories()
-            .then(function(result) {
-                console.log(result);
-                $scope.projects = result;
-            }, function(error) {
-                console.log(error)
-            });
 
     })
     .controller('tasksCtrl', function($scope) { // side menu
         $scope.tasks = [];
-        snService.getTasks()
-            .then(function(result) {
-                console.log(result);
-                $scope.projects = result;
-            }, function(error) {
-                console.log(error)
-            });
-
     })
     .controller('timecardsCtrl', function($scope) { // sidemmenu
 
