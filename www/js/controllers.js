@@ -161,28 +161,37 @@ angular.module('starter.controllers', [])
             'hours': '',
             'u_billable': '',
             'comments': ''
-            // 'story': '',
+                // 'story': '',
         };
         $scope.saveTC = function() {
-            var dayNum =  $scope.tc.passDate.getDay();
+            var dayNum = $scope.tc.passDate.getDay();
             var _day = daysWeek.weekDays[dayNum];
             var _dayNotesKey = "u_" + _day + "_work_notes";
             // "week_starts_on": "2015-11-22", [yyyy-MM-dd]
-            var generateWeekStartsOn = function(){
-               var weekStartOn = (moment($scope.tc.passDate).subtract(dayNum, 'days'))._d;
-               console.log(weekStartOn);
-               return weekStartOn;
+            var generateWeekStartsOn = function() {
+                var weekStartOn = (moment($scope.tc.passDate).subtract(dayNum, 'days'))._d;
+                console.log(weekStartOn);
+                return weekStartOn;
             }
             var data = {
                 //'week_starts_on': generateWeekStartsOn(),
-                'task':$scope.tc.task,
-                [_day]:$scope.tc.hours,
-                [_dayNotesKey]:$scope.tc.comments,
-                'u_project':$scope.tc.u_project,
-                'u_billable':$scope.tc.u_billable,
+                'task': $scope.tc.task,
+                [_day]: $scope.tc.hours,
+                [_dayNotesKey]: $scope.tc.comments,
+                'u_project': $scope.tc.u_project,
+                'u_billable': $scope.tc.u_billable,
                 'user': UserService.getUser().sys_id,
                 'sys_created_by': UserService.getUser().user_id
             };
+            console.log(data);
+            if (data.length >= 0) {
+                snService.insertTimecard(data)
+                    .then(function(result) {
+                        console.log(result);
+                    }, function(error) {
+                        console.log(result);
+                    })
+            }
         };
         $scope.submitTC = function() {
 
