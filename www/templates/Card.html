@@ -10,17 +10,38 @@
                 un-changed -->
                 <button class="button icon ion-ios-clock-outline"></button>
             </label>
-            <label class="item item-input">
-                <input type="text" placeholder="Projects" ng-model="tc.project">
+            <label class="item item-input item-select"> 
+                <div class="input-label">
+                    Projects
+                </div>   
+                <select ng-model="tc.project" >
+                    <option ng-repeat="item in projects" value="{{item.sys_id}}">
+                         {{item.short_description}}
+                    </option>
+                </select>
             </label>
-            <label class="item item-input">
-                <input type="text" placeholder="Stories" ng-model="tc.story">
+            <label class="item item-input item-select">
+                <div class="input label">
+                    Stories
+                </div>
+                <!-- <option ng-repeat="item in stories" value="{{item.sys_id}}">
+
+                </option> -->
             </label>
-            <label class="item item-input">
-                <input type="text" placeholder="Tasks" ng-model="tc.task">
+            <label class="item item-input item-select">
+                <div class="input label">
+                    Tasks
+                </div> 
             </label>
-            <label class="item item-input">
-                <input type="text" placeholder="Category" ng-model="tc.category">
+            <label class="item item-input item-select">
+                <div class="input label">
+                   Category
+                </div>
+                <select ng-model="tc.category">
+                    <option ng-repeat="item in category" value="{{item.value}}">
+                        {{item.name}}
+                    </option>
+                </select>
             </label>
             <ion-checkbox ng-model="tc.billable">Billable</ion-checkbox>
             <label class="item item-input">
@@ -30,9 +51,9 @@
     </ion-content>
     <ion-footer-bar class="bar bar-dark">
         <div class="button-bar">
-            <a class="button button-dark" href="#" ng-click="saveTC()">save</a>
-            <a class="button button-dark" href="#" ng-click="resetTc()">reset</a>
-            <a class="button button-dark" href="#" ng-click="submitTC()">Submit</a>
+            <button class="button button-dark" href="#" ng-click="saveTC()">save</button>
+            <button class="button button-dark" href="#" ng-click="resetTc()">reset</button>
+            <button  class="button button-dark" href="#" ng-click="submitTC()">Submit</button>
         </div>
     </ion-footer-bar>
 </ion-view>

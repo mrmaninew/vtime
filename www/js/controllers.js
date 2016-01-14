@@ -4,28 +4,45 @@ angular.module('starter.controllers', [])
         'weekStart': 0, // sunday 
         'weekEnd': 6 // saturady
     })
-    .constant('timeCardCategories',['Training','Task Work','Admin','Meeting','KTLO','Out of office','External Labor','Time Off','Appointment','Phone Call'])
-    .controller('AppCtrl', function($scope, $ionicModal, $timeout) {
+    .constant('timeCardCategories', [{
+        name: 'Training',
+        value: 'training'
+    }, {
+        name: 'Task Work',
+        value: 'task_work'
+    }, {
+        name: 'Admin',
+        value: 'admin'
+    }, {
+        name: 'Meeting',
+        value: 'meeting'
+    }, {
+        name: 'KTLO',
+        value: 'ktlo'
+    }, {
+        name: 'Out of office',
+        value: 'ooo'
+    }, {
+        name: 'External Labor',
+        value: 'external_labor'
+    }, {
+        name: 'Time Off',
+        value: 'time_off'
+    }, {
+        name: 'Appointment',
+        value: 'appointment'
+    }, {
+        name: 'Phone Call',
+        value: 'call'
+    }])
+    .controller('AppCtrl', function($scope, $ionicModal, $timeout, snService, LocalStorageService) {
 
         $scope.$on('$ionicView.enter', function(e) {
             console.log('Home page view entered');
         });
-
     })
     .controller('HomeCtrl', function($scope, $state) {
 
-        // Route to Timecards panel
-        $scope.getTimeCardsPanel = function() {
-            $state.go('app.timecardPanel');
-        };
-        // Route to Status Panel
-        $scope.getStatusPanel = function() {
-            $state.go('app.statusPanel');
-        };
-        // Route to Approvals
-        $scope.getApprovalsPanel = function() {
-            $state.go('app.approvalsPanel')
-        }
     })
     .controller('LoginCtrl', function($scope) {
 
@@ -126,9 +143,14 @@ angular.module('starter.controllers', [])
             });
         }
     })
-    .controller('CardCtrl', function($scope, $filter, $stateParams,timeCardCategories) { // single timecard 
+    .controller('CardCtrl', function($scope, $filter, $stateParams, timeCardCategories, LocalStorageService) { // single timecard 
         // varibles
         $scope.cards = [];
+        // Projects 
+        $scope.projects = LocalStorageService.getProjectsLocal();
+        $scope.tasks = "";
+        $scope.stories = "";
+        $scope.category = timeCardCategories;
 
         // Form model
         $scope.tc = {
@@ -136,7 +158,7 @@ angular.module('starter.controllers', [])
             'task': '',
             'story': '',
             'project': '',
-            'category':'',
+            'category': '',
             'hours': '',
             'billable': '',
             'comments': ''
@@ -145,16 +167,13 @@ angular.module('starter.controllers', [])
             console.log($scope.tc);
         };
         $scope.submitTC = function() {
-           
+
         };
-        $scope.resetTC = function() {
-            $scope.tc = {};
-        };
+        $scope.resetTC = function() {};
 
         //  Functional libs 
+        $scope.getPendingTimeCardsForCurrentDate = function() {
 
-        $scope.getPendingTimeCardsForCurrentDate = function(){
-            
         };
     })
     .controller('statusCtrl', function($scope) { // Status Tab
@@ -163,18 +182,19 @@ angular.module('starter.controllers', [])
     .controller('approvalsCtrl', function($scope) { // approvals Tab
 
     })
-    .controller('projectsCtrl', function($scope, snService) { // side menu
+    .controller('projectsCtrl', function($scope, snService, LocalStorageService) { // side menu
         $scope.projects = [];
 
         function showProjects() {
-            snService.getProjects()
-                .then(function(result) {
-                    console.log(result);
-                    $scope.projects = result;
-                }, function(error) {
-                    console.log(error)
-                });
+            $scope.projects = LocalStorageService.getProjectsLocal();
         };
+        // snService.getProjects()
+        //         .then(function(result) {
+        //             console.log(result);
+        //             $scope.projects = result;
+        //         }, function(error) {
+        //             console.log(error)
+        //         });
         // function showProjects(){
         //     DBService.getProjectsFromDB()
         //         .then(function(result){
@@ -184,10 +204,10 @@ angular.module('starter.controllers', [])
         //             console.log(error);
         //         })
         // };
-       showProjects();
-       $scope.syncProjects = function(){
-          showProjects();
-       };
+        showProjects();
+        $scope.syncProjects = function() {
+            showProjects();
+        };
     })
     .controller('storiesCtrl', function($scope) { // side menu
         $scope.stories = [];
@@ -223,4 +243,3 @@ angular.module('starter.controllers', [])
     .controller('accountCtrl', function($scope) { // side menu
 
     })
-   

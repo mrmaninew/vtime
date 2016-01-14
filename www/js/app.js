@@ -1,6 +1,6 @@
 angular.module('starter', ['ionic', 'ionic-datepicker', 'starter.controllers', 'starter.services', 'angularMoment', 'ngCordova'])
 
-.run(function($ionicPlatform) {
+.run(function($ionicPlatform, snService, LocalStorageService) {
         $ionicPlatform.ready(function() {
             // Hide the accessory bar by default (remove this to show the accessory bar above the keyboard
             // for form inputs)
@@ -15,7 +15,13 @@ angular.module('starter', ['ionic', 'ionic-datepicker', 'starter.controllers', '
             // intialize and load LokiDB and refresh Projects, Tasks, Stories , Timecards , Collections
             // here 
             //DBService.initDB();
-            
+            snService.getProjects()
+                .then(function(result) {
+                    LocalStorageService.setProjectsLocal(result);
+                }, function(error) {
+                    console.log(error)
+                });
+
         });
     })
     .config(function($stateProvider, $urlRouterProvider) {

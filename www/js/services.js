@@ -7,7 +7,7 @@ angular.module('starter.services', [])
            and add "oauth_token.do" as additive so wer can access tokens and same with access to 
            tables  */
         'PRODURL': 'https://volteollcdemo1.service-now.com/', // Servicenow Instance URL
-        'DevURL':'',
+        'DEVURL':'',
         'PrjTableName': 'pm_project', // Servicenow Project Table
         'TasksTableName': 'pm_project_task', // Servicenow Tasks Table
         'StoriesTableName': 'rm_story', // Servicenow Stories Table
@@ -32,7 +32,7 @@ angular.module('starter.services', [])
         return {
             //get functions
             getProjects: function() {
-                var url = snCred.PRODURL+'api/now/table/' + snCred.PrjTableName;
+                var url = snCred.DEVURL+'api/now/table/' + snCred.PrjTableName;
                 var token = "Bearer " + TokenService.getToken();
                 var defer = $q.defer()
                     //$http.defaults.headers.common.Authorization = "Bearer" + TokenService.getToken();
@@ -52,7 +52,7 @@ angular.module('starter.services', [])
                 return defer.promise;
             },
             getTasks: function() {
-                var url = snCred.DevURL+'api/now/table' + snCred.TasksTableName;
+                var url = snCred.DEVURL+'api/now/table' + snCred.TasksTableName;
                 var token = "Bearer " + TokenService.getToken();
                 var defer = $q.defer();
                 $http({
@@ -71,7 +71,7 @@ angular.module('starter.services', [])
                 return defer.promise;
             },
             getStories: function() {
-                var url = snCred.DevURL+'api/now/table' + snCred.StoriesTableName;
+                var url = snCred.DEVURL+'api/now/table' + snCred.StoriesTableName;
                 var token = "Bearer " + TokenService.getToken();
                 var defer = $q.defer();
                 $http({
@@ -92,7 +92,7 @@ angular.module('starter.services', [])
             getApprovals: function() {},
             getTimeCards: function() {},
             getPendingTimeCardForCurrentDate: function() {
-                var url = snCred.DevURL+'api/now/table' + snCred.TimecardTable;
+                var url = snCred.DEVURL+'api/now/table' + snCred.TimecardTable;
                 var token = "Bearer " + TokenService.getToken();
                 var defer = $q.defer;
                 $http({
@@ -113,23 +113,76 @@ angular.module('starter.services', [])
             },
             //set functions 
             setTimeCard: function() {
-
             },
             submitTimeCard: function() {},
+            //delete functions 
             deleteTimeCard: function() {}
         }
     })
-    .factory('UserDetailsService', function() {
+    .factory('UserService', function() {
         var user = {
-            'username': '',
-            'email': '',
-            'sys_id': ''
+            'user_id': 'mani',
+            'email': 'mani.gk@volteo.com',
+            'sys_id': '2133326f0faa860077b6ab78b1050e5a'
+        };
+        function setUser(user){
+            user.username = "";
+            user.email = "";
+            user.sys_id = ""
+        };
+        function getUser(){
+            return user;
+        };
+        return {
+            setUser: setUser,
+            getUser: getUser
         };
     })
     .factory('LoginService', function($http, $timeout, snCred) {
         var tokenUrl = "";
-    });
-    // localstorage lib from Ionic framework
+    })
+    .factory('LocalStorageService',function(){
+
+        function setProjectsLocal(result){
+          localStorage.setItem('projects',JSON.stringify(result));
+          console.log('Projects Stored locally')
+        };
+        function getProjectsLocal(){
+           return JSON.parse(localStorage.getItem('projects'));
+        };
+        function setTasksLocal(result){
+           localStorage.setItem('tasks',JSON.stringify(result));
+           console.log('Tasks Stored locally')
+        };
+        function getTasksLocal(){
+           return JSON.parse(localStorage.getItem('tasks'));
+        };
+        function setStoriesLocal(){
+            localStorage.setItem('stories',JSON.stringify(result));
+            console.log('Stories Stored locally')
+        }
+        function getStoriesLocal(){
+            return JSON.parse(localStorage.getItem('stories'));
+        };
+        function setTimecardsLocal(){
+            localStorage.setItem('timecards',JSON.stringify(result));
+            console.log('Timecards Stored locally')
+        };
+        function getTimecardsLocal(){
+            return JSON.parse(localStorage.getItem('timecards'));
+        }
+        return {
+            setProjectsLocal : setProjectsLocal,
+            getProjectsLocal : getProjectsLocal,
+            setTasksLocal : setTasksLocal,
+            getTasksLocal : getTasksLocal,
+            setStoriesLocal: setStoriesLocal,
+            getStoriesLocal: getStoriesLocal,
+            setTimecardsLocal: setTimecardsLocal,
+            getTimecardsLocal: getTimecardsLocal 
+        }
+    })
+    // Loki DB storage lib from Ionic framework
     // .factory('DBService', function($q, Loki, snService) {
     //     var _db;
 
