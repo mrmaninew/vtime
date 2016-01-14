@@ -48,7 +48,7 @@ angular.module('starter.controllers', [])
 
     })
     // tabs for today, this week and next week 
-    .controller('timeCardsPanelCtrl', function($scope, $cordovaToast, $ionicPlatform, $state, $ionicTabsDelegate, $ionicModal, moment, daysWeek) { // Timecard Tab
+    .controller('timeCardsPanelCtrl', function($scope, $cordovaToast, $ionicPlatform, $state, $ionicTabsDelegate, $ionicModal, moment, daysWeek, LocalStorageService) { // Timecard Tab
 
         // footer item-right varibles 
         $scope.totalHrsDay = "0.00";
@@ -59,7 +59,52 @@ angular.module('starter.controllers', [])
         // selected week by selected date
         $scope.selThisWeek = [];
         // selected date of day in a week (sun:0, mon:1..,)
-        $scope.selDay = $scope.selDate.getDay();
+        $scope.selDay = $scope.selDate.getDay(); // 0 - 7
+        $scope.selDayName = daysWeek.weekDays[$scope.selDay]; // sunday, monday
+        // Timecards for "Today or Selected " date or day 
+        $scope.timecards = [];
+        console.log($scope.selDayName); 
+        // get all Timecards by start of the week (Sunday) by calculating present day
+        function getTimecardsDate() {
+            if ($scope.selDay == 0) {
+                var sundayDate = moment($scope.selDate).format("YYYY-MM-DD"); // 2012-11-22
+                $scope.timecards = LocalStorageService.getTimecardsByDateLocal(sundayDate);
+            } else {
+                var sundayDate = moment($scope.selDate).subtract($scope.selDay, 'days').format("YYYY-MM-DD"); // 2012-11-22
+                var tcs = LocalStorageService.getTimecardsByDateLocal(sundayDate);
+                //console.log(tcs);
+                processTimecards(tcs);
+            }
+        };
+        getTimecardsDate();
+
+        // $scope.tc = {
+        //     'passDate': new Date($stateParams.param1),
+        //     'task': '',
+        //     'u_project': '',
+        //     'category': '',
+        //     'hours': '',
+        //     'u_billable': '',
+        //     'comments': '',
+        //     'story': ''
+        // };
+
+        function processTimecards(tcs) {
+            var Ptimecards = []
+            for (i = 0; i < tcs.length; i++) {
+                var set = {};
+                if (tcs[i].u_project) set.u_project = tcs[i].u_project.value;
+                if (tcs[i].task) set.task = tcs[i].task.value;
+                if (tcs[i].story) set.story = tcs[i].story.value;
+                if (tcs[i].u_billable) set.u_billable = tcs[i].u_billable;
+                if (tcs[i].category) set.category = tcs[i].category;
+                if (tcs[i][$scope.selDayName]) set.hours = tcs[i].thursday;
+                if (tcs[i].state) set.state = tcs[i].state;
+                Ptimecards.push(set);
+            };
+            console.log(Ptimecards);
+
+        };
 
         function onDayChanged() {
             var daysBefore, dayAfter;
@@ -68,9 +113,13 @@ angular.module('starter.controllers', [])
             } else {
                 $scope.selThisWeek = getDaysInWeekBySelDate($scope.selDay, daysWeek.weekEnd - $scope.selDay);
             }
-        }
+            $scope.selDayName = daysWeek.weekDays[$scope.selDay]; // sunday, monday
+        };
         onDayChanged();
 
+
+
+        // Weekly Tab
         function getDaysInWeekBySelDate(before, after) {
             var week = [];
             var weekEnd = daysWeek.weekEnd;
@@ -134,6 +183,7 @@ angular.module('starter.controllers', [])
                 $scope.selDay = $scope.selDate.getDay();
                 // as selected date changes call DayChanged function to change date array
                 onDayChanged();
+                getTimecardsDate();
             }
         };
 
@@ -160,8 +210,8 @@ angular.module('starter.controllers', [])
             'category': '',
             'hours': '',
             'u_billable': '',
-            'comments': ''
-                // 'story': '',
+            'comments': '',
+            'story': ''
         };
         $scope.saveTC = function() {
             var dayNum = $scope.tc.passDate.getDay();
@@ -169,6 +219,7 @@ angular.module('starter.controllers', [])
             var _dayNotesKey = "u_" + _day + "_work_notes";
             // "week_starts_on": "2015-11-22", [yyyy-MM-dd]
             var generateWeekStartsOn = function() {
+                // make some chnages as logic wont work for 6 and 0, test those values
                 var weekStartOn = (moment($scope.tc.passDate).subtract(dayNum, 'days'))._d;
                 console.log(weekStartOn);
                 return weekStartOn;
@@ -184,14 +235,14 @@ angular.module('starter.controllers', [])
                 'sys_created_by': UserService.getUser().user_id
             };
             console.log(data);
-            if (data.length >= 0) {
-                snService.insertTimecard(data)
-                    .then(function(result) {
-                        console.log(result);
-                    }, function(error) {
-                        console.log(result);
-                    })
-            }
+
+            snService.insertTimecard(data)
+                .then(function(result) {
+                    console.log(result);
+                }, function(error) {
+                    console.log(result);
+                })
+
         };
         $scope.submitTC = function() {
 

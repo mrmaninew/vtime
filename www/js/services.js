@@ -3,8 +3,8 @@ angular.module('starter.services', [])
         'Client_id': 'ac0dd3408c1031006907010c2cc6ef6d',
         'Client_secret': '1yihwfk2xbl686v45s8a',
         'grant_type': ['password', 'access'],
-        'PRODURL': 'https://volteollcdemo1.service-now.com/', // Servicenow Instance URL
-        'DEVURL': '', // Temp URL for development environment and this will changed when deploying PROD
+        //'PRODURL': 'https://volteollcdemo1.service-now.com/', // Servicenow Instance URL
+        'PRODURL': '', // Temp empty URL for development environment and this will changed when deploying PROD
         'PrjTableName': 'pm_project', // Servicenow Project Table
         'TasksTableName': 'pm_project_task', // Servicenow Tasks Table
         'StoriesTableName': 'rm_story', // Servicenow Stories Table
@@ -29,7 +29,7 @@ angular.module('starter.services', [])
         return {
             //get functions
             getProjects: function() {
-                var url = snCred.DEVURL + 'api/now/table/' + snCred.PrjTableName;
+                var url = snCred.PRODURL + 'api/now/table/' + snCred.PrjTableName;
                 var token = "Bearer " + TokenService.getToken();
                 var defer = $q.defer()
                     //$http.defaults.headers.common.Authorization = "Bearer" + TokenService.getToken();
@@ -51,7 +51,7 @@ angular.module('starter.services', [])
             getTasks: function() {
                 // get all tasks assigned_to = user (and) state = open or pending or work in progress
                 var query = "?sysparm_limit=10&sysparm_query=state=2^ORstate=1^ORstate=-5^assigned_to=" + UserService.getUser().sys_id;
-                var url = snCred.DEVURL + 'api/now/table/' + snCred.TasksTableName + query;
+                var url = snCred.PRODURL + 'api/now/table/' + snCred.TasksTableName + query;
                 var token = "Bearer " + TokenService.getToken();
                 var defer = $q.defer();
                 $http({
@@ -71,7 +71,7 @@ angular.module('starter.services', [])
             },
             getStories: function() {
                 var query = "?sysparm_limit=10&sysparm_query=state!=3^ORstate!=4^ORstate!=20^assigned_to=" + UserService.getUser().sys_id;
-                var url = snCred.DEVURL + 'api/now/table/' + snCred.StoriesTableName + query;
+                var url = snCred.PRODURL + 'api/now/table/' + snCred.StoriesTableName + query;
                 var token = "Bearer " + TokenService.getToken();
                 var defer = $q.defer();
                 $http({
@@ -91,7 +91,7 @@ angular.module('starter.services', [])
             },
             getTimecards: function() {
                 var query = "?sysparm_limit=10&sysparm_query=user=" + UserService.getUser().sys_id;
-                var url = snCred.DEVURL + '/api/now/table/' + snCred.TimecardTable + query;
+                var url = snCred.PRODURL + '/api/now/table/' + snCred.TimecardTable + query;
                 var token = "Bearer " + TokenService.getToken();
                 var defer = $q.defer();
                 $http({
@@ -110,28 +110,9 @@ angular.module('starter.services', [])
                 return defer.promise;
             },
             getApprovals: function() {},
-            getPendingTimeCardForCurrentDate: function() {
-                var url = snCred.DEVURL + 'api/now/table/' + snCred.TimecardTable;
-                var token = "Bearer " + TokenService.getToken();
-                var defer = $q.defer;
-                $http({
-                        method: 'GET',
-                        url: url,
-                        headers: {
-                            'Authorization': token
-                        }
-                    })
-                    .success(function(data) {
-                        defer.resolve(data.result);
-                    })
-                    .error(function(error) {
-                        defer.reject(error);
-                    })
-                return defer.promise;
-            },
             //set (insert, update) functions 
             insertTimecard: function(timecard) {
-                var url = snCred.DEVURL + '/api/now/table' + snCred.TimecardTable;
+                var url = snCred.PRODURL + '/api/now/table/' + snCred.TimecardTable;
                 var token = "Bearer " + TokenService.getToken();
                 var defer = $q.defer();
                 $http({
@@ -140,10 +121,10 @@ angular.module('starter.services', [])
                         headers: {
                             'Authorization': token
                         },
-                        data: timecard
+                        data: JSON.stringify(timecard)
                     })
                     .success(function(data) {
-                        defer.resolve(data.result);
+                        defer.resolve(data);
                     })
                     .error(function(error) {
                         defer.reject(error);
@@ -151,7 +132,7 @@ angular.module('starter.services', [])
                 return defer.promise;
             },
             editTimecard: function(timecard) {
-                var url = snCred.DEVURL + '/api/now/table' + snCred.TimecardTable;
+                var url = snCred.PROURL + '/api/now/table'/ + snCred.TimecardTable;
                 var token = "Bearer " + TokenService.getToken();
                 var defer = $q.defer();
                 $http({
@@ -202,6 +183,7 @@ angular.module('starter.services', [])
     })
     .factory('LocalStorageService', function() {
 
+// Projects 
         function setProjectsLocal(result) {
             localStorage.setItem('projects', JSON.stringify(result));
             //console.log('Projects Stored locally')
@@ -211,6 +193,17 @@ angular.module('starter.services', [])
             return JSON.parse(localStorage.getItem('projects'));
         };
 
+        function getProjectNameBySysID(id){
+            var _projectName = "";
+            var _projects = getProjectsLocal();
+            for(var i=0;i<_projects.length;i++){
+                if( _projects[i].sys_id === id){
+                    _projectName = _projects[i].number;
+                }
+            }
+           return _projectName;
+        };
+// Tasks
         function setTasksLocal(result) {
             localStorage.setItem('tasks', JSON.stringify(result));
             //console.log('Tasks Stored locally')
@@ -220,15 +213,36 @@ angular.module('starter.services', [])
             return JSON.parse(localStorage.getItem('tasks'));
         };
 
+        function getTaskNumberBySysID(id){
+            var _taskNumber = "";
+            var _tasks = getTasksLocal();
+            for(var i=0;i<_tasks.length;i++){
+                if(_tasks[i].sys_id === id){
+                    _taskNumber = _tasks[i].number;
+                }
+            }
+            return _taskNumber;
+        };
+// Stories 
         function setStoriesLocal(result) {
             localStorage.setItem('stories', JSON.stringify(result));
             //console.log('Stories Stored locally')
-        }
+        };
 
         function getStoriesLocal() {
             return JSON.parse(localStorage.getItem('stories'));
         };
 
+        function getStoryNumberBySysID(id){
+            var _storyNumber = "";
+            var _stories = getStoriesLocal();
+            for(var i=0;i<_stories.length;i++){
+                if(_stories[i].sys_id === id){
+                    _storyNumber = _stories[i].number;
+                }
+            }
+        };
+// Timecards
         function setTimecardsLocal(result) {
             localStorage.setItem('timecards', JSON.stringify(result));
             //console.log('Timecards Stored locally')
@@ -237,7 +251,17 @@ angular.module('starter.services', [])
         function getTimecardsLocal() {
             return JSON.parse(localStorage.getItem('timecards'));
         };
-
+        function getTimecardsByDateLocal(seldate){
+            var timecards = JSON.parse(localStorage.getItem('timecards'));
+            var selTimecards = []
+            for(var i=0;i<timecards.length;i++){
+               if(seldate == timecards[i].week_starts_on){
+                selTimecards.push(timecards[i]);
+               }
+            }
+            return selTimecards;
+        };
+// Users
         function setUserLocal(user) {
             var _user = {
                 'user_id': user.user_id,
@@ -252,6 +276,7 @@ angular.module('starter.services', [])
             return JSON.parse(localStorage.getItem('user'));
         };
 
+// Approvals
         function setApprovalsLocal(result) {
             localStorage.setItem('approvals', JSON.stringify(result));
         }
@@ -263,15 +288,19 @@ angular.module('starter.services', [])
             // Projects 
             setProjectsLocal: setProjectsLocal,
             getProjectsLocal: getProjectsLocal,
+            getProjectNameBySysID: getProjectNameBySysID,
             // Tasks
             setTasksLocal: setTasksLocal,
             getTasksLocal: getTasksLocal,
+            getTaskNumberBySysID: getTaskNumberBySysID,
             // Stories
             setStoriesLocal: setStoriesLocal,
             getStoriesLocal: getStoriesLocal,
+            getStoryNumberBySysID: getStoryNumberBySysID,
             // Timecards
             setTimecardsLocal: setTimecardsLocal,
             getTimecardsLocal: getTimecardsLocal,
+            getTimecardsByDateLocal : getTimecardsByDateLocal,
             // Users
             setUserLocal: setUserLocal,
             getUserLocal: getUserLocal,

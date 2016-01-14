@@ -12,8 +12,8 @@
                     <h3>Projects</h3>
                 </div>
                 <select ng-model="tc.u_project">
-                    <option ng-repeat="item in projects" value="{{item.sys_id}}">
-                        {{item.short_description}}
+                    <option ng-repeat="project in projects" value="{{project.sys_id}}">
+                        {{project.short_description}}
                     </option>
                 </select>
             </label>
@@ -22,8 +22,8 @@
                     <h3>Stories</h3>
                 </div>
                 <select ng-model="tc.story" readonly>
-                    <option ng-repeat="item in stories" value="{{item.sys_id}}">
-                        {{item.number}}
+                    <option ng-repeat="story in stories" value="{{story.sys_id}}">
+                        {{story.number}}
                     </option>
                 </select>
             </label>
@@ -32,8 +32,8 @@
                     <h3>Tasks</h3>
                 </div>
                 <select ng-model="tc.task">
-                    <option ng-repeat="item in tasks" value="{{item.sys_id}}">
-                        {{item.number}}
+                    <option ng-repeat="task in tasks" value="{{task.sys_id}}">
+                        {{task.number}}
                     </option>
                 </select>
             </label>
