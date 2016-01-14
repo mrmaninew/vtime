@@ -10,10 +10,22 @@
             <ion-tab title="Day">
                 <ion-view>
                     <ion-content>
-                        <div class="padding">
-                            <div class="list">
+                        <div>
+                            <div class="list" ng-if="timecards.length == 0">
                                 <a class="item" href="#">No Saved Time Cards</a>
                             </div>
+                            <ion-list>
+                                   <ion-item  class="item-avatar" ng-repeat="tc in timecards" href="#">
+                                      <span class="day-display-sizing">{{tc.selDate|date:'dd'}}</span>
+                                      <h2>{{tc.selDate|date:'EEEE'}}</h2>
+                                      <p ng-if="tc.task">{{tc.task}}</p> <p ng-if="tc.story">Story: {{tc.story}}</p>
+                                      <span class="text-align-right">
+                                            {{tc.hours}} hrs
+                                            <i class="icon ion-ios-arrow-forward"></i>
+                                      </span>
+                                      <p>{{tc.selDate|date:'MMM yyyy'}}</p>
+                                   </ion-item>
+                            </ion-list>
                         </div>
                     </ion-content>
                     <div class="bar bar-footer">

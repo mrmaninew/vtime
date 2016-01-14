@@ -63,7 +63,6 @@ angular.module('starter.controllers', [])
         $scope.selDayName = daysWeek.weekDays[$scope.selDay]; // sunday, monday
         // Timecards for "Today or Selected " date or day 
         $scope.timecards = [];
-        console.log($scope.selDayName); 
         // get all Timecards by start of the week (Sunday) by calculating present day
         function getTimecardsDate() {
             if ($scope.selDay == 0) {
@@ -72,38 +71,35 @@ angular.module('starter.controllers', [])
             } else {
                 var sundayDate = moment($scope.selDate).subtract($scope.selDay, 'days').format("YYYY-MM-DD"); // 2012-11-22
                 var tcs = LocalStorageService.getTimecardsByDateLocal(sundayDate);
-                //console.log(tcs);
                 processTimecards(tcs);
             }
         };
         getTimecardsDate();
-
-        // $scope.tc = {
-        //     'passDate': new Date($stateParams.param1),
-        //     'task': '',
-        //     'u_project': '',
-        //     'category': '',
-        //     'hours': '',
-        //     'u_billable': '',
-        //     'comments': '',
-        //     'story': ''
-        // };
-
+        // process timecards by adding more details 
         function processTimecards(tcs) {
             var Ptimecards = []
             for (i = 0; i < tcs.length; i++) {
-                var set = {};
-                if (tcs[i].u_project) set.u_project = tcs[i].u_project.value;
-                if (tcs[i].task) set.task = tcs[i].task.value;
-                if (tcs[i].story) set.story = tcs[i].story.value;
-                if (tcs[i].u_billable) set.u_billable = tcs[i].u_billable;
-                if (tcs[i].category) set.category = tcs[i].category;
-                if (tcs[i][$scope.selDayName]) set.hours = tcs[i].thursday;
-                if (tcs[i].state) set.state = tcs[i].state;
-                Ptimecards.push(set);
-            };
-            console.log(Ptimecards);
-
+                if (tcs[i][$scope.selDayName] != 0) {
+                    var set = {};
+                    set.selDate = new Date($scope.selDate);
+                    if (tcs[i].sys_id) set.sys_id = tcs[i].sys_id;
+                    //if (tcs[i].u_project) set.u_project = tcs[i].u_project.value;
+                    if (tcs[i].u_project) set.u_project = LocalStorageService.getProjectNumberBySysID(tcs[i].u_project.value);
+                    //if (tcs[i].task) set.task = tcs[i].task.value;
+                    if (tcs[i].task) set.task = LocalStorageService.getTaskNumberBySysID(tcs[i].task.value);
+                    if (tcs[i].story) set.story = tcs[i].story.value;
+                    if (tcs[i].u_billable) set.u_billable = tcs[i].u_billable;
+                    if (tcs[i].category) set.category = tcs[i].category;
+                    // timecard.sunday =  3 hrs;
+                    if (tcs[i][$scope.selDayName]) set.hours = tcs[i][$scope.selDayName] || 0;
+                    // timecard.u_saturday_work_notes (work notes)
+                    if (tcs[i]["u_" + $scope.selDayName + "_work_notes"]) set.comments = tcs[i]["u_" + $scope.selDayName + "_work_notes"];
+                    if (tcs[i].state) set.state = tcs[i].state;
+                    Ptimecards.push(set);
+                }
+            }
+            //console.log(Ptimecards);
+            $scope.timecards = Ptimecards;
         };
 
         function onDayChanged() {
@@ -181,6 +177,7 @@ angular.module('starter.controllers', [])
             } else {
                 $scope.selDate = new Date(val);
                 $scope.selDay = $scope.selDate.getDay();
+                $scope.selDayName = daysWeek.weekDays[$scope.selDay];
                 // as selected date changes call DayChanged function to change date array
                 onDayChanged();
                 getTimecardsDate();

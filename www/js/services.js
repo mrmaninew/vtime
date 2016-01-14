@@ -182,7 +182,6 @@ angular.module('starter.services', [])
         var tokenUrl = "";
     })
     .factory('LocalStorageService', function() {
-
 // Projects 
         function setProjectsLocal(result) {
             localStorage.setItem('projects', JSON.stringify(result));
@@ -193,15 +192,16 @@ angular.module('starter.services', [])
             return JSON.parse(localStorage.getItem('projects'));
         };
 
-        function getProjectNameBySysID(id){
-            var _projectName = "";
-            var _projects = getProjectsLocal();
-            for(var i=0;i<_projects.length;i++){
-                if( _projects[i].sys_id === id){
-                    _projectName = _projects[i].number;
+        function getProjectNumberBySysID(id){
+            var projectName = "";
+            var projects = getProjectsLocal();
+            for(var i=0;i < projects.length;i++){
+                //console.log(projects[i].sys_id,id);
+                if( projects[i].sys_id == id){
+                    projectName = projects[i].number;
                 }
             }
-           return _projectName;
+           return projectName;
         };
 // Tasks
         function setTasksLocal(result) {
@@ -288,7 +288,7 @@ angular.module('starter.services', [])
             // Projects 
             setProjectsLocal: setProjectsLocal,
             getProjectsLocal: getProjectsLocal,
-            getProjectNameBySysID: getProjectNameBySysID,
+            getProjectNumberBySysID: getProjectNumberBySysID,
             // Tasks
             setTasksLocal: setTasksLocal,
             getTasksLocal: getTasksLocal,
