@@ -5,15 +5,21 @@
     </ion-nav-buttons>
     <ion-content>
         <ion-list>
-            <ion-item ng-repeat="timecard in timecards">
-                <span class="text-align-left">
-                     <i class="icon icon ion-ios-timer TCitem"></i>
-                </span>
-                {{timecard.week_starts_on}} 
-                <span class="text-align-right">
-                	<i class="icon ion-ios-circle-filled"></i>
-                </span>
-            </ion-item>
+            <div ng-repeat="timecard in timecards">
+                <ion-item class="item-stable" ng-click="toggleGroup(timecard)" ng-class="{active: isGroupShown(timecard)}">
+                    <span class="text-align-left">
+                      <i class="icon icon ion-ios-timer TCitem"></i>
+                     </span> &nbsp; {{timecard.sys_created_on}}
+                    <i class="icon text-align-right" ng-class="isGroupShown(timecard) ? 'ion-ios-circle-outline' : 'ion-ios-circle-filled'"></i>
+                </ion-item>
+                <ion-item class="item-accordion" ng-show="isGroupShown(timecard)">
+                    <p><u>Project</u>:&nbsp;{{getProjectNumberBySysID(timecard.u_project.value)}}
+                    <p ng-if="timecard.task"><u>Task</u>:&nbsp;{{getTaskNumberBySysID(timecard.task.value)}}</p>
+                    <p ng-if="timecard.story"><u>Story</u>:&nbsp;{{getStoryNumberBySysID(timecard.story.value)}}</p>
+                    <p><u>Hours</u>:&nbsp;{{timecard.total}}</p>
+                    <p><u>state</u>:&nbsp;{{timecard.state}}</p>
+                </ion-item>
+            </div>
         </ion-list>
     </ion-content>
 </ion-view>

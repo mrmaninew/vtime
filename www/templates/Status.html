@@ -5,42 +5,134 @@
                 <ion-view>
                     <ion-content>
                         <ion-list>
-                            <ion-item ng-repeat="tc in timecards" ng-if="tc.state == 'Pending' ">
-                                <h3>{{getTaskNumberBySysID(tc.task.value)}}</h3>
-                                <h3>{{getStoryNumberBySysID(tc.story.value)}}</h3>
-                            </ion-item>
+                            <div ng-repeat="timecard in timecards">
+                                <ion-item class="item-stable" ng-if="timecard.state == 'Pending'" ng-click=" toggleGroup(timecard) " ng-class="{active: isGroupShown(timecard)} ">
+                                    <span class="text-align-left ">
+                      <i class="icon icon ion-ios-timer TCitem "></i>
+                     </span> &nbsp; {{timecard.sys_created_on}}
+                                    <i class="icon text-align-right " ng-class="isGroupShown(timecard) ? 'ion-ios-circle-outline' : 'ion-ios-circle-filled' "></i>
+                                </ion-item>
+                                <ion-item class="item-accordion " ng-show="isGroupShown(timecard) ">
+                                    <p><u>Project</u>:&nbsp;{{getProjectNumberBySysID(timecard.u_project.value)}}
+                                        <p ng-if="timecard.task "><u>Task</u>:&nbsp;{{getTaskNumberBySysID(timecard.task.value)}}</p>
+                                        <p ng-if="timecard.story "><u>Story</u>:&nbsp;{{getStoryNumberBySysID(timecard.story.value)}}</p>
+                                        <p><u>Hours</u>:&nbsp;{{timecard.total}}</p>
+                                        <p><u>state</u>:&nbsp;{{timecard.state}}</p>
+                                        <div>
+                                            <div class="row header">
+                                                <div class="col text-center">sun</div>
+                                                <div class="col text-center">mon</div>
+                                                <div class="col text-center">tue</div>
+                                                <div class="col text-center">wed</div>
+                                                <div class="col text-center">thu</div>
+                                                <div class="col text-center">fri</div>
+                                                <div class="col text-center">sat</div>
+                                            </div>
+                                            <div class="row">
+                                                <div class="col text-center">{{timecard.sunday}}</div>
+                                                <div class="col text-center">{{timecard.monday}}</div>
+                                                <div class="col text-center">{{timecard.tuesday}}</div>
+                                                <div class="col text-center">{{timecard.wednesday}}</div>
+                                                <div class="col text-center">{{timecard.thursday}}</div>
+                                                <div class="col text-center">{{timecard.friday}}</div>
+                                                <div class="col text-center">{{timecard.saturday}}</div>
+                                            </div>
+                                        </div>
+                                        <button class="button button-block button-positive" ng-click="submitTimecard(timecard.sys_id)">
+                                            Submit Timecard
+                                        </button>
+                                </ion-item>
+                            </div>
+                        </ion-list>
+                        <ion-list class="padding" ng-if="timecards.length == 0 || pending == 0">
+                            <ion-item>
+                                <h2 class="text-center"> '0' Pending Timecards</h2>
                             </ion-item>
                         </ion-list>
                     </ion-content>
                 </ion-view>
             </ion-tab>
-            <ion-tab title="Submitted">
+            <ion-tab title="Submitted ">
                 <ion-view>
                     <ion-content>
                         <ion-list>
-                            <ion-item ng-repeat="tc in timecards" ng-if="tc.state == 'Submitted' ">
-                                <h3>{{getTaskNumberBySysID(tc.task.value)}}</h3>
-                                <h3>{{getStoryNumberBySysID(tc.story.value)}}</h3>
+                            <div ng-repeat="timecard in timecards">
+                                <ion-item class="item-stable" ng-if="timecard.state == 'Submitted'" ng-click=" toggleGroup(timecard) " ng-class="{active: isGroupShown(timecard)} ">
+                                    <span class="text-align-left ">
+                      <i class="icon icon ion-ios-timer TCitem "></i>
+                     </span> &nbsp; {{timecard.sys_created_on}}
+                                    <i class="icon text-align-right " ng-class="isGroupShown(timecard) ? 'ion-ios-circle-outline' : 'ion-ios-circle-filled' "></i>
+                                </ion-item>
+                                <ion-item class="item-accordion " ng-show="isGroupShown(timecard) ">
+                                    <p><u>Project</u>:&nbsp;{{getProjectNumberBySysID(timecard.u_project.value)}}
+                                        <p ng-if="timecard.task "><u>Task</u>:&nbsp;{{getTaskNumberBySysID(timecard.task.value)}}</p>
+                                        <p ng-if="timecard.story "><u>Story</u>:&nbsp;{{getStoryNumberBySysID(timecard.story.value)}}</p>
+                                        <p><u>Hours</u>:&nbsp;{{timecard.total}}</p>
+                                        <p><u>state</u>:&nbsp;{{timecard.state}}</p>
+                                </ion-item>
+                            </div>
+                        </ion-list>
+                        <ion-list class="padding" ng-if="timecards.length == 0 || submitted == 0">
+                            <ion-item>
+                                <h2 class="text-center">'0' Submitted Timecards</h2>
                             </ion-item>
                         </ion-list>
                     </ion-content>
                 </ion-view>
             </ion-tab>
-            <ion-tab title="Approved">
+            <ion-tab title="Approved ">
                 <ion-view>
                     <ion-content>
-                        <ion-item ng-repeat="tc in timecards">
-                            {{getTaskNumberBySysID(tc.task.value)}}
-                        </ion-item>
+                        <ion-list>
+                            <div ng-repeat="timecard in timecards">
+                                <ion-item class="item-stable" ng-if="timecard.state == 'Processed'|| timecard.state == 'Approved' " ng-click=" toggleGroup(timecard) " ng-class="{active: isGroupShown(timecard)} ">
+                                    <span class="text-align-left ">
+                      <i class="icon icon ion-ios-timer TCitem "></i>
+                     </span> &nbsp; {{timecard.sys_created_on}}
+                                    <i class="icon text-align-right " ng-class="isGroupShown(timecard) ? 'ion-ios-circle-outline' : 'ion-ios-circle-filled' "></i>
+                                </ion-item>
+                                <ion-item class="item-accordion " ng-show="isGroupShown(timecard) ">
+                                    <p><u>Project</u>:&nbsp;{{getProjectNumberBySysID(timecard.u_project.value)}}
+                                        <p ng-if="timecard.task "><u>Task</u>:&nbsp;{{getTaskNumberBySysID(timecard.task.value)}}</p>
+                                        <p ng-if="timecard.story "><u>Story</u>:&nbsp;{{getStoryNumberBySysID(timecard.story.value)}}</p>
+                                        <p><u>Hours</u>:&nbsp;{{timecard.total}}</p>
+                                        <p><u>state</u>:&nbsp;{{timecard.state}}</p>
+                                </ion-item>
+                            </div>
+                        </ion-list>
+                        <ion-list class="padding" ng-if="timecards.length == 0 || approvedProcessed == 0">
+                            <ion-item>
+                                <h2 class="text-center"> '0' Approved or Processed Timecards</h2>
+                            </ion-item>
+                        </ion-list>
                     </ion-content>
                 </ion-view>
             </ion-tab>
             <ion-tab title="Rejected">
                 <ion-view>
                     <ion-content>
-                        <ion-item ng-repeat="tc in timecards" ng-if="tc.state == 'Rejected' ">
-                            {{tc.task}}
-                        </ion-item>
+                        <ion-list>
+                            <div ng-repeat="timecard in timecards">
+                                <ion-item class="item-stable" ng-if="timecard.state == 'Rejected'" ng-click=" toggleGroup(timecard) " ng-class="{active: isGroupShown(timecard)} ">
+                                    <span class="text-align-left ">
+                      <i class="icon icon ion-ios-timer TCitem "></i>
+                     </span> &nbsp; {{timecard.sys_created_on}}
+                                    <i class="icon text-align-right " ng-class="isGroupShown(timecard) ? 'ion-ios-circle-outline' : 'ion-ios-circle-filled' "></i>
+                                </ion-item>
+                                <ion-item class="item-accordion " ng-show="isGroupShown(timecard) ">
+                                    <p><u>Project</u>:&nbsp;{{getProjectNumberBySysID(timecard.u_project.value)}}
+                                        <p ng-if="timecard.task "><u>Task</u>:&nbsp;{{getTaskNumberBySysID(timecard.task.value)}}</p>
+                                        <p ng-if="timecard.story "><u>Story</u>:&nbsp;{{getStoryNumberBySysID(timecard.story.value)}}</p>
+                                        <p><u>Hours</u>:&nbsp;{{timecard.total}}</p>
+                                        <p><u>state</u>:&nbsp;{{timecard.state}}</p>
+                                </ion-item>
+                            </div>
+                        </ion-list>
+                        <ion-list class="padding" ng-if="timecards.length == 0 || rejected == 0">
+                            <ion-item>
+                                <h2 class="text-center"> '0' Rejected Timecards</h2>
+                            </ion-item>
+                        </ion-list>
                     </ion-content>
                 </ion-view>
             </ion-tab>

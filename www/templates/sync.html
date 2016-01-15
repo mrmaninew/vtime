@@ -1,1 +1,32 @@
-sync.html
+<ion-view view-title="Sync">
+    <ion-content>
+        <ion-list>
+            <!--Projects-->
+            <ion-item>
+                <h3>Projects:</h3><span class="text-center">{{projects}}</span>
+            </ion-item>
+            <!--Tasks-->
+            <ion-item>
+                <h3>Tasks:</h3><span class="text-center">{{tasks}}</span>
+            </ion-item>
+            <!--Stories-->
+            <ion-item>
+                <h3>Stories:</h3><span class="text-center">{{stories}}</span>
+            </ion-item>
+            <!--Timecards-->
+            <ion-item>
+                <h3>Timecards:</h3><span class="text-center">{{timecards}}</span>
+            </ion-item>
+            <!--Approvals-->
+            <ion-item>
+                <h3>Approvals:</h3><span class="text-center">{{approvals}}</span>
+            </ion-item>
+            <!--sync-->
+            <ion-item>
+                <button class="button button-block button-positive" ng-click="syncNow()">
+                    Synchronize
+                </button>
+            </ion-item>
+        </ion-list>
+    </ion-content>
+</ion-view>

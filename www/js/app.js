@@ -124,7 +124,8 @@ angular.module('starter', ['ionic', 'ionic-datepicker', 'starter.controllers', '
                     }
                 }
             })
-            // Menu.html Footer bar  
+     // Menu.html Footer bar  
+            // Approval Panel
             .state('app.approvalsPanel', {
                 url: '/approvalsPanel',
                 views: {
@@ -134,6 +135,7 @@ angular.module('starter', ['ionic', 'ionic-datepicker', 'starter.controllers', '
                     }
                 }
             })
+            // Status panel
             .state('app.statusPanel', {
                 url: '/statusPanel',
                 views: {

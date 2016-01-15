@@ -119,6 +119,25 @@
     padding-right: 3px;
 }
 
+/* Status bar - Pending,Approved,Submitted,Rejected*/
+.header .col {
+    background-color:lightgrey;
+}
+.col {
+    border: solid 1px grey;
+    border-bottom-style: none;
+    border-right-style: none;
+}
+
+.col:last-child {
+    border-right: solid 1px grey;
+}
+
+.row:last-child .col {
+    border-bottom: solid 1px grey;
+}
+
+/* end Status bar*/
 .day-display-sizing {
     /* list item with side border radius for day and prefix day name */
     position: absolute;
