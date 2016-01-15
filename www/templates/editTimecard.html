@@ -18,7 +18,7 @@
                 </select>
             </label>
             <label class="item item-input item-select">
-                <div class="input label">
+                <div class="input-label">
                     <h3>Stories</h3>
                 </div>
                 <select ng-model="tc.story">
@@ -28,7 +28,7 @@
                 </select>
             </label>
             <label class="item item-input item-select">
-                <div class="input label">
+                <div class="input-label">
                     <h3>Tasks</h3>
                 </div>
                 <select ng-model="tc.task">
@@ -38,27 +38,32 @@
                 </select>
             </label>
             <label class="item item-input item-select">
-                <div class="input label">
+                <div class="input-label">
                     <h3>Category</h3>
                 </div>
-                <select ng-model="tc.category">
-                    <option ng-repeat="item in category" value="{{item.value}}">
-                        {{item.name}}
-                    </option>
+                <select ng-model="tc.category" ng-options="item.value as item.name for item in category">
                 </select>
             </label>
             <label class="item item-input item-select">
-            	<div class="input label">
-            		<h3>State</h3>
-            	</div>
-            	<select ng-model="tc.state">
-            		<option ng-repeat="state in states" value="{{state}}">{{state}}</option>
-            	</select>
+                <div class="input-label">
+                    <h3>State</h3>
+                </div>
+                <select>
+                    <option ng-model="tc.state" ng-repeat="state in states" value="{{state}}"> {{state}}
+                    </option>
+                </select>
             </label>
-            <ion-checkbox ng-model="tc.u_billable">Billable</ion-checkbox>
+            <ion-checkbox ng-model="tc.u_billable" ng-checked="{{tc.u_billable}}">Billable </ion-checkbox>
             <label class="item item-input">
                 <textarea rows="3" placeholder="Notes" ng-model="tc.comments"></textarea>
             </label>
         </div>
     </ion-content>
+    <ion-footer-bar class="bar bar-dark">
+        <div class="button-bar">
+            <button class="button button-dark" ng-click="saveTC()">Save</button>
+            <button class="button button-dark" ng-click="resetTC()">Reset</button>
+            <button class="button button-dark" ng-click="submitTC()">Submit</button>
+        </div>
+    </ion-footer-bar>
 </ion-view>

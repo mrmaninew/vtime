@@ -12,8 +12,8 @@ angular.module('starter', ['ionic', 'ionic-datepicker', 'starter.controllers', '
                 // org.apache.cordova.statusbar required
                 StatusBar.styleDefault();
             }
-            // intialize and load LokiDB and refresh Projects, Tasks, Users, Stories , Timecards , Collections
-            // here 
+            // intialize and load LokiDB and refresh Projects, Tasks, Users, Stories , Timecards - collections
+
             //DBService.initDB();
 
             // Get Projects, Tasks, Stories, Timecards, Users and store it locally 
@@ -124,6 +124,7 @@ angular.module('starter', ['ionic', 'ionic-datepicker', 'starter.controllers', '
                     }
                 }
             })
+            // Menu.html Footer bar  
             .state('app.approvalsPanel', {
                 url: '/approvalsPanel',
                 views: {
@@ -151,6 +152,7 @@ angular.module('starter', ['ionic', 'ionic-datepicker', 'starter.controllers', '
                     }
                 }
             })
+            // create and edit timecards
             .state('app.card', {
                 url: '/card:param1,',
                 views: {
@@ -161,7 +163,7 @@ angular.module('starter', ['ionic', 'ionic-datepicker', 'starter.controllers', '
                 }
             })
             .state('app.editCard', {
-                url: '/editCard:sys_id',
+                url: '/editCard/:sys_id/:passDate',
                 views: {
                     'menuContent': {
                         templateUrl: 'templates/editTimecard.html',
@@ -169,7 +171,6 @@ angular.module('starter', ['ionic', 'ionic-datepicker', 'starter.controllers', '
                     }
                 }
             });
-
         // if none of the above states are matched, use this as the fallback
         $urlRouterProvider.otherwise('/app/home');
     });

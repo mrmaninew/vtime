@@ -263,7 +263,6 @@ angular.module('starter.services', [])
         };
 
         function getTimecardByID(id) {
-            console.log(id);
             var timecards = JSON.parse(localStorage.getItem('timecards'));
             var selTimecard = {};
             for (var i = 0; i < timecards.length; i++) {

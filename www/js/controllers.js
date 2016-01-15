@@ -245,8 +245,8 @@ angular.module('starter.controllers', [])
             $scope.tc = {};
         };
     })
-    .controller('editCardCtrl', function($scope, $stateParams, moment, daysWeek, snService, timeCardCategories,timeCardStates, LocalStorageService, UserService) {
-    // controller for edit Timecard
+    .controller('editCardCtrl', function($scope, $stateParams, moment, daysWeek, snService, timeCardCategories, timeCardStates, LocalStorageService, UserService) {
+        // controller for edit Timecard
         // scoped variables 
         $scope.projects = LocalStorageService.getProjectsLocal();
         $scope.tasks = LocalStorageService.getTasksLocal();
@@ -256,12 +256,35 @@ angular.module('starter.controllers', [])
         // current timecard model 
         $scope.tc = {};
 
-        function getTimecardDetails(){
-            console.log($stateParams.sys_id);
-            $scope.tc = LocalStorageService.getTimecardByID(($stateParams.sys_id).substr(1));
-            console.log($scope.tc);
+        function getTimecardDetails() {
+            var tc = LocalStorageService.getTimecardByID(($stateParams.sys_id).substr(1));
+            var paramDate = ($stateParams.passDate).substr(1);
+             console.log(new Date(Date(paramDate)).getDay());
+            //processTimecard(tc, paramDate);
         };
         getTimecardDetails();
+
+        function processTimecard(tc, paramDate) {
+            var set = {};
+            if (tc) {
+                set.passDate = new Date(Date(paramDate));
+                if (tc[daysWeek.weekDays[set.passDate.getDay()]]) set.hours = tc[daysWeek.weekDays[set.passDate.getDay()]];
+                if (tc.u_project) set.u_project = tc.u_project.value;
+                if (tc.task) set.task = tc.task.value;
+                if (tc.story) set.story = tc.story.value;
+                if (tc.category) set.category = tc.category;
+                if (tc.state) set.state = tc.state;
+                if (tc.u_billable) set.u_billable = tc.u_billable;
+                var worknotes = "u_" + daysWeek.weekDays[set.passDate.getDay()] + "_work_notes";
+                if (tc[worknotes]) set.comments = tc[worknotes];
+            }
+            $scope.tc = set;
+            //console.log($scope.tc);
+        };
+
+        $scope.saveTC = function() {};
+        $scope.submitTC = function() {};
+        $scope.resetTC = function() {};
 
     })
     .controller('statusCtrl', function($scope) { // Status Tab
@@ -321,11 +344,8 @@ angular.module('starter.controllers', [])
         $scope.syncTimecards = function() {};
     })
     .controller('syncCtrl', function($scope) { // side menu
-
     })
     .controller('settingCtrl', function($scope) { // side menu
-
     })
     .controller('accountCtrl', function($scope) { // side menu
-
     });
