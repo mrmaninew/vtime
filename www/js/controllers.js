@@ -35,24 +35,26 @@ angular.module('starter.controllers', [])
         name: 'Phone Call',
         value: 'call'
     }])
+    .constant('timeCardStates', ['pending', 'Submitted', 'Approved', 'Rejected', 'Processed', 'Re-submitted'])
     .controller('AppCtrl', function($scope, $ionicModal, $timeout, snService, LocalStorageService) {
 
         $scope.$on('$ionicView.enter', function(e) {
-            console.log('Home page view entered');
+            //console.log('Home page view entered');
         });
     })
     .controller('HomeCtrl', function($scope, $state) {
-
+        // calculate number hours for day, weekly, monthly
+        $scope.totalHrsDay = 0.00;
+        $scope.totalHrsWeekly = 0.00;
+        $scope.totalHrsMonthly = 0.00;
     })
-    .controller('LoginCtrl', function($scope) {
-
-    })
+    .controller('LoginCtrl', function($scope) {})
     // tabs for today, this week and next week 
     .controller('timeCardsPanelCtrl', function($scope, $cordovaToast, $ionicPlatform, $state, $ionicTabsDelegate, $ionicModal, moment, daysWeek, LocalStorageService) { // Timecard Tab
 
         // footer item-right varibles 
-        $scope.totalHrsDay = "0.00";
-        $scope.totalHrsWeekly = "0.00";
+        $scope.totalHrsDay = 0;
+        $scope.totalHrsWeekly = 0;
 
         // selected date for Time cards
         $scope.selDate = new Date();
@@ -75,9 +77,10 @@ angular.module('starter.controllers', [])
             }
         };
         getTimecardsDate();
-        // process timecards by adding more details 
+        // process timecards by adding more details after retrieving TC from LocalStorage
         function processTimecards(tcs) {
             var Ptimecards = []
+            $scope.totalHrsDay = 0;
             for (i = 0; i < tcs.length; i++) {
                 if (tcs[i][$scope.selDayName] != 0) {
                     var set = {};
@@ -92,6 +95,8 @@ angular.module('starter.controllers', [])
                     if (tcs[i].category) set.category = tcs[i].category;
                     // timecard.sunday =  3 hrs;
                     if (tcs[i][$scope.selDayName]) set.hours = tcs[i][$scope.selDayName] || 0;
+                    // get Total hours for current or selected date or day 
+                    $scope.totalHrsDay += Number(set.hours);
                     // timecard.u_saturday_work_notes (work notes)
                     if (tcs[i]["u_" + $scope.selDayName + "_work_notes"]) set.comments = tcs[i]["u_" + $scope.selDayName + "_work_notes"];
                     if (tcs[i].state) set.state = tcs[i].state;
@@ -101,7 +106,7 @@ angular.module('starter.controllers', [])
             //console.log(Ptimecards);
             $scope.timecards = Ptimecards;
         };
-
+        // on Day changed from calendar reset selDay, and call weeks methods for arraging weekly
         function onDayChanged() {
             var daysBefore, dayAfter;
             if ($scope.selDay === 0) {
@@ -112,9 +117,6 @@ angular.module('starter.controllers', [])
             $scope.selDayName = daysWeek.weekDays[$scope.selDay]; // sunday, monday
         };
         onDayChanged();
-
-
-
         // Weekly Tab
         function getDaysInWeekBySelDate(before, after) {
             var week = [];
@@ -144,7 +146,6 @@ angular.module('starter.controllers', [])
                 return getBeforeDays(getAfterDays);
             }
         };
-
         // calendar config object
         $scope.datepickerObject = {
             todayLabel: 'Today',
@@ -169,7 +170,6 @@ angular.module('starter.controllers', [])
         $scope.getCalendar = function() {
             console.log('getCalendar');
         };
-
         // functional Libs
         var datePickerCallback = function(val) {
             if (typeof(val) === 'undefined') {
@@ -183,7 +183,7 @@ angular.module('starter.controllers', [])
                 getTimecardsDate();
             }
         };
-
+        // route to new Timecard View (create new timecard)
         $scope.routeCard = function() {
             $state.go('app.card', {
                 param1: $scope.selDate
@@ -231,33 +231,42 @@ angular.module('starter.controllers', [])
                 'user': UserService.getUser().sys_id,
                 'sys_created_by': UserService.getUser().user_id
             };
-            console.log(data);
-
+            //console.log(data);
+            // insert  new Timecard into Servicenow
             snService.insertTimecard(data)
                 .then(function(result) {
                     console.log(result);
                 }, function(error) {
                     console.log(result);
                 })
-
         };
-        $scope.submitTC = function() {
-
-        };
+        $scope.submitTC = function() {};
         $scope.resetTC = function() {
             $scope.tc = {};
         };
+    })
+    .controller('editCardCtrl', function($scope, $stateParams, moment, daysWeek, snService, timeCardCategories,timeCardStates, LocalStorageService, UserService) {
+    // controller for edit Timecard
+        // scoped variables 
+        $scope.projects = LocalStorageService.getProjectsLocal();
+        $scope.tasks = LocalStorageService.getTasksLocal();
+        $scope.stories = LocalStorageService.getStoriesLocal();
+        $scope.category = timeCardCategories;
+        $scope.states = timeCardStates;
+        // current timecard model 
+        $scope.tc = {};
 
-        //  Functional libs 
-        $scope.getPendingTimeCardsForCurrentDate = function() {
-
+        function getTimecardDetails(){
+            console.log($stateParams.sys_id);
+            $scope.tc = LocalStorageService.getTimecardByID(($stateParams.sys_id).substr(1));
+            console.log($scope.tc);
         };
+        getTimecardDetails();
+
     })
     .controller('statusCtrl', function($scope) { // Status Tab
-
     })
     .controller('approvalsCtrl', function($scope) { // approvals Tab
-
     })
     .controller('projectsCtrl', function($scope, snService, LocalStorageService) { // side menu
         $scope.projects = [];
@@ -292,7 +301,6 @@ angular.module('starter.controllers', [])
         };
         showStories();
         $scope.syncStories = function() {};
-
     })
     .controller('tasksCtrl', function($scope, snService, LocalStorageService) { // side menu
         $scope.tasks = [];

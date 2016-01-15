@@ -15,7 +15,7 @@ angular.module('starter', ['ionic', 'ionic-datepicker', 'starter.controllers', '
             // intialize and load LokiDB and refresh Projects, Tasks, Users, Stories , Timecards , Collections
             // here 
             //DBService.initDB();
-            
+
             // Get Projects, Tasks, Stories, Timecards, Users and store it locally 
             snService.getProjects()
                 .then(function(result) {
@@ -24,23 +24,23 @@ angular.module('starter', ['ionic', 'ionic-datepicker', 'starter.controllers', '
                     console.log(error)
                 });
             snService.getTasks()
-                .then(function(result){
+                .then(function(result) {
                     LocalStorageService.setTasksLocal(result);
-                },function(error){
+                }, function(error) {
                     console.log(error);
                 });
             snService.getStories()
-                 .then(function(result){
+                .then(function(result) {
                     LocalStorageService.setStoriesLocal(result);
-                 },function(error){
+                }, function(error) {
                     console.log(error);
-                 });
+                });
             snService.getTimecards()
-                 .then(function(result){
+                .then(function(result) {
                     LocalStorageService.setTimecardsLocal(result);
-                 },function(error){
+                }, function(error) {
                     console.log(error);
-                 });             
+                });
         });
     })
     .config(function($stateProvider, $urlRouterProvider) {
@@ -157,6 +157,15 @@ angular.module('starter', ['ionic', 'ionic-datepicker', 'starter.controllers', '
                     'menuContent': {
                         templateUrl: 'templates/Card.html',
                         controller: 'CardCtrl'
+                    }
+                }
+            })
+            .state('app.editCard', {
+                url: '/editCard:sys_id',
+                views: {
+                    'menuContent': {
+                        templateUrl: 'templates/editTimecard.html',
+                        controller: 'editCardCtrl'
                     }
                 }
             });

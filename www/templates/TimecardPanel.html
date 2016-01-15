@@ -15,7 +15,7 @@
                                 <a class="item" href="#">No Saved Time Cards</a>
                             </div>
                             <ion-list>
-                                   <ion-item  class="item-avatar" ng-repeat="tc in timecards" href="#">
+                                   <ion-item  class="item-avatar" ng-repeat="tc in timecards" href="#/app/editCard:{{tc.sys_id}}">
                                       <span class="day-display-sizing">{{tc.selDate|date:'dd'}}</span>
                                       <h2>{{tc.selDate|date:'EEEE'}}</h2>
                                       <p ng-if="tc.task">{{tc.task}}</p> <p ng-if="tc.story">Story: {{tc.story}}</p>
@@ -39,7 +39,7 @@
                    <!--add header here for the view and place title as "1/10 - 7/10"-->
                     <ion-content>
                         <ion-list>
-                            <ion-item class="item-avatar" ng-repeat="day in selThisWeek" href="#/app/card">
+                            <ion-item class="item-avatar" ng-repeat="day in selThisWeek" href="#">
                                     <span class="day-display-sizing">{{day|date:'dd'}}</span>
                                     <h2> {{ day | date:'EEEE'}}</h2> 
                                     <span class="text-align-right"> 0.00  <i class="icon ion-ios-arrow-forward"></i> 

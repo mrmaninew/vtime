@@ -132,7 +132,7 @@ angular.module('starter.services', [])
                 return defer.promise;
             },
             editTimecard: function(timecard) {
-                var url = snCred.PROURL + '/api/now/table'/ + snCred.TimecardTable;
+                var url = snCred.PROURL + '/api/now/table' / +snCred.TimecardTable;
                 var token = "Bearer " + TokenService.getToken();
                 var defer = $q.defer();
                 $http({
@@ -151,8 +151,7 @@ angular.module('starter.services', [])
                 return defer.promise;
             },
             // only edit state value and use sys_id as param 
-            submitTimecard: function(timecard) {
-            },
+            submitTimecard: function(timecard) {},
             //delete functions 
             deleteTimecard: function() {}
         }
@@ -182,7 +181,7 @@ angular.module('starter.services', [])
         var tokenUrl = "";
     })
     .factory('LocalStorageService', function() {
-// Projects 
+        // Projects 
         function setProjectsLocal(result) {
             localStorage.setItem('projects', JSON.stringify(result));
             //console.log('Projects Stored locally')
@@ -192,18 +191,18 @@ angular.module('starter.services', [])
             return JSON.parse(localStorage.getItem('projects'));
         };
 
-        function getProjectNumberBySysID(id){
+        function getProjectNumberBySysID(id) {
             var projectName = "";
             var projects = getProjectsLocal();
-            for(var i=0;i < projects.length;i++){
+            for (var i = 0; i < projects.length; i++) {
                 //console.log(projects[i].sys_id,id);
-                if( projects[i].sys_id == id){
+                if (projects[i].sys_id == id) {
                     projectName = projects[i].number;
                 }
             }
-           return projectName;
+            return projectName;
         };
-// Tasks
+        // Tasks
         function setTasksLocal(result) {
             localStorage.setItem('tasks', JSON.stringify(result));
             //console.log('Tasks Stored locally')
@@ -213,17 +212,17 @@ angular.module('starter.services', [])
             return JSON.parse(localStorage.getItem('tasks'));
         };
 
-        function getTaskNumberBySysID(id){
+        function getTaskNumberBySysID(id) {
             var _taskNumber = "";
             var _tasks = getTasksLocal();
-            for(var i=0;i<_tasks.length;i++){
-                if(_tasks[i].sys_id === id){
+            for (var i = 0; i < _tasks.length; i++) {
+                if (_tasks[i].sys_id === id) {
                     _taskNumber = _tasks[i].number;
                 }
             }
             return _taskNumber;
         };
-// Stories 
+        // Stories 
         function setStoriesLocal(result) {
             localStorage.setItem('stories', JSON.stringify(result));
             //console.log('Stories Stored locally')
@@ -233,16 +232,16 @@ angular.module('starter.services', [])
             return JSON.parse(localStorage.getItem('stories'));
         };
 
-        function getStoryNumberBySysID(id){
+        function getStoryNumberBySysID(id) {
             var _storyNumber = "";
             var _stories = getStoriesLocal();
-            for(var i=0;i<_stories.length;i++){
-                if(_stories[i].sys_id === id){
+            for (var i = 0; i < _stories.length; i++) {
+                if (_stories[i].sys_id === id) {
                     _storyNumber = _stories[i].number;
                 }
             }
         };
-// Timecards
+        // Timecards
         function setTimecardsLocal(result) {
             localStorage.setItem('timecards', JSON.stringify(result));
             //console.log('Timecards Stored locally')
@@ -251,17 +250,30 @@ angular.module('starter.services', [])
         function getTimecardsLocal() {
             return JSON.parse(localStorage.getItem('timecards'));
         };
-        function getTimecardsByDateLocal(seldate){
+
+        function getTimecardsByDateLocal(seldate) {
             var timecards = JSON.parse(localStorage.getItem('timecards'));
             var selTimecards = []
-            for(var i=0;i<timecards.length;i++){
-               if(seldate == timecards[i].week_starts_on){
-                selTimecards.push(timecards[i]);
-               }
+            for (var i = 0; i < timecards.length; i++) {
+                if (seldate == timecards[i].week_starts_on) {
+                    selTimecards.push(timecards[i]);
+                }
             }
             return selTimecards;
         };
-// Users
+
+        function getTimecardByID(id) {
+            console.log(id);
+            var timecards = JSON.parse(localStorage.getItem('timecards'));
+            var selTimecard = {};
+            for (var i = 0; i < timecards.length; i++) {
+                if (timecards[i].sys_id === id ) {
+                    selTimecard = timecards[i];
+                }
+            }
+            return selTimecard;
+        };
+        // Users
         function setUserLocal(user) {
             var _user = {
                 'user_id': user.user_id,
@@ -275,8 +287,7 @@ angular.module('starter.services', [])
         function getUserLocal() {
             return JSON.parse(localStorage.getItem('user'));
         };
-
-// Approvals
+        // Approvals
         function setApprovalsLocal(result) {
             localStorage.setItem('approvals', JSON.stringify(result));
         }
@@ -300,7 +311,8 @@ angular.module('starter.services', [])
             // Timecards
             setTimecardsLocal: setTimecardsLocal,
             getTimecardsLocal: getTimecardsLocal,
-            getTimecardsByDateLocal : getTimecardsByDateLocal,
+            getTimecardsByDateLocal: getTimecardsByDateLocal,
+            getTimecardByID: getTimecardByID,
             // Users
             setUserLocal: setUserLocal,
             getUserLocal: getUserLocal,

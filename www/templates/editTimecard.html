@@ -2,7 +2,7 @@
     <ion-content>
         <div class="list">
             <label class="item item-input">
-                <input type="date" placeholder="Date" ng-model="tc.passDate">
+                <input type="date" placeholder="Date" ng-model="tc.passDate" readonly>
             </label>
             <label class="item item-input">
                 <input type="text" placeholder="Hours" ng-model="tc.hours">
@@ -21,7 +21,7 @@
                 <div class="input label">
                     <h3>Stories</h3>
                 </div>
-                <select ng-model="tc.story" >
+                <select ng-model="tc.story">
                     <option ng-repeat="story in stories" value="{{story.sys_id}}">
                         {{story.number}}
                     </option>
@@ -47,17 +47,18 @@
                     </option>
                 </select>
             </label>
+            <label class="item item-input item-select">
+            	<div class="input label">
+            		<h3>State</h3>
+            	</div>
+            	<select ng-model="tc.state">
+            		<option ng-repeat="state in states" value="{{state}}">{{state}}</option>
+            	</select>
+            </label>
             <ion-checkbox ng-model="tc.u_billable">Billable</ion-checkbox>
             <label class="item item-input">
                 <textarea rows="3" placeholder="Notes" ng-model="tc.comments"></textarea>
             </label>
         </div>
     </ion-content>
-    <ion-footer-bar class="bar bar-dark">
-        <div class="button-bar">
-            <button class="button button-dark" ng-click="saveTC()">Save</button>
-            <button class="button button-dark" ng-click="resetTC()">Reset</button>
-            <button class="button button-dark" ng-click="submitTC()">Submit</button>
-        </div>
-    </ion-footer-bar>
 </ion-view>
