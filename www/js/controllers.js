@@ -69,7 +69,8 @@ angular.module('starter.controllers', [])
         function getTimecardsDate() {
             if ($scope.selDay == 0) {
                 var sundayDate = moment($scope.selDate).format("YYYY-MM-DD"); // 2012-11-22
-                $scope.timecards = LocalStorageService.getTimecardsByDateLocal(sundayDate);
+                var tcs = LocalStorageService.getTimecardsByDateLocal(sundayDate);
+                processTimecards(tcs);
             } else {
                 var sundayDate = moment($scope.selDate).subtract($scope.selDay, 'days').format("YYYY-MM-DD"); // 2012-11-22
                 var tcs = LocalStorageService.getTimecardsByDateLocal(sundayDate);
@@ -82,7 +83,7 @@ angular.module('starter.controllers', [])
             var Ptimecards = []
             $scope.totalHrsDay = 0;
             for (i = 0; i < tcs.length; i++) {
-                if (tcs[i][$scope.selDayName] != 0) {
+                if (tcs[i][$scope.selDayName] != 0) {  // Ex: tcs.tuesday!= 0
                     var set = {};
                     set.selDate = new Date($scope.selDate);
                     if (tcs[i].sys_id) set.sys_id = tcs[i].sys_id;
@@ -168,7 +169,7 @@ angular.module('starter.controllers', [])
         };
         // get calendar popup
         $scope.getCalendar = function() {
-            console.log('getCalendar');
+            //console.log('getCalendar');
         };
         // functional Libs
         var datePickerCallback = function(val) {
@@ -188,6 +189,14 @@ angular.module('starter.controllers', [])
             $state.go('app.card', {
                 param1: $scope.selDate
             });
+        }
+        // route to editTimecard view (for editing existing record)
+        $scope.routeEditCard = function(sys_id){
+            //ng-href="#/app/editCard/:{{tc.sys_id}}/:{{selDate}}"
+            $state.go('app.editCard',{
+                param1 : sys_id,
+                param2 : $scope.selDate
+            })
         }
     })
     .controller('CardCtrl', function($scope, $filter, $stateParams, moment, daysWeek, snService, timeCardCategories, LocalStorageService, UserService) { // single timecard 
@@ -257,17 +266,16 @@ angular.module('starter.controllers', [])
         $scope.tc = {};
 
         function getTimecardDetails() {
-            var tc = LocalStorageService.getTimecardByID(($stateParams.sys_id).substr(1));
-            var paramDate = ($stateParams.passDate).substr(1);
-             console.log(new Date(Date(paramDate)).getDay());
-            //processTimecard(tc, paramDate);
+            var tc = LocalStorageService.getTimecardByID($stateParams.param1); // param1: sys_id
+            var paramDate = $stateParams.param2; // param2: passed date (Thu Jan 14 2016 00:00:00 GMT+0530 (IST))
+            processTimecard(tc, paramDate);
         };
         getTimecardDetails();
 
         function processTimecard(tc, paramDate) {
             var set = {};
             if (tc) {
-                set.passDate = new Date(Date(paramDate));
+                set.passDate = new Date(paramDate);
                 if (tc[daysWeek.weekDays[set.passDate.getDay()]]) set.hours = tc[daysWeek.weekDays[set.passDate.getDay()]];
                 if (tc.u_project) set.u_project = tc.u_project.value;
                 if (tc.task) set.task = tc.task.value;

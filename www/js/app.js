@@ -163,7 +163,7 @@ angular.module('starter', ['ionic', 'ionic-datepicker', 'starter.controllers', '
                 }
             })
             .state('app.editCard', {
-                url: '/editCard/:sys_id/:passDate',
+                url: '/editCard/:param1/:param2', //'/editcard/:sys_id/:passDate'
                 views: {
                     'menuContent': {
                         templateUrl: 'templates/editTimecard.html',
