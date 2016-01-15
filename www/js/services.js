@@ -131,8 +131,8 @@ angular.module('starter.services', [])
                     })
                 return defer.promise;
             },
-            editTimecard: function(timecard) {
-                var url = snCred.PROURL + '/api/now/table' / +snCred.TimecardTable;
+            updateTimecard: function(sys_id, timecard) {
+                var url = snCred.PRODURL + '/api/now/table/' + snCred.TimecardTable +'/'+ sys_id;
                 var token = "Bearer " + TokenService.getToken();
                 var defer = $q.defer();
                 $http({
@@ -140,7 +140,8 @@ angular.module('starter.services', [])
                         url: url,
                         headers: {
                             'Authorization': token
-                        }
+                        },
+                        data: JSON.stringify(timecard)
                     })
                     .success(function(data) {
                         defer.resolve(data.result);
@@ -266,7 +267,7 @@ angular.module('starter.services', [])
             var timecards = JSON.parse(localStorage.getItem('timecards'));
             var selTimecard = {};
             for (var i = 0; i < timecards.length; i++) {
-                if (timecards[i].sys_id === id ) {
+                if (timecards[i].sys_id === id) {
                     selTimecard = timecards[i];
                 }
             }

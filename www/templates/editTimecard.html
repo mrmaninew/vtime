@@ -48,12 +48,12 @@
                 <div class="input-label">
                     <h3>State</h3>
                 </div>
-                <select>
-                    <option ng-model="tc.state" ng-repeat="state in states" value="{{state}}"> {{state}}
+                <select ng-model="tc.state">
+                    <option ng-repeat="state in states" value="{{state}}"> {{state}}
                     </option>
                 </select>
             </label>
-            <ion-checkbox ng-model="tc.u_billable" ng-checked="{{tc.u_billable}}">Billable </ion-checkbox>
+            <ion-checkbox ng-checked="{{tc.u_billable}}" ng-click="changeBillable()">Billable </ion-checkbox>
             <label class="item item-input">
                 <textarea rows="3" placeholder="Notes" ng-model="tc.comments"></textarea>
             </label>
@@ -61,7 +61,7 @@
     </ion-content>
     <ion-footer-bar class="bar bar-dark">
         <div class="button-bar">
-            <button class="button button-dark" ng-click="saveTC()">Save</button>
+            <button class="button button-dark" ng-click="updateTC()">Update</button>
             <button class="button button-dark" ng-click="resetTC()">Reset</button>
             <button class="button button-dark" ng-click="submitTC()">Submit</button>
         </div>

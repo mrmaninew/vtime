@@ -35,7 +35,7 @@ angular.module('starter.controllers', [])
         name: 'Phone Call',
         value: 'call'
     }])
-    .constant('timeCardStates', ['pending', 'Submitted', 'Approved', 'Rejected', 'Processed', 'Re-submitted'])
+    .constant('timeCardStates', ['Pending', 'Submitted', 'Approved', 'Rejected', 'Processed', 'Re-submitted'])
     .controller('AppCtrl', function($scope, $ionicModal, $timeout, snService, LocalStorageService) {
 
         $scope.$on('$ionicView.enter', function(e) {
@@ -83,7 +83,7 @@ angular.module('starter.controllers', [])
             var Ptimecards = []
             $scope.totalHrsDay = 0;
             for (i = 0; i < tcs.length; i++) {
-                if (tcs[i][$scope.selDayName] != 0) {  // Ex: tcs.tuesday!= 0
+                if (tcs[i][$scope.selDayName] != 0) { // Ex: tcs.tuesday!= 0
                     var set = {};
                     set.selDate = new Date($scope.selDate);
                     if (tcs[i].sys_id) set.sys_id = tcs[i].sys_id;
@@ -186,16 +186,16 @@ angular.module('starter.controllers', [])
         };
         // route to new Timecard View (create new timecard)
         $scope.routeCard = function() {
-            $state.go('app.card', {
-                param1: $scope.selDate
-            });
-        }
-        // route to editTimecard view (for editing existing record)
-        $scope.routeEditCard = function(sys_id){
+                $state.go('app.card', {
+                    param1: $scope.selDate
+                });
+            }
+            // route to editTimecard view (for editing existing record)
+        $scope.routeEditCard = function(sys_id) {
             //ng-href="#/app/editCard/:{{tc.sys_id}}/:{{selDate}}"
-            $state.go('app.editCard',{
-                param1 : sys_id,
-                param2 : $scope.selDate
+            $state.go('app.editCard', {
+                param1: sys_id,
+                param2: $scope.selDate
             })
         }
     })
@@ -268,11 +268,11 @@ angular.module('starter.controllers', [])
         function getTimecardDetails() {
             var tc = LocalStorageService.getTimecardByID($stateParams.param1); // param1: sys_id
             var paramDate = $stateParams.param2; // param2: passed date (Thu Jan 14 2016 00:00:00 GMT+0530 (IST))
-            processTimecard(tc, paramDate);
+            processTimecard(tc, paramDate, $stateParams.param1);
         };
         getTimecardDetails();
 
-        function processTimecard(tc, paramDate) {
+        function processTimecard(tc, paramDate, sys_id) {
             var set = {};
             if (tc) {
                 set.passDate = new Date(paramDate);
@@ -285,14 +285,42 @@ angular.module('starter.controllers', [])
                 if (tc.u_billable) set.u_billable = tc.u_billable;
                 var worknotes = "u_" + daysWeek.weekDays[set.passDate.getDay()] + "_work_notes";
                 if (tc[worknotes]) set.comments = tc[worknotes];
+                set.day = daysWeek.weekDays[set.passDate.getDay()];
+                set.sys_id = sys_id;
             }
             $scope.tc = set;
             //console.log($scope.tc);
         };
 
-        $scope.saveTC = function() {};
-        $scope.submitTC = function() {};
-        $scope.resetTC = function() {};
+        $scope.changeBillable = function() {
+            $scope.tc.u_billable = !$scope.tc.u_billable;
+        };
+
+        $scope.updateTC = function() {
+            var notes = "u_" + $scope.tc.day + "_work_notes";
+            var timecard = {};
+            if ($scope.tc.u_project) timecard.u_project = $scope.tc.u_project;
+            if ($scope.tc.task) timecard.task = $scope.tc.task;
+            if ($scope.tc.story) timecard.story = $scope.tc.story;
+            if ($scope.tc.category) timecard.category = $scope.tc.category;
+            if ($scope.tc.state) timecard.state = $scope.tc.state;
+            timecard.u_billable = $scope.tc.u_billable;
+            if ($scope.tc.comments) timecard[notes] = $scope.tc.comments;
+            if ($scope.tc.hours) timecard[$scope.tc.day] = $scope.tc.hours;
+            console.log(timecard, $scope.tc.sys_id);
+            snService.updateTimecard($scope.tc.sys_id,timecard)
+                     .then(function(result){
+                        console.log(result);
+                     },function(error){
+                        console.log(error);
+                     })
+        };
+        $scope.submitTC = function() {
+            console.log($scope.tc);
+        };
+        $scope.resetTC = function() {
+            $scope.tc = {};
+        };
 
     })
     .controller('statusCtrl', function($scope) { // Status Tab
@@ -305,23 +333,8 @@ angular.module('starter.controllers', [])
         function showProjects() {
             $scope.projects = LocalStorageService.getProjectsLocal();
         };
-        // snService.getProjects()
-        //         .then(function(result) {
-        //             console.log(result);
-        //             $scope.projects = result;
-        //         }, function(error) {
-        //             console.log(error)
-        //         });
-        // function showProjects(){
-        //     DBService.getProjectsFromDB()
-        //         .then(function(result){
-        //             console.log(result);
-        //             $scope.projects = result;
-        //         }, function(error){
-        //             console.log(error);
-        //         })
-        // };
         showProjects();
+
         $scope.syncProjects = function() {};
     })
     .controller('storiesCtrl', function($scope, snService, LocalStorageService) { // side menu
