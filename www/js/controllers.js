@@ -187,12 +187,12 @@ angular.module('starter.controllers', [])
         // route to new Timecard View (create new timecard)
         $scope.routeCard = function() {
                 $state.go('app.card', {
-                    param1: $scope.selDate
+                    param1: $scope.selDate // current (or) selected date 
                 });
             }
             // route to editTimecard view (for editing existing record)
         $scope.routeEditCard = function(sys_id) {
-            //ng-href="#/app/editCard/:{{tc.sys_id}}/:{{selDate}}"
+            //ref="#/app/editCard/:{{tc.sys_id}}/:{{selDate}}"
             $state.go('app.editCard', {
                 param1: sys_id,
                 param2: $scope.selDate
@@ -291,11 +291,9 @@ angular.module('starter.controllers', [])
             $scope.tc = set;
             //console.log($scope.tc);
         };
-
         $scope.changeBillable = function() {
             $scope.tc.u_billable = !$scope.tc.u_billable;
         };
-
         $scope.updateTC = function() {
             var notes = "u_" + $scope.tc.day + "_work_notes";
             var timecard = {};
@@ -308,22 +306,61 @@ angular.module('starter.controllers', [])
             if ($scope.tc.comments) timecard[notes] = $scope.tc.comments;
             if ($scope.tc.hours) timecard[$scope.tc.day] = $scope.tc.hours;
             console.log(timecard, $scope.tc.sys_id);
-            snService.updateTimecard($scope.tc.sys_id,timecard)
-                     .then(function(result){
-                        console.log(result);
-                     },function(error){
-                        console.log(error);
-                     })
+            snService.updateTimecard($scope.tc.sys_id, timecard)
+                .then(function(result) {
+                    console.log(result);
+                }, function(error) {
+                    console.log(error);
+                })
         };
         $scope.submitTC = function() {
-            console.log($scope.tc);
+            var notes = "u_" + $scope.tc.day + "_work_notes";
+            var timecard = {};
+            if ($scope.tc.u_project) timecard.u_project = $scope.tc.u_project;
+            if ($scope.tc.task) timecard.task = $scope.tc.task;
+            if ($scope.tc.story) timecard.story = $scope.tc.story;
+            if ($scope.tc.category) timecard.category = $scope.tc.category;
+            if ($scope.tc.state) timecard.state = "Submitted";
+            timecard.u_billable = $scope.tc.u_billable;
+            if ($scope.tc.comments) timecard[notes] = $scope.tc.comments;
+            if ($scope.tc.hours) timecard[$scope.tc.day] = $scope.tc.hours;
+            console.log(timecard, $scope.tc.sys_id);
+            snService.updateTimecard($scope.tc.sys_id, timecard)
+                .then(function(result) {
+                    console.log(result);
+                }, function(error) {
+                    console.log(error);
+                })
         };
         $scope.resetTC = function() {
             $scope.tc = {};
         };
-
     })
-    .controller('statusCtrl', function($scope) { // Status Tab
+    .controller('statusCtrl', function($scope, moment, snService, LocalStorageService) { // Status Tab
+        $scope.timecards = LocalStorageService.getTimecardsLocal();
+        console.log($scope.timecards);
+        $scope.getProjectNumberBySysID = function(sys_id) {
+
+        };
+        $scope.getTaskNumberBySysID = function(sys_id) {
+            return LocalStorageService.getTaskNumberBySysID(sys_id);
+        };
+        $scope.getStoryNumberBySysID = function() {};
+        //$scope.timecard = [];
+
+        // function processTimecards(timecards) {
+        //     for (var i = 0; i < timecards.length; i++) {
+        //         var timecard = {};
+        //         if (timecards[i].u_project) timecard.u_project = $scope.tc.u_project;
+        //         if (timecards[i].task) timecard.task = $scope.tc.task;
+        //         if (timecards[i].story) timecard.story = $scope.tc.story;
+        //         if (timecards[i].category) timecard.category = $scope.tc.category;
+        //         if (timecards[i].state) timecard.state = $scope.tc.state;
+        //         if (timecards[i].u_billable) timecard.u_billable = $scope.tc.u_billable;
+        //         $scope.timecards.push(timecard);
+        //     }
+        // };
+        // processTimecards();
     })
     .controller('approvalsCtrl', function($scope) { // approvals Tab
     })

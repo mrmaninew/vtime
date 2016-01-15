@@ -51,7 +51,7 @@ angular.module('starter.services', [])
             getTasks: function() {
                 // get all tasks assigned_to = user (and) state = open or pending or work in progress
                 var query = "?sysparm_limit=10&sysparm_query=state=2^ORstate=1^ORstate=-5^assigned_to=" + UserService.getUser().sys_id;
-                var url = snCred.PRODURL + 'api/now/table/' + snCred.TasksTableName + query;
+                var url = snCred.PRODURL + 'api/now/table/' + snCred.TasksTableName;
                 var token = "Bearer " + TokenService.getToken();
                 var defer = $q.defer();
                 $http({
@@ -214,14 +214,14 @@ angular.module('starter.services', [])
         };
 
         function getTaskNumberBySysID(id) {
-            var _taskNumber = "";
-            var _tasks = getTasksLocal();
-            for (var i = 0; i < _tasks.length; i++) {
-                if (_tasks[i].sys_id === id) {
-                    _taskNumber = _tasks[i].number;
+            var taskNumber = "";
+            var tasks = getTasksLocal();
+            for (var i = 0; i < tasks.length; i++) {
+                if (tasks[i].sys_id === id) {
+                    taskNumber = tasks[i].number;
                 }
             }
-            return _taskNumber;
+            return taskNumber;
         };
         // Stories 
         function setStoriesLocal(result) {
