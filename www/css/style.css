@@ -1,14 +1,19 @@
 /* Empty. Add your own CSS if you like */
 
+
 /* side bar menu */
+
 .sbmenu {
-	margin-right:5px;
-}
-.sbmenu-noborder{
-  border:none 0px;
+    margin-right: 5px;
 }
 
+.sbmenu-noborder {
+    border: none 0px;
+}
+
+
 /* side menu */
+
 .bar.bar-profile {
     background-color: #444;
     height: 170px;
@@ -37,63 +42,87 @@
     border-radius: 50%;
 }
 
-.menu .has-header
-{
+.menu .has-header {
     top: 169px;
-}              
+}
+
 
 /* timecards.html */
 
 .TCitem {
-    margin-left:5px;
+    margin-left: 5px;
 }
 
-/* projects.html */
 
-/* stories.html */
 
-/* tasks.html */
+/* Accordian List */
 
+.list .item.item-accordion {
+    line-height: 38px;
+    padding-top: 0;
+    padding-bottom: 0;
+    transition: 0.09s all linear;
+}
+
+.list .item.item-accordion.ng-hide {
+    line-height: 0px;
+}
+
+.list .item.item-accordion.ng-hide-add,
+.list .item.item-accordion.ng-hide-remove {
+    display: block !important;
+}
 
 
 /* home.html */
-.rect{
-	background-color: #f08080;
-	margin:10px 5px 10px 5px; /*Top right bottom left*/
-	height: 120px;
-	width: auto;
-	padding-bottom: 5px;
-	padding-top: 5px;
+
+.rect {
+    background-color: #f08080;
+    margin: 10px 5px 10px 5px;
+    /*Top right bottom left*/
+    height: 120px;
+    width: auto;
+    padding-bottom: 5px;
+    padding-top: 5px;
 }
+
 .rect > p {
-	color: white;
-	text-align: center;
+    color: white;
+    text-align: center;
 }
-.rect-box{
-   border-right: solid 1px;
-   border-right-color: white;
+
+.rect-box {
+    border-right: solid 1px;
+    border-right-color: white;
 }
+
 .larger {
     font-size: 90px;
-    color:white;
+    color: white;
 }
+
 .rect-box > p {
-	color: white;
+    color: white;
 }
+
 .col > p {
-   color: white;	
-   text-align: center;
+    color: white;
+    text-align: center;
 }
+
 
 /* Timecard Panel */
-.text-align-right{
-	float:right;
-	display:inline-block;
-	padding-right: 3px;
+
+.text-align-right {
+    float: right;
+    display: inline-block;
+    padding-right: 3px;
 }
 
-.day-display-sizing {     /* list item with side border radius for day and prefix day name */
-	position: absolute;     /* suffix month, year and hours and navigation icon */
+.day-display-sizing {
+    /* list item with side border radius for day and prefix day name */
+    position: absolute;
+    /* suffix month, year and hours and navigation icon */
     top: 16px;
     left: 16px;
     padding-top: 10px;

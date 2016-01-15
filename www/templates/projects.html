@@ -1,16 +1,22 @@
-<ion-view view-title="Projects">
+<ion-view view-title="projects">
     <ion-nav-buttons side="right">
         <button class="button icon ion-ios-loop-strong" ng-click="syncProjects()">
         </button>
     </ion-nav-buttons>
     <ion-content>
         <ion-list>
-            <ion-item ng-repeat="project in projects">
-                <span class="text-align-left">
-                    <i class="icon ion-ios-bookmarks TCmenu"></i>
-                </span>
-                {{project.short_description}} <span class="text-align-right"><i class="icon ion-ios-circle-filled"></i></span>
-            </ion-item>
+            <div ng-repeat="project in projects">
+                <ion-item class="item-stable" ng-click="toggleGroup(project)" ng-class="{active: isGroupShown(project)}">
+                    <span class="text-align-left">
+                      <i class="icon ion-ios-bookmarks TCmenu"></i>
+                     </span> &nbsp; {{project.number}}
+                    <i class="icon text-align-right" ng-class="isGroupShown(project) ? 'ion-ios-circle-outline' : 'ion-ios-circle-filled'"></i>
+                </ion-item>
+                <ion-item class="item-accordion" ng-show="isGroupShown(project)">
+                    <p><u>Description</u>:&nbsp;{{project.description}}</p>
+                    <p><u>Active</u>:&nbsp;{{project.active}}</p>
+                </ion-item>
+            </div>
         </ion-list>
     </ion-content>
 </ion-view>

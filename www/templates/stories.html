@@ -5,12 +5,19 @@
     </ion-nav-buttons>
     <ion-content>
         <ion-list>
-            <ion-item ng-repeat="story in stories">
-                <span class="text-align-left">
-                    <i class="icon ion-ios-list TCmenu"></i>
-                </span>
-                {{story.number}} <span class="text-align-right"><i class="icon ion-ios-circle-filled"></i></span>
-            </ion-item>
+            <div ng-repeat="story in stories">
+                <ion-item class="item-stable" ng-click="toggleGroup(story)" ng-class="{active: isGroupShown(story)}">
+                    <span class="text-align-left">
+                      <i class="icon ion-ios-list TCmenu"></i>
+                     </span> 
+                     &nbsp;
+                    {{story.number}}
+                    <i class="icon text-align-right" ng-class="isGroupShown(story) ? 'ion-ios-circle-outline' : 'ion-ios-circle-filled'"></i>
+                </ion-item>
+                <ion-item class="item-accordion" ng-show="isGroupShown(story)">
+                    <p><u>Description</u>:&nbsp;{{story.description}}</p>
+                </ion-item>
+            </div>
         </ion-list>
     </ion-content>
 </ion-view>

@@ -365,31 +365,49 @@ angular.module('starter.controllers', [])
     .controller('approvalsCtrl', function($scope) { // approvals Tab
     })
     .controller('projectsCtrl', function($scope, snService, LocalStorageService) { // side menu
-        $scope.projects = [];
-
-        function showProjects() {
-            $scope.projects = LocalStorageService.getProjectsLocal();
+        $scope.projects = LocalStorageService.getProjectsLocal();
+        // if given group is the selected group, deselect it, else select the given group
+        $scope.toggleGroup = function(project) {
+            if ($scope.isGroupShown(project)) {
+                $scope.shownGroup = null;
+            } else {
+                $scope.shownGroup = project;
+            }
         };
-        showProjects();
+        $scope.isGroupShown = function(project) {
+            return $scope.shownGroup === project;
+        };
 
-        $scope.syncProjects = function() {};
     })
     .controller('storiesCtrl', function($scope, snService, LocalStorageService) { // side menu
-        $scope.stories = [];
-
-        function showStories() {
-            $scope.stories = LocalStorageService.getStoriesLocal();
+        $scope.stories = LocalStorageService.getStoriesLocal();
+        //if given group is the selected group, deselect it, else select the given group
+        $scope.toggleGroup = function(story) {
+            if ($scope.isGroupShown(story)) {
+                $scope.shownGroup = null;
+            } else {
+                $scope.shownGroup = story;
+            }
         };
-        showStories();
+        $scope.isGroupShown = function(story) {
+            return $scope.shownGroup === story;
+        };
+
         $scope.syncStories = function() {};
     })
     .controller('tasksCtrl', function($scope, snService, LocalStorageService) { // side menu
-        $scope.tasks = [];
-
-        function showTasks() {
-            $scope.tasks = LocalStorageService.getTasksLocal();
+        $scope.tasks = LocalStorageService.getTasksLocal();
+        // if given group is the selected group, deselect it, else select the given group
+        $scope.toggleGroup = function(task) {
+            if ($scope.isGroupShown(task)) {
+                $scope.shownGroup = null;
+            } else {
+                $scope.shownGroup = task;
+            }
         };
-        showTasks();
+        $scope.isGroupShown = function(task) {
+            return $scope.shownGroup === task;
+        };
         $scope.syncTasks = function() {};
     })
     .controller('timecardsCtrl', function($scope, snService, LocalStorageService) { // sidemmenu

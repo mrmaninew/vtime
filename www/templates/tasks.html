@@ -5,12 +5,19 @@
     </ion-nav-buttons>
     <ion-content>
         <ion-list>
-            <ion-item ng-repeat="task in tasks">
-                <span class="text-align-left">
-                    <i class="icon icon ion-clipboard TCmenu"></i>
-                </span>
-                {{task.number}} <span class="text-align-right"><i class="icon ion-ios-circle-filled"></i></span>
-            </ion-item>
+            <div ng-repeat="task in tasks">
+                <ion-item class="item-stable" ng-click="toggleGroup(task)" ng-class="{active: isGroupShown(task)}">
+                    <span class="text-align-left">
+                      <i class="icon ion-clipboard TCmenu"></i>
+                     </span> 
+                     &nbsp;
+                    {{task.number}}
+                    <i class="icon text-align-right" ng-class="isGroupShown(task) ? 'ion-ios-circle-outline' : 'ion-ios-circle-filled'"></i>
+                </ion-item>
+                <ion-item class="item-accordion" ng-show="isGroupShown(task)">
+                    <p><u>Description</u>:&nbsp;{{task.description}}</p>
+                </ion-item>
+            </div>
         </ion-list>
     </ion-content>
 </ion-view>
