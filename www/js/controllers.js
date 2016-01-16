@@ -57,7 +57,6 @@ angular.module('starter.controllers', [])
     .controller('LoginCtrl', function($scope) {})
     // Time tab for Today (or) Selected , this week (depending on current and selected date) 
     .controller('timeCardsPanelCtrl', function($scope, $cordovaToast, $ionicPlatform, $state, $ionicTabsDelegate, $ionicModal, moment, daysWeek, LocalStorageService) { // Timecard Tab
-
         // footer item-right varibles 
         $scope.totalHrsDay = 0;
         $scope.totalHrsWeekly = 0;
@@ -84,32 +83,6 @@ angular.module('starter.controllers', [])
             }
         };
         getTimecardsDate();
-        // get hours for timecard day 
-        $scope.getHoursDay = function(day) {
-            var day = day.getDay(); // 0 - 7
-            var dayName = daysWeek.weekDays[day]; // sunday, monday
-            if (day == 0) {
-                var sundayDate = moment(day).format("YYYY-MM-DD");
-                var tcs = LocalStorageService.getTimecardsByDateLocal(sundayDate); // because week starts on sunday
-                return processTimecardsForHours(tcs, dayName); // get hours for all timecards by date  
-            } else {
-                var sundayDate = moment($scope.selDate).subtract($scope.selDay, 'days').format("YYYY-MM-DD"); // 2012-11-22
-                var tcs = LocalStorageService.getTimecardsByDateLocal(sundayDate);
-                return processTimecardsForHours(tcs, dayName); // get hours for all timecards by date
-            }
-
-        };
-
-        // get hours for each day in entire week
-        function processTimecardsForHours(tcs, dayName) { // ([timecard.obj,timecard.obj], saturday)
-            var hrs = 0;
-            for (var i = 0; i < tcs.length; i++) {
-                if (tcs[i][dayName] != 0) {
-                    hrs += Number(tcs[i][dayName]);
-                }
-            }
-            return hrs;
-        }
         // process timecards by adding more details after retrieving TC from LocalStorage
         function processTimecards(tcs) {
             var Ptimecards = []
@@ -138,18 +111,6 @@ angular.module('starter.controllers', [])
             }
             $scope.timecards = Ptimecards;
         };
-        // on Day changed from calendar reset selDay, and call weeks methods for arraging weekly
-        function onDayChanged() {
-            var daysBefore, dayAfter;
-            if ($scope.selDay === 0) {
-                $scope.selThisWeek = getDaysInWeekBySelDate($scope.selDay);
-            } else {
-                $scope.selThisWeek = getDaysInWeekBySelDate($scope.selDay, daysWeek.weekEnd - $scope.selDay);
-            }
-            $scope.selDayName = daysWeek.weekDays[$scope.selDay]; // sunday, monday
-        };
-        onDayChanged();
-        // Weekly Tab
         function getDaysInWeekBySelDate(before, after) {
             var week = [];
             var weekEnd = daysWeek.weekEnd;
@@ -177,6 +138,57 @@ angular.module('starter.controllers', [])
                 };
                 return getBeforeDays(getAfterDays);
             }
+        };
+        // on Day changed from calendar reset selDay, and call weeks methods for arraging weekly
+        function onDayChanged() {
+            var daysBefore, dayAfter;
+            if ($scope.selDay === 0) {
+                $scope.selThisWeek = getDaysInWeekBySelDate($scope.selDay);
+            } else {
+                $scope.selThisWeek = getDaysInWeekBySelDate($scope.selDay, daysWeek.weekEnd - $scope.selDay);
+            }
+            $scope.selDayName = daysWeek.weekDays[$scope.selDay]; // sunday, monday
+        };
+        onDayChanged();
+// Weekly Tab
+        // get hours for timecard day 
+        $scope.getHoursDay = function(day) {
+            var day = day.getDay(); // 0 - 7
+            var dayName = daysWeek.weekDays[day]; // sunday, monday
+            if (day == 0) {
+                var sundayDate = moment(day).format("YYYY-MM-DD");
+                var tcs = LocalStorageService.getTimecardsByDateLocal(sundayDate); // because week starts on sunday
+                return processTimecardsForHours(tcs, dayName); // get hours for all timecards by date  
+            } else {
+                var sundayDate = moment($scope.selDate).subtract($scope.selDay, 'days').format("YYYY-MM-DD"); // 2012-11-22
+                var tcs = LocalStorageService.getTimecardsByDateLocal(sundayDate);
+                return processTimecardsForHours(tcs, dayName); // get hours for all timecards by date
+            }
+        };
+        // get hours for each day in entire week
+        function processTimecardsForHours(tcs, dayName) { // ([timecard.obj,timecard.obj], saturday)
+            var hrs = 0;
+            for (var i = 0; i < tcs.length; i++) {
+                if (tcs[i][dayName] != 0) {
+                    hrs += Number(tcs[i][dayName]);
+                }
+            }
+            return hrs;
+        }
+        // set $scope.totalHrsWeekly 
+        $scope.totalWeek = function(hrs) {
+            $scope.totalHrsWeekly += hrs;
+        };
+        // set date for current view and navigate to "Day" tab
+        $scope.setDateFromWeekly = function(day) {
+            $scope.selDate = new Date(day);
+            $scope.selDay = $scope.selDate.getDay();
+            $scope.selDayName = daysWeek.weekDays[$scope.selDay];
+            // as selected date changes call DayChanged function to change date array
+            onDayChanged();
+            getTimecardsDate();
+            // navigate to first "Day" tab with selected date as current selected date
+            $ionicTabsDelegate.select(0);
         };
         // calendar config object
         $scope.datepickerObject = {
@@ -213,15 +225,16 @@ angular.module('starter.controllers', [])
                 // as selected date changes call DayChanged function to change date array
                 onDayChanged();
                 getTimecardsDate();
+                $ionicTabsDelegate.select(0);
             }
         };
         // route to new Timecard View (create new timecard)
         $scope.routeCard = function() {
-                $state.go('app.card', {
-                    param1: $scope.selDate // current (or) selected date 
-                });
-            }
-            // route to editTimecard view (for editing existing record)
+            $state.go('app.card', {
+                param1: $scope.selDate // current (or) selected date 
+            });
+        }
+        // route to editTimecard view (for editing existing record)
         $scope.routeEditCard = function(sys_id) {
             //ref="#/app/editCard/:{{tc.sys_id}}/:{{selDate}}"
             $state.go('app.editCard', {
@@ -229,6 +242,7 @@ angular.module('starter.controllers', [])
                 param2: $scope.selDate
             })
         }
+
     })
     // create new Timecard 
     .controller('CardCtrl', function($scope, $filter, $stateParams, moment, daysWeek, snService, timeCardCategories, LocalStorageService, UserService) { // single timecard 
@@ -369,8 +383,20 @@ angular.module('starter.controllers', [])
         };
     })
     // view all timecards for day in week Timecard
-    .controller('weekDayTimecardCtrl', function($scope, $stateParams, moment, LocalStorageService) {
-        console.log($stateParams.param1.substr(1));
+    .controller('weekDayTimecardCtrl', function($scope, $stateParams, moment, daysWeek, LocalStorageService) {
+
+        function getTimecardsDate() {
+            if (selDay == 0) {
+                var sundayDate = moment(selDate).format("YYYY-MM-DD"); // 2012-11-22
+                var tcs = LocalStorageService.getTimecardsByDateLocal(sundayDate); // because weeks starts on sunday
+                //processTimecards(tcs);
+            } else {
+                var sundayDate = moment(selDate).subtract(selDay, 'days').format("YYYY-MM-DD"); // 2012-11-22
+                var tcs = LocalStorageService.getTimecardsByDateLocal(sundayDate);
+                //processTimecards(tcs);
+            }
+        };
+
     })
     // Status Tab
     .controller('statusCtrl', function($scope, $state, moment, snService, LocalStorageService) {

@@ -21,6 +21,7 @@
                                       <p ng-if="tc.task">{{tc.task}}</p> <p ng-if="tc.story">Story: {{tc.story}}</p>
                                       <span class="text-align-right">
                                             {{tc.hours}} hrs
+                                            &nbsp;
                                             <i class="icon ion-ios-arrow-forward"></i>
                                       </span>
                                       <p>{{tc.selDate|date:'MMM yyyy'}}</p>
@@ -39,18 +40,16 @@
                    <!--add header here for the view and place title as "1/10 - 7/10"-->
                     <ion-content>
                         <ion-list>
-                            <ion-item class="item-avatar" ng-repeat="day in selThisWeek" href="#/app/weekDayTimecard/:{{day}}">
+                            <ion-item class="item-avatar" ng-repeat="day in selThisWeek" ng-click="setDateFromWeekly(day)">
                                     <span class="day-display-sizing">{{day|date:'dd'}}</span>
                                     <h2> {{ day | date:'EEEE'}}</h2> 
-                                    <span class="text-align-right"> {{getHoursDay(day)}} hrs<i class="icon ion-ios-arrow-forward"></i> 
+                                    <span class="text-align-right" ng-init="totalWeek(getHoursDay(day));"> {{getHoursDay(day)}} hrs &nbsp;<i class="icon ion-ios-arrow-forward"></i> 
                                     </span> 
                                     <p>{{day|date:'MMM yyyy'}}</p>
-
                             </ion-item>
                         </ion-list>
                     </ion-content>
                     <div class="bar bar-footer">
-                        <button class="button" ng-click="showToast()">Save</button>
                         <div class="title">Total: {{totalHrsWeekly}} hrs </div>
                         <button class="button" ng-click="">Submit</button>
                     </div>
