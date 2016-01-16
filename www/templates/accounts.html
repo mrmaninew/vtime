@@ -1,5 +1,23 @@
 <ion-view view-title="User Account">
-   <ion-content>
-      <button class="button block">Logout</button>
-   </ion-content>
+    <ion-content>
+        <div class="list padding">
+            <label class="item item-input item-select">
+                <div class="input-label">
+                    <h3>User ID</h3>
+                </div>
+                <input class="text-center" type="text" ng-model="user.user_id" readonly/>
+            </label>
+            <label class="item item-input item-select">
+                <div class="input-label">
+                    <h3>Email</h3>
+                </div>
+                <input class="text-center" type="email" ng-model="user.email" readonly/>
+            </label>
+            <div class="item">
+                <button class="button button-block button-positive" ng-click="logout()">
+                    logout
+                </button>
+            </div>
+        </div>
+    </ion-content>
 </ion-view>

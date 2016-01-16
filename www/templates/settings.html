@@ -1,4 +1,15 @@
 <ion-view view-title="Settings">
-   <ion-content>
-   </ion-content>
+    <ion-content>
+        <div class="list padding">
+            <label class="item item-input item-stacked-label">
+                <span class="input-label">Instance URL</span>
+                <textarea placeholder="URL" rows="5"></textarea>
+            </label>
+            <div class="item">
+                <button class="button button-block button-positive" ng-click="saveURL()">
+                    Save URL
+                </button>
+            </div>
+        </div>
+    </ion-content>
 </ion-view>

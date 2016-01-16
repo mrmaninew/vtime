@@ -40,7 +40,7 @@ angular.module('starter.controllers', [])
     .constant('timeCardStates', ['Pending', 'Submitted', 'Approved', 'Rejected', 'Processed', 'Re-submitted'])
     // re-usable methods like getNumberByID for Projects,Tasks,Stories,Timecards
     .constant('FunctionalMethods', {})
-    .controller('AppCtrl', function($scope, $ionicModal, $timeout, snService, LocalStorageService,UserService) {
+    .controller('AppCtrl', function($scope, $ionicModal, $timeout, snService, LocalStorageService, UserService) {
         $scope.$on('$ionicView.enter', function(e) {
             $scope.projectLength = LocalStorageService.getProjectsLengthLocal();
             $scope.tasksLength = LocalStorageService.getTasksLengthLocal();
@@ -194,7 +194,8 @@ angular.module('starter.controllers', [])
             onDayChanged();
             getTimecardsDate();
             // navigate to first "Day" tab with selected date as current selected date
-            $ionicTabsDelegate.select(0);
+            $scope.totalHrsWeekly = 0; // on weekly tab moves to day tab, make weekly to zero as default
+            $ionicTabsDelegate.select(0); // load "Day" tab with clicked date on weekly 
         };
         // calendar config object
         $scope.datepickerObject = {
@@ -410,7 +411,6 @@ angular.module('starter.controllers', [])
             }
         };
         preProcess();
-
         // functional Methods (Projects, Tasks, Stories)
         $scope.getProjectNumberBySysID = function(sys_id) {
             return LocalStorageService.getProjectNumberBySysID(sys_id);
@@ -422,12 +422,17 @@ angular.module('starter.controllers', [])
             return LocalStorageService.getStoryNumberBySysID(sys_id);
         };
 
-        // submit timecard
+        // submit timecard and refresh timecard local storage
         $scope.submitTimecard = function(sys_id) {
             snService.submitTimecard(sys_id)
                 .then(function(data) {
-                    console.log(data);
-                    $state.go('app.statusPanel');
+                    snService.getTimecards()
+                        .then(function(result) {
+                            LocalStorageService.setTimecardsLocal(result);
+                            $state.go('app.home');
+                        }, function(error) {
+                            console.log(error);
+                        })
                 }, function(error) {
                     console.log(error);
                 })
@@ -572,9 +577,13 @@ angular.module('starter.controllers', [])
         }
     })
     // side menu (Settings)
-    .controller('settingCtrl', function($scope) {})
+    .controller('settingsCtrl', function($scope) {
+        $scope.instanceURL = "";
+        $scope.saveURL = function() {};
+    })
     // side menu (Accounts)
-    .controller('accountCtrl', function($scope, $state, LocalStorageService) {
+    .controller('accountsCtrl', function($scope, $state, LocalStorageService, UserService) {
+        $scope.user = UserService.getUser();
         $scope.logout = function() {
             $state.go('Login');
         };

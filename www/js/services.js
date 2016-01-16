@@ -157,6 +157,7 @@ angular.module('starter.services', [])
             // only edit state value and use sys_id as param 
             submitTimecard: function(sys_id) {
                 var url = snCred.PRODURL + '/api/now/table/' + snCred.TimecardTable + '/' + sys_id;
+                var token = "Bearer " + TokenService.getToken();
                 var defer = $q.defer();
                 var data = {
                     'state': 'Submitted'
@@ -251,7 +252,8 @@ angular.module('starter.services', [])
             }
             return taskNumber;
         };
-        function getTasksLengthLocal(){
+
+        function getTasksLengthLocal() {
             return getTasksLocal().length;
         };
         // Stories 
@@ -273,13 +275,23 @@ angular.module('starter.services', [])
             }
         };
 
-        function getStoriesLengthLocal(){
+        function getStoriesLengthLocal() {
             return getStoriesLocal().length;
         }
 
         // Timecards
         function setTimecardsLocal(result) {
             localStorage.setItem('timecards', JSON.stringify(result));
+        };
+
+        function setTimecardLocalByID(sys_id, timecard) {
+            var timecards = localStorage.getItem('timecards');
+            for (var i = 0; i < timecards.length; i++) {
+                if (timecards[i].sys_id === sys_id) {
+                    timecards[i] = result;
+                }
+            }
+            localStorage.setItem('timecards', timecards);
         };
 
         function getTimecardsLocal() {
@@ -308,7 +320,7 @@ angular.module('starter.services', [])
             return selTimecard;
         };
 
-        function getTimecardsLengthLocal(){
+        function getTimecardsLengthLocal() {
             return getTimecardsLocal().length;
         }
         // Users
@@ -333,13 +345,15 @@ angular.module('starter.services', [])
             return JSON.parse(localStorage.getItem('approvals'));
         };
 
-        function getApprovalsLengthLocal(){
+        function getApprovalsLengthLocal() {
             return getApprovalsLocal().length;
         };
         // Statistics
-        function getTotalHrsDay(){};
-        function getTotalHrsWeek(){};
-        function getTotalHrsMonth(){};
+        function getTotalHrsDay() {};
+
+        function getTotalHrsWeek() {};
+
+        function getTotalHrsMonth() {};
         return {
             // Projects 
             setProjectsLocal: setProjectsLocal,
@@ -358,6 +372,7 @@ angular.module('starter.services', [])
             getStoriesLengthLocal: getStoriesLengthLocal,
             // Timecards
             setTimecardsLocal: setTimecardsLocal,
+            setTimecardLocalByID: setTimecardLocalByID,
             getTimecardsLocal: getTimecardsLocal,
             getTimecardsByDateLocal: getTimecardsByDateLocal,
             getTimecardByID: getTimecardByID,
