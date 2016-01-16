@@ -16,7 +16,7 @@ angular.module('starter', ['ionic', 'ionic-datepicker', 'starter.controllers', '
 
             //DBService.initDB();
 
-            // Get Projects, Tasks, Stories, Timecards, Users and store it locally 
+            // Set Projects, Tasks, Stories, Timecards, Users and store it locally 
             snService.getProjects()
                 .then(function(result) {
                     LocalStorageService.setProjectsLocal(result);
@@ -51,66 +51,72 @@ angular.module('starter', ['ionic', 'ionic-datepicker', 'starter.controllers', '
                 templateUrl: 'templates/menu.html',
                 controller: 'AppCtrl'
             })
-            // side menu
+            // side menu (Projects)
             .state('app.projects', {
                 url: '/projects',
                 views: {
                     'menuContent': {
-                        templateUrl: 'templates/projects.html', // side menu
+                        templateUrl: 'templates/projects.html',
                         controller: 'projectsCtrl'
                     }
                 }
             })
+            // side menu (Tasks)
             .state('app.tasks', {
                 url: '/tasks',
                 views: {
                     'menuContent': {
-                        templateUrl: 'templates/tasks.html', // side menu
+                        templateUrl: 'templates/tasks.html', 
                         controller: 'tasksCtrl'
                     }
                 }
             })
+            // side menu (Stories)
             .state('app.stories', {
                 url: '/stories',
                 views: {
                     'menuContent': {
-                        templateUrl: 'templates/stories.html', // side menu
+                        templateUrl: 'templates/stories.html', 
                         controller: 'storiesCtrl'
                     }
                 }
             })
+            // side menu (Timecards)
             .state('app.timecards', {
                 url: '/timecards',
                 views: {
                     'menuContent': {
-                        templateUrl: 'templates/timecards.html', // side menu
+                        templateUrl: 'templates/timecards.html', 
                         controller: 'timecardsCtrl'
                     }
                 }
             })
+            // side menu (Tasks)
             .state('app.sync', {
                 url: '/sync',
                 views: {
                     'menuContent': {
-                        templateUrl: 'templates/sync.html', // side menu 
+                        templateUrl: 'templates/sync.html', 
                         controller: 'syncCtrl'
                     }
                 }
             })
+            // side menu (Settings)
             .state('app.settings', {
                 url: '/settings',
                 views: {
                     'menuContent': {
-                        templateUrl: 'templates/settings.html', // side menu 
+                        templateUrl: 'templates/settings.html', 
                         controller: 'settingsCtrl'
                     }
                 }
             })
+            // side menu (Accounts)
             .state('app.accounts', {
                 url: '/accounts',
                 views: {
                     'menuContent': {
-                        templateUrl: 'templates/accounts.html', // side menu
+                        templateUrl: 'templates/accounts.html', 
                         controller: 'accountsCtrl'
                     }
                 }
@@ -124,7 +130,7 @@ angular.module('starter', ['ionic', 'ionic-datepicker', 'starter.controllers', '
                     }
                 }
             })
-     // Menu.html Footer bar  
+            // Menu.html Footer bar  
             // Approval Panel
             .state('app.approvalsPanel', {
                 url: '/approvalsPanel',
@@ -154,7 +160,7 @@ angular.module('starter', ['ionic', 'ionic-datepicker', 'starter.controllers', '
                     }
                 }
             })
-            // create and edit timecards
+            // create new timecard
             .state('app.card', {
                 url: '/card:param1,',
                 views: {
@@ -164,12 +170,22 @@ angular.module('starter', ['ionic', 'ionic-datepicker', 'starter.controllers', '
                     }
                 }
             })
+            // edit existing timecard
             .state('app.editCard', {
                 url: '/editCard/:param1/:param2', //'/editcard/:sys_id/:passDate'
                 views: {
                     'menuContent': {
                         templateUrl: 'templates/editTimecard.html',
                         controller: 'editCardCtrl'
+                    }
+                }
+            })
+            .state('app.weekDayTimecard',{
+                url:'/weekDayTimecard/:param1',
+                views:{
+                    'menuContent':{
+                        templateUrl:'templates/weekDayTimecard.html',
+                        controller:'weekDayTimecardCtrl'
                     }
                 }
             });

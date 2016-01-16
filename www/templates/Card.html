@@ -5,7 +5,7 @@
                 <input type="date" placeholder="Date" ng-model="tc.passDate">
             </label>
             <label class="item item-input">
-                <input type="text" placeholder="Hours" ng-model="tc.hours">
+                <input type="text" placeholder="Hours" ng-model="tc.hours" required>
             </label>
             <label class="item item-input item-select">
                 <div class="input-label">
@@ -21,7 +21,7 @@
                 <div class="input-label">
                     <h3>Stories</h3>
                 </div>
-                <select ng-model="tc.story" >
+                <select ng-model="tc.story">
                     <option ng-repeat="story in stories" value="{{story.sys_id}}">
                         {{story.number}}
                     </option>
@@ -55,9 +55,9 @@
     </ion-content>
     <ion-footer-bar class="bar bar-dark">
         <div class="button-bar">
-            <button class="button button-dark" ng-click="saveTC()">Save</button>
+            <button class="button button-dark" ng-click="saveTC()" ng-disabled="!tc.hours && !tc.u_project && (!tc.task || !tc.story)">Save</button>
             <button class="button button-dark" ng-click="resetTC()">Reset</button>
-            <button class="button button-dark" ng-click="submitTC()">Submit</button>
+            <button class="button button-dark" ng-click="submitTC()" ng-disabled="!tc.hours && !tc.u_project && (!tc.task || !tc.story)">Submit</button>
         </div>
     </ion-footer-bar>
 </ion-view>
