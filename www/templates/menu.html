@@ -14,7 +14,8 @@
         <ion-header-bar class="bar-profile">
             <div class="profile">
                 <img class="profile-picture" src="http://ionicframework.com/img/docs/mcfly.jpg" />
-                <h3 class="name">mani</h3>
+                <h4 class="name">{{userName}}</h4>
+                <h5 class="name">{{userEmail}}</h5>
             </div>
         </ion-header-bar>
         <ion-content>
@@ -24,15 +25,19 @@
                 </a>
                 <a class="item sbmenu-noborder" menu-close href="#/app/projects">
                     <i class="icon ion-ios-bookmarks sbmenu"></i> Projects
+                    <span class="badge badge-positive">{{projectLength}}</span>
                 </a>
                 <a class="item sbmenu-noborder" menu-close href="#/app/tasks">
                     <i class="icon ion-clipboard sbmenu"></i> Tasks
+                    <span class="badge badge-positive">{{tasksLength}}</span>
                 </a>
                 <a class="item sbmenu-noborder" menu-close href="#/app/stories">
                     <i class="icon ion-ios-list sbmenu"></i> Stories
+                    <span class="badge badge-positive">{{storiesLength}}</span>
                 </a>
                 <a class="item sbmenu-noborder" menu-close href="#/app/timecards">
                     <i class="icon ion-ios-timer sbmenu"></i> Time Cards
+                    <span class="badge badge-positive">{{timecardsLength}}</span>
                 </a>
                 <div class="item item-divider sbmenu">
                     Configuration

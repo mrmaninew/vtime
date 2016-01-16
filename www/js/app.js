@@ -179,15 +179,6 @@ angular.module('starter', ['ionic', 'ionic-datepicker', 'starter.controllers', '
                         controller: 'editCardCtrl'
                     }
                 }
-            })
-            .state('app.weekDayTimecard',{
-                url:'/weekDayTimecard/:param1',
-                views:{
-                    'menuContent':{
-                        templateUrl:'templates/weekDayTimecard.html',
-                        controller:'weekDayTimecardCtrl'
-                    }
-                }
             });
         // if none of the above states are matched, use this as the fallback
         $urlRouterProvider.otherwise('/app/home');

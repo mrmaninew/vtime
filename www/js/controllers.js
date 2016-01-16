@@ -40,10 +40,15 @@ angular.module('starter.controllers', [])
     .constant('timeCardStates', ['Pending', 'Submitted', 'Approved', 'Rejected', 'Processed', 'Re-submitted'])
     // re-usable methods like getNumberByID for Projects,Tasks,Stories,Timecards
     .constant('FunctionalMethods', {})
-    .controller('AppCtrl', function($scope, $ionicModal, $timeout, snService, LocalStorageService) {
-
+    .controller('AppCtrl', function($scope, $ionicModal, $timeout, snService, LocalStorageService,UserService) {
         $scope.$on('$ionicView.enter', function(e) {
-            //console.log('Home page view entered');
+            $scope.projectLength = LocalStorageService.getProjectsLengthLocal();
+            $scope.tasksLength = LocalStorageService.getTasksLengthLocal();
+            $scope.storiesLength = LocalStorageService.getStoriesLengthLocal();
+            $scope.timecardsLength = LocalStorageService.getTimecardsLengthLocal();
+            // User Details
+            $scope.userName = UserService.getUser().user_id;
+            $scope.userEmail = UserService.getUser().email;
         });
     })
     // Home view 
@@ -111,6 +116,7 @@ angular.module('starter.controllers', [])
             }
             $scope.timecards = Ptimecards;
         };
+
         function getDaysInWeekBySelDate(before, after) {
             var week = [];
             var weekEnd = daysWeek.weekEnd;
@@ -150,7 +156,7 @@ angular.module('starter.controllers', [])
             $scope.selDayName = daysWeek.weekDays[$scope.selDay]; // sunday, monday
         };
         onDayChanged();
-// Weekly Tab
+        // Weekly Tab
         // get hours for timecard day 
         $scope.getHoursDay = function(day) {
             var day = day.getDay(); // 0 - 7
@@ -174,7 +180,7 @@ angular.module('starter.controllers', [])
                 }
             }
             return hrs;
-        }
+        };
         // set $scope.totalHrsWeekly 
         $scope.totalWeek = function(hrs) {
             $scope.totalHrsWeekly += hrs;
@@ -233,7 +239,7 @@ angular.module('starter.controllers', [])
             $state.go('app.card', {
                 param1: $scope.selDate // current (or) selected date 
             });
-        }
+        };
         // route to editTimecard view (for editing existing record)
         $scope.routeEditCard = function(sys_id) {
             //ref="#/app/editCard/:{{tc.sys_id}}/:{{selDate}}"
@@ -241,8 +247,7 @@ angular.module('starter.controllers', [])
                 param1: sys_id,
                 param2: $scope.selDate
             })
-        }
-
+        };
     })
     // create new Timecard 
     .controller('CardCtrl', function($scope, $filter, $stateParams, moment, daysWeek, snService, timeCardCategories, LocalStorageService, UserService) { // single timecard 
@@ -381,22 +386,6 @@ angular.module('starter.controllers', [])
         $scope.resetTC = function() {
             $scope.tc = {};
         };
-    })
-    // view all timecards for day in week Timecard
-    .controller('weekDayTimecardCtrl', function($scope, $stateParams, moment, daysWeek, LocalStorageService) {
-
-        function getTimecardsDate() {
-            if (selDay == 0) {
-                var sundayDate = moment(selDate).format("YYYY-MM-DD"); // 2012-11-22
-                var tcs = LocalStorageService.getTimecardsByDateLocal(sundayDate); // because weeks starts on sunday
-                //processTimecards(tcs);
-            } else {
-                var sundayDate = moment(selDate).subtract(selDay, 'days').format("YYYY-MM-DD"); // 2012-11-22
-                var tcs = LocalStorageService.getTimecardsByDateLocal(sundayDate);
-                //processTimecards(tcs);
-            }
-        };
-
     })
     // Status Tab
     .controller('statusCtrl', function($scope, $state, moment, snService, LocalStorageService) {
