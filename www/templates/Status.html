@@ -14,28 +14,28 @@
                                 </ion-item>
                                 <ion-item class="item-accordion " ng-show="isGroupShown(timecard) ">
                                     <p><u>Project</u>:&nbsp;{{getProjectNumberBySysID(timecard.u_project.value)}}
-                                        <p ng-if="timecard.task "><u>Task</u>:&nbsp;{{getTaskNumberBySysID(timecard.task.value)}}</p>
-                                        <p ng-if="timecard.story "><u>Story</u>:&nbsp;{{getStoryNumberBySysID(timecard.story.value)}}</p>
-                                        <p><u>Hours</u>:&nbsp;{{timecard.total}}</p>
-                                        <p><u>state</u>:&nbsp;{{timecard.state}}</p>
+                                        <p ng-if="timecard.task ">Task:&nbsp;{{getTaskNumberBySysID(timecard.task.value)}}</p>
+                                        <p ng-if="timecard.story ">Story:&nbsp;{{getStoryNumberBySysID(timecard.story.value)}}</p>
+                                        <p>Hours:&nbsp;{{timecard.total}}</p>
+                                        <p>State:&nbsp;{{timecard.state}}</p>
                                         <div>
                                             <div class="row header">
-                                                <div class="col text-center">sun</div>
-                                                <div class="col text-center">mon</div>
-                                                <div class="col text-center">tue</div>
-                                                <div class="col text-center">wed</div>
-                                                <div class="col text-center">thu</div>
-                                                <div class="col text-center">fri</div>
-                                                <div class="col text-center">sat</div>
+                                                <div class="col text-center cols">sun</div>
+                                                <div class="col text-center cols">mon</div>
+                                                <div class="col text-center cols">tue</div>
+                                                <div class="col text-center cols">wed</div>
+                                                <div class="col text-center cols">thu</div>
+                                                <div class="col text-center cols">fri</div>
+                                                <div class="col text-center cols">sat</div>
                                             </div>
                                             <div class="row">
-                                                <div class="col text-center">{{timecard.sunday}}</div>
-                                                <div class="col text-center">{{timecard.monday}}</div>
-                                                <div class="col text-center">{{timecard.tuesday}}</div>
-                                                <div class="col text-center">{{timecard.wednesday}}</div>
-                                                <div class="col text-center">{{timecard.thursday}}</div>
-                                                <div class="col text-center">{{timecard.friday}}</div>
-                                                <div class="col text-center">{{timecard.saturday}}</div>
+                                                <div class="col text-center cols">{{timecard.sunday}}</div>
+                                                <div class="col text-center cols">{{timecard.monday}}</div>
+                                                <div class="col text-center cols">{{timecard.tuesday}}</div>
+                                                <div class="col text-center cols">{{timecard.wednesday}}</div>
+                                                <div class="col text-center cols">{{timecard.thursday}}</div>
+                                                <div class="col text-center cols">{{timecard.friday}}</div>
+                                                <div class="col text-center cols">{{timecard.saturday}}</div>
                                             </div>
                                         </div>
                                         <button class="button button-block button-positive" ng-click="submitTimecard(timecard.sys_id)">
@@ -64,11 +64,11 @@
                                     <i class="icon text-align-right " ng-class="isGroupShown(timecard) ? 'ion-ios-circle-outline' : 'ion-ios-circle-filled' "></i>
                                 </ion-item>
                                 <ion-item class="item-accordion " ng-show="isGroupShown(timecard) ">
-                                    <p><u>Project</u>:&nbsp;{{getProjectNumberBySysID(timecard.u_project.value)}}
-                                        <p ng-if="timecard.task "><u>Task</u>:&nbsp;{{getTaskNumberBySysID(timecard.task.value)}}</p>
-                                        <p ng-if="timecard.story "><u>Story</u>:&nbsp;{{getStoryNumberBySysID(timecard.story.value)}}</p>
-                                        <p><u>Hours</u>:&nbsp;{{timecard.total}}</p>
-                                        <p><u>state</u>:&nbsp;{{timecard.state}}</p>
+                                    <p>Project:&nbsp;{{getProjectNumberBySysID(timecard.u_project.value)}}</p>
+                                    <p ng-if="timecard.task ">Task:&nbsp;{{getTaskNumberBySysID(timecard.task.value)}}</p>
+                                    <p ng-if="timecard.story ">Story:&nbsp;{{getStoryNumberBySysID(timecard.story.value)}}</p>
+                                    <p>Hours:&nbsp;{{timecard.total}}</p>
+                                    <p>state:&nbsp;{{timecard.state}}</p>
                                 </ion-item>
                             </div>
                         </ion-list>
@@ -92,11 +92,11 @@
                                     <i class="icon text-align-right " ng-class="isGroupShown(timecard) ? 'ion-ios-circle-outline' : 'ion-ios-circle-filled' "></i>
                                 </ion-item>
                                 <ion-item class="item-accordion " ng-show="isGroupShown(timecard) ">
-                                    <p><u>Project</u>:&nbsp;{{getProjectNumberBySysID(timecard.u_project.value)}}
-                                        <p ng-if="timecard.task "><u>Task</u>:&nbsp;{{getTaskNumberBySysID(timecard.task.value)}}</p>
-                                        <p ng-if="timecard.story "><u>Story</u>:&nbsp;{{getStoryNumberBySysID(timecard.story.value)}}</p>
-                                        <p><u>Hours</u>:&nbsp;{{timecard.total}}</p>
-                                        <p><u>state</u>:&nbsp;{{timecard.state}}</p>
+                                    <p>Project:&nbsp;{{getProjectNumberBySysID(timecard.u_project.value)}}</p>
+                                    <p ng-if="timecard.task ">Task:&nbsp;{{getTaskNumberBySysID(timecard.task.value)}}</p>
+                                    <p ng-if="timecard.story ">Story:&nbsp;{{getStoryNumberBySysID(timecard.story.value)}}</p>
+                                    <p>Hours:&nbsp;{{timecard.total}}</p>
+                                    <p>state:&nbsp;{{timecard.state}}</p>
                                 </ion-item>
                             </div>
                         </ion-list>
@@ -120,11 +120,11 @@
                                     <i class="icon text-align-right " ng-class="isGroupShown(timecard) ? 'ion-ios-circle-outline' : 'ion-ios-circle-filled' "></i>
                                 </ion-item>
                                 <ion-item class="item-accordion " ng-show="isGroupShown(timecard) ">
-                                    <p><u>Project</u>:&nbsp;{{getProjectNumberBySysID(timecard.u_project.value)}}
-                                        <p ng-if="timecard.task "><u>Task</u>:&nbsp;{{getTaskNumberBySysID(timecard.task.value)}}</p>
-                                        <p ng-if="timecard.story "><u>Story</u>:&nbsp;{{getStoryNumberBySysID(timecard.story.value)}}</p>
-                                        <p><u>Hours</u>:&nbsp;{{timecard.total}}</p>
-                                        <p><u>state</u>:&nbsp;{{timecard.state}}</p>
+                                    <p>Project:&nbsp;{{getProjectNumberBySysID(timecard.u_project.value)}}</p>
+                                    <p ng-if="timecard.task">Task:&nbsp;{{getTaskNumberBySysID(timecard.task.value)}}</p>
+                                    <p ng-if="timecard.story ">Story:&nbsp;{{getStoryNumberBySysID(timecard.story.value)}}</p>
+                                    <p>Hours:&nbsp;{{timecard.total}}</p>
+                                    <p>state:&nbsp;{{timecard.state}}</p>
                                 </ion-item>
                             </div>
                         </ion-list>

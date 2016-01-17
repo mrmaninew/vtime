@@ -123,17 +123,17 @@
 .header .col {
     background-color:lightgrey;
 }
-.col {
+.cols {
     border: solid 1px grey;
     border-bottom-style: none;
     border-right-style: none;
 }
 
-.col:last-child {
+.cols:last-child {
     border-right: solid 1px grey;
 }
 
-.row:last-child .col {
+.row:last-child .cols {
     border-bottom: solid 1px grey;
 }
 

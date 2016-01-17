@@ -13,11 +13,11 @@
                     <i class="icon text-align-right" ng-class="isGroupShown(timecard) ? 'ion-ios-circle-outline' : 'ion-ios-circle-filled'"></i>
                 </ion-item>
                 <ion-item class="item-accordion" ng-show="isGroupShown(timecard)">
-                    <p><u>Project</u>:&nbsp;{{getProjectNumberBySysID(timecard.u_project.value)}}
-                    <p ng-if="timecard.task"><u>Task</u>:&nbsp;{{getTaskNumberBySysID(timecard.task.value)}}</p>
-                    <p ng-if="timecard.story"><u>Story</u>:&nbsp;{{getStoryNumberBySysID(timecard.story.value)}}</p>
-                    <p><u>Hours</u>:&nbsp;{{timecard.total}}</p>
-                    <p><u>state</u>:&nbsp;{{timecard.state}}</p>
+                    <p>Project:&nbsp;{{getProjectNumberBySysID(timecard.u_project.value)}}</p>
+                    <p ng-if="timecard.task">Task:&nbsp;{{getTaskNumberBySysID(timecard.task.value)}}</p>
+                    <p ng-if="timecard.story">Story:&nbsp;{{getStoryNumberBySysID(timecard.story.value)}}</p>
+                    <p>Hours:&nbsp;{{timecard.total}}</p>
+                    <p>state:&nbsp;{{timecard.state}}</p>
                 </ion-item>
             </div>
         </ion-list>
