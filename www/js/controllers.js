@@ -40,7 +40,7 @@ angular.module('starter.controllers', [])
     .constant('timeCardStates', ['Pending', 'Submitted', 'Approved', 'Rejected', 'Processed', 'Re-submitted'])
     // re-usable methods like getNumberByID for Projects,Tasks,Stories,Timecards
     .constant('FunctionalMethods', {})
-    .controller('AppCtrl', function($scope, $ionicModal, $timeout, snService, LocalStorageService, UserService) {
+    .controller('AppCtrl', function($scope, $ionicModal, $timeout, $rootScope, snService, LocalStorageService, UserService) {
         $scope.$on('$ionicView.enter', function(e) {
             $scope.projectLength = LocalStorageService.getProjectsLengthLocal();
             $scope.tasksLength = LocalStorageService.getTasksLengthLocal();
@@ -389,7 +389,7 @@ angular.module('starter.controllers', [])
         };
     })
     // Status Tab
-    .controller('statusCtrl', function($scope, $state, moment, snService, LocalStorageService) {
+    .controller('statusCtrl', function($scope, $state, $ionicTabsDelegate, moment, snService, LocalStorageService) {
         $scope.rejected = 0;
         $scope.pending = 0;
         $scope.submitted = 0;
@@ -448,6 +448,52 @@ angular.module('starter.controllers', [])
         $scope.isGroupShown = function(timecard) {
             return $scope.shownGroup === timecard;
         };
+        // pending toggle code 
+         $scope.toggleGroupPen = function(timecard) {
+            if ($scope.isGroupShownPen(timecard)) {
+                $scope.shownGroupPen = null;
+            } else {
+                $scope.shownGroupPen = timecard;
+            }
+        };
+        $scope.isGroupShownPen = function(timecard) {
+            return $scope.shownGroupPen === timecard;
+        };
+
+        // Submitted toggle code
+        $scope.toggleGroupSub = function(timecard) {
+            if ($scope.isGroupShownSub(timecard)) {
+                $scope.shownGroupSub = null;
+            } else {
+                $scope.shownGroupSub = timecard;
+            }
+        };
+        $scope.isGroupShownSub = function(timecard) {
+            return $scope.shownGroupSub === timecard;
+        };
+        // Approved
+        $scope.toggleGroupApp = function(timecard) {
+            if ($scope.isGroupShownApp(timecard)) {
+                $scope.shownGroupApp = null;
+            } else {
+                $scope.shownGroupApp = timecard;
+            }
+        };
+        $scope.isGroupShownApp = function(timecard) {
+            return $scope.shownGroupApp === timecard;
+        };
+        // Rejected
+        $scope.toggleGroupRej = function(timecard) {
+            if ($scope.isGroupShownRej(timecard)) {
+                $scope.shownGroupRej = null;
+            } else {
+                $scope.shownGroupRej = timecard;
+            }
+        };
+        $scope.isGroupShownRej = function(timecard) {
+            return $scope.shownGroupRej === timecard;
+        };
+       
     })
     // approvals Tab  
     .controller('approvalsCtrl', function($scope, $state, moment, snService, LocalStorageService) {

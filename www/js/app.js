@@ -14,7 +14,7 @@ angular.module('starter', ['ionic', 'ionic-datepicker', 'starter.controllers', '
             }
             // intialize and load LokiDB and refresh Projects, Tasks, Users, Stories , Timecards - collections
             //DBService.initDB();
-
+            
             // Set Projects, Tasks, Stories, Timecards, Users and store it locally 
             snService.getProjects() // get Projects
                 .then(function(result) {
