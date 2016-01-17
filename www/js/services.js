@@ -10,7 +10,8 @@ angular.module('starter.services', [])
         'TasksTableName': 'pm_project_task', // Servicenow Tasks Table
         'StoriesTableName': 'rm_story', // Servicenow Stories Table
         'TimecardTable': 'time_card', // Servicenow Timecard Table
-        'ApprovalsTable': 'demo' // Servicenow Approvals Table
+        'ApprovalsTable': 'sysapproval_approver', // Servicenow Approvals Table
+        'UserTable': 'sys_user'
     })
     // Token Service (Access, Password)
     .factory('TokenService', function() {
@@ -73,7 +74,7 @@ angular.module('starter.services', [])
                 return defer.promise;
             },
             getStories: function() {
-                var query = "?sysparm_limit=10&sysparm_query=state!=3^ORstate!=4^ORstate!=20^assigned_to=" + UserService.getUser().sys_id;
+                var query = "?sysparm_query=state!=3^ORstate!=4^ORstate!=20^assigned_to=" + UserService.getUser().sys_id;
                 var url = snCred.PRODURL + 'api/now/table/' + snCred.StoriesTableName + query;
                 var token = "Bearer " + TokenService.getToken();
                 var defer = $q.defer();
@@ -112,7 +113,48 @@ angular.module('starter.services', [])
                     })
                 return defer.promise;
             },
-            getApprovals: function() {},
+            getApprovals: function() {
+                var query = "?sysparm_query=source_table=time_card^state!=approved^approver=" + UserService.getUser().sys_id;
+                var url = snCred.PRODURL + '/api/now/table/' + snCred.ApprovalsTable + query;
+                var token = "Bearer " + TokenService.getToken();
+                var defer = $q.defer();
+                $http({
+                        method: 'GET',
+                        url: url,
+                        headers: {
+                            'Authorization': token
+                        }
+                    })
+                    .success(function(data) {
+                        defer.resolve(data.result);
+                    })
+                    .error(function(error) {
+                        defer.reject(error);
+                    })
+                return defer.promise;
+            },
+            // get username by sys_id passed by
+            getUsernameBySysID: function(sys_id) {
+                console.log(sys_id);
+                var query = "?sysparm_query=sys_id=" + sys_id;
+                var url = snCred.PRODURL + 'api/now/table/' + snCred.UserTable + query;
+                var token = "Bearer " + TokenService.getToken();
+                var defer = $q.defer();
+                $http({
+                        method: 'GET',
+                        url: url,
+                        headers: {
+                            'Authorization': token
+                        }
+                    })
+                    .success(function(data) {
+                        defer.resolve(data.result);
+                    })
+                    .error(function(error) {
+                        defer.reject(error);
+                    })
+                return defer.promise;
+            },
             //set (insert, update) functions 
             insertTimecard: function(timecard) {
                 var url = snCred.PRODURL + '/api/now/table/' + snCred.TimecardTable;
@@ -145,6 +187,30 @@ angular.module('starter.services', [])
                             'Authorization': token
                         },
                         data: JSON.stringify(timecard)
+                    })
+                    .success(function(data) {
+                        defer.resolve(data.result);
+                    })
+                    .error(function(error) {
+                        defer.reject(error);
+                    })
+                return defer.promise;
+            },
+            // approve timecard in approvals 
+            approveApprovals: function(sys_id) {
+                var url = snCred.PRODURL + '/api/now/table/' + snCred.ApprovalsTable + '/' + sys_id;
+                var token = "Bearer " + TokenService.getToken();
+                var defer = $q.defer();
+                var data = {
+                    'state': 'approved'
+                };
+                $http({
+                        method: 'PUT',
+                        url: url,
+                        headers: {
+                            'Authorization': token
+                        },
+                        data: data
                     })
                     .success(function(data) {
                         defer.resolve(data.result);
@@ -212,7 +278,11 @@ angular.module('starter.services', [])
     .factory('LocalStorageService', function() {
         // Projects 
         function setProjectsLocal(result) {
-            localStorage.setItem('projects', JSON.stringify(result));
+            if (result) {
+                localStorage.setItem('projects', JSON.stringify(result));
+            } else {
+                localStorage.setItem('projects', []);
+            }
         };
 
         function getProjectsLocal() {
@@ -235,7 +305,11 @@ angular.module('starter.services', [])
         }
         // Tasks
         function setTasksLocal(result) {
-            localStorage.setItem('tasks', JSON.stringify(result));
+            if (result) {
+                localStorage.setItem('tasks', JSON.stringify(result));
+            } else {
+                ocalStorage.setItem('tasks', []);
+            }
         };
 
         function getTasksLocal() {
@@ -258,7 +332,11 @@ angular.module('starter.services', [])
         };
         // Stories 
         function setStoriesLocal(result) {
-            localStorage.setItem('stories', JSON.stringify(result));
+            if (result) {
+                localStorage.setItem('stories', JSON.stringify(result));
+            } else {
+                localStorage.setItem('stories', []);
+            }
         };
 
         function getStoriesLocal() {
@@ -277,11 +355,15 @@ angular.module('starter.services', [])
 
         function getStoriesLengthLocal() {
             return getStoriesLocal().length;
-        }
+        };
 
         // Timecards
         function setTimecardsLocal(result) {
-            localStorage.setItem('timecards', JSON.stringify(result));
+            if (result) {
+                localStorage.setItem('timecards', JSON.stringify(result));
+            } else {
+                localStorage.setItem('timecards', []);
+            }
         };
 
         function setTimecardLocalByID(sys_id, timecard) {
@@ -320,9 +402,19 @@ angular.module('starter.services', [])
             return selTimecard;
         };
 
+        function getTimecardByCreatedDate(tcdate) {
+            var timecards = JSON.parse(localStorage.getItem('timecards'));
+            var dt = new Date("Time Card: Created 2016-01-05 19:58:34");
+            var selTimecards = "";
+            for (var i = 0; i < timecards.length; i++) {
+                console.log((new Date(timecards[i].sys_created_on)));
+            }
+            return selTimecards;
+        };
+
         function getTimecardsLengthLocal() {
             return getTimecardsLocal().length;
-        }
+        };
         // Users
         function setUserLocal(user) {
             var _user = {
@@ -338,8 +430,12 @@ angular.module('starter.services', [])
         };
         // Approvals
         function setApprovalsLocal(result) {
-            localStorage.setItem('approvals', JSON.stringify(result));
-        }
+            if (result) {
+                localStorage.setItem('approvals', JSON.stringify(result));
+            } else {
+                localStorage.setItem('approvals', []);
+            }
+        };
 
         function getApprovalsLocal() {
             return JSON.parse(localStorage.getItem('approvals'));
@@ -376,6 +472,7 @@ angular.module('starter.services', [])
             getTimecardsLocal: getTimecardsLocal,
             getTimecardsByDateLocal: getTimecardsByDateLocal,
             getTimecardByID: getTimecardByID,
+            getTimecardByCreatedDate: getTimecardByCreatedDate,
             getTimecardsLengthLocal: getTimecardsLengthLocal,
             // Users
             setUserLocal: setUserLocal,

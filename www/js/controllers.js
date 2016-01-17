@@ -61,7 +61,7 @@ angular.module('starter.controllers', [])
     // Login View
     .controller('LoginCtrl', function($scope) {})
     // Time tab for Today (or) Selected , this week (depending on current and selected date) 
-    .controller('timeCardsPanelCtrl', function($scope, $cordovaToast, $ionicPlatform, $state, $ionicTabsDelegate, $ionicModal, moment, daysWeek, LocalStorageService) { // Timecard Tab
+    .controller('timeCardsPanelCtrl', function($scope, $cordovaToast, $ionicPlatform, $state, $ionicTabsDelegate, $ionicModal, moment, daysWeek, LocalStorageService) {
         // footer item-right varibles 
         $scope.totalHrsDay = 0;
         $scope.totalHrsWeekly = 0;
@@ -251,7 +251,7 @@ angular.module('starter.controllers', [])
         };
     })
     // create new Timecard 
-    .controller('CardCtrl', function($scope, $filter, $stateParams, moment, daysWeek, snService, timeCardCategories, LocalStorageService, UserService) { // single timecard 
+    .controller('CardCtrl', function($scope, $filter, $stateParams, moment, daysWeek, snService, timeCardCategories, LocalStorageService, UserService) {
         // varibles
         $scope.cards = [];
         $scope.projects = LocalStorageService.getProjectsLocal();
@@ -450,7 +450,70 @@ angular.module('starter.controllers', [])
         };
     })
     // approvals Tab  
-    .controller('approvalsCtrl', function($scope) {})
+    .controller('approvalsCtrl', function($scope, $state, moment, snService, LocalStorageService) {
+        var set = LocalStorageService.getApprovalsLocal();
+        $scope.approvals = [];
+        for (var i = 0; i < set.length; i++) {
+            var app = {};
+            var timecard = LocalStorageService.getTimecardByID(set[i].document_id.value);
+            app.sys_id = set[i].sys_id;
+            app.sys_created_on = set[i].sys_created_on;
+            app.tc_submitted_by = timecard.user;
+            app.tc_total = timecard.total;
+            app.tc_state = timecard.state;
+            app.tc_project = timecard.u_project;
+            app.tc_task = timecard.task;
+            app.tc_story = timecard.story;
+            app.tc_sun = timecard.sunday;
+            app.tc_mon = timecard.monday;
+            app.tc_tue = timecard.tuesday;
+            app.tc_wed = timecard.wednesday;
+            app.tc_thu = timecard.thursday;
+            app.tc_fri = timecard.friday;
+            app.tc_sat = timecard.saturday;
+            $scope.approvals.push(app);
+        };
+        // approve timecard from approvals 
+        $scope.approve = function(sys_id) {
+            console.log(sys_id);
+            snService.approveApprovals(sys_id)
+                .then(function(result) {
+                    $state.go('app.home');
+                }, function(error) {
+                    console.log(error);
+                })
+        };
+        // functional Methods (Projects, Tasks, Stories)
+        $scope.getProjectNumberBySysID = function(sys_id) {
+            return LocalStorageService.getProjectNumberBySysID(sys_id);
+        };
+        $scope.getTaskNumberBySysID = function(sys_id) {
+            return LocalStorageService.getTaskNumberBySysID(sys_id);
+        };
+        $scope.getStoryNumberBySysID = function(sys_id) {
+            return LocalStorageService.getStoryNumberBySysID(sys_id);
+        };
+        // $scope.getUsernameByUserID = function(sys_id) {
+        //     snService.getUsernameBySysID(sys_id)
+        //         .then(function(result) {
+        //             return result;
+        //         }, function(error) {
+        //             console.log(error);
+        //             return;
+        //         })
+        // };
+        // if given group is the selected group, deselect it, else select the given group
+        $scope.toggleGroup = function(approval) {
+            if ($scope.isGroupShown(approval)) {
+                $scope.shownGroup = null;
+            } else {
+                $scope.shownGroup = approval;
+            }
+        };
+        $scope.isGroupShown = function(approval) {
+            return $scope.shownGroup === approval;
+        };
+    })
     // side menu (Projects)
     .controller('projectsCtrl', function($scope, snService, LocalStorageService) {
         $scope.projects = LocalStorageService.getProjectsLocal();

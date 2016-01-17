@@ -13,34 +13,39 @@ angular.module('starter', ['ionic', 'ionic-datepicker', 'starter.controllers', '
                 StatusBar.styleDefault();
             }
             // intialize and load LokiDB and refresh Projects, Tasks, Users, Stories , Timecards - collections
-
             //DBService.initDB();
 
             // Set Projects, Tasks, Stories, Timecards, Users and store it locally 
-            snService.getProjects()
+            snService.getProjects() // get Projects
                 .then(function(result) {
                     LocalStorageService.setProjectsLocal(result);
                 }, function(error) {
                     console.log(error)
                 });
-            snService.getTasks()
+            snService.getTasks() // get Tasks
                 .then(function(result) {
                     LocalStorageService.setTasksLocal(result);
                 }, function(error) {
                     console.log(error);
                 });
-            snService.getStories()
+            snService.getStories() // get Stories
                 .then(function(result) {
                     LocalStorageService.setStoriesLocal(result);
                 }, function(error) {
                     console.log(error);
                 });
-            snService.getTimecards()
+            snService.getTimecards() // get Timecards
                 .then(function(result) {
                     LocalStorageService.setTimecardsLocal(result);
                 }, function(error) {
                     console.log(error);
                 });
+            snService.getApprovals() // get Approvals 
+                .then(function(result) {
+                    LocalStorageService.setApprovalsLocal(result);
+                }, function(error) {
+                    console.log(error);
+                })
         });
     })
     .config(function($stateProvider, $urlRouterProvider) {
@@ -66,7 +71,7 @@ angular.module('starter', ['ionic', 'ionic-datepicker', 'starter.controllers', '
                 url: '/tasks',
                 views: {
                     'menuContent': {
-                        templateUrl: 'templates/tasks.html', 
+                        templateUrl: 'templates/tasks.html',
                         controller: 'tasksCtrl'
                     }
                 }
@@ -76,7 +81,7 @@ angular.module('starter', ['ionic', 'ionic-datepicker', 'starter.controllers', '
                 url: '/stories',
                 views: {
                     'menuContent': {
-                        templateUrl: 'templates/stories.html', 
+                        templateUrl: 'templates/stories.html',
                         controller: 'storiesCtrl'
                     }
                 }
@@ -86,7 +91,7 @@ angular.module('starter', ['ionic', 'ionic-datepicker', 'starter.controllers', '
                 url: '/timecards',
                 views: {
                     'menuContent': {
-                        templateUrl: 'templates/timecards.html', 
+                        templateUrl: 'templates/timecards.html',
                         controller: 'timecardsCtrl'
                     }
                 }
@@ -96,7 +101,7 @@ angular.module('starter', ['ionic', 'ionic-datepicker', 'starter.controllers', '
                 url: '/sync',
                 views: {
                     'menuContent': {
-                        templateUrl: 'templates/sync.html', 
+                        templateUrl: 'templates/sync.html',
                         controller: 'syncCtrl'
                     }
                 }
@@ -106,7 +111,7 @@ angular.module('starter', ['ionic', 'ionic-datepicker', 'starter.controllers', '
                 url: '/settings',
                 views: {
                     'menuContent': {
-                        templateUrl: 'templates/settings.html', 
+                        templateUrl: 'templates/settings.html',
                         controller: 'settingsCtrl'
                     }
                 }
@@ -116,7 +121,7 @@ angular.module('starter', ['ionic', 'ionic-datepicker', 'starter.controllers', '
                 url: '/accounts',
                 views: {
                     'menuContent': {
-                        templateUrl: 'templates/accounts.html', 
+                        templateUrl: 'templates/accounts.html',
                         controller: 'accountsCtrl'
                     }
                 }
