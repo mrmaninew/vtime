@@ -1,6 +1,62 @@
 /* Empty. Add your own CSS if you like */
 
 
+/* home - Dashbboard */
+
+.dash-profile {
+    border-radius: 55%;
+    background-color: white;
+    padding-top: 60px;
+    padding-bottom: 63px;
+    padding-left: 35px;
+    padding-right: 35px;
+    position: absolute;
+    font-size: 600%;
+    margin-top: 10px;
+    margin-left: 60px;
+    margin-right: 60px;
+    margin-bottom: 10px;
+    border: 2px solid #E6FFA2;
+}
+
+.col-100 {
+    -webkit-box-flex: 0;
+    -webkit-flex: 0 0 100%;
+    -moz-box-flex: 0;
+    -moz-flex: 0 0 100%;
+    -ms-flex: 0 0 100%;
+    flex: 0 0 100%;
+    max-width: 100%;
+    min-width: 100%;
+}
+
+.dash-top {
+    background-color: #444;
+    height: 30vh;
+    margin-bottom: 6px;
+    padding: 0px;
+}
+
+.dash-middle {
+    height: 20vh;
+    border: 1px solid grey;
+    padding: 0px;
+}
+
+.col-33-middle {
+    border-right: 3px solid #Cad4d6;
+    border-left: 3px solid #Cad4d6;
+}
+
+.text-panel-33 {
+    padding-top: 10px;
+}
+
+.dash-bottom {
+    height: 40vh;
+}
+
+
 /* side bar menu */
 
 .sbmenu {
@@ -52,7 +108,6 @@
 .TCitem {
     margin-left: 5px;
 }
-
 
 
 /* Accordian List */
@@ -119,10 +174,13 @@
     padding-right: 3px;
 }
 
+
 /* Status bar - Pending,Approved,Submitted,Rejected*/
+
 .header .col {
-    background-color:lightgrey;
+    background-color: lightgrey;
 }
+
 .cols {
     border: solid 1px grey;
     border-bottom-style: none;
@@ -137,7 +195,9 @@
     border-bottom: solid 1px grey;
 }
 
+
 /* end Status bar*/
+
 .day-display-sizing {
     /* list item with side border radius for day and prefix day name */
     position: absolute;

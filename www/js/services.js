@@ -412,6 +412,11 @@ angular.module('starter.services', [])
             return selTimecards;
         };
 
+        function getTotalHoursMonthly(tcdate){
+            
+
+        }
+
         function getTimecardsLengthLocal() {
             return getTimecardsLocal().length;
         };

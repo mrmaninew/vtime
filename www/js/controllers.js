@@ -57,6 +57,19 @@ angular.module('starter.controllers', [])
         $scope.totalHrsDay = 0.00;
         $scope.totalHrsWeekly = 0.00;
         $scope.totalHrsMonthly = 0.00;
+
+        function getTotalHrsDay() {};
+
+        function getTotalHrsWeekly() {};
+
+        function getTotalHrsMonthly() {};
+
+        // charts
+        $scope.labels = ["January", "February", "March", "April", "May", "June", "July"];
+        $scope.data = [
+            [65, 59, 80, 81, 56, 55, 40],
+            [28, 48, 40, 19, 86, 27, 90]
+        ];
     })
     // Login View
     .controller('LoginCtrl', function($scope) {})
@@ -449,7 +462,7 @@ angular.module('starter.controllers', [])
             return $scope.shownGroup === timecard;
         };
         // pending toggle code 
-         $scope.toggleGroupPen = function(timecard) {
+        $scope.toggleGroupPen = function(timecard) {
             if ($scope.isGroupShownPen(timecard)) {
                 $scope.shownGroupPen = null;
             } else {
@@ -493,7 +506,7 @@ angular.module('starter.controllers', [])
         $scope.isGroupShownRej = function(timecard) {
             return $scope.shownGroupRej === timecard;
         };
-       
+
     })
     // approvals Tab  
     .controller('approvalsCtrl', function($scope, $state, moment, snService, LocalStorageService) {

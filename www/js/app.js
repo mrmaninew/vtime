@@ -1,4 +1,4 @@
-angular.module('starter', ['ionic', 'ionic-datepicker', 'starter.controllers', 'starter.services', 'angularMoment', 'ngCordova'])
+angular.module('starter', ['ionic', 'ionic-datepicker', 'starter.controllers', 'starter.services', 'angularMoment', 'ngCordova','chart.js'])
 
 .run(function($ionicPlatform, snService, LocalStorageService) {
         $ionicPlatform.ready(function() {
