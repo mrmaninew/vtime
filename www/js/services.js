@@ -384,7 +384,7 @@ angular.module('starter.services', [])
             var timecards = JSON.parse(localStorage.getItem('timecards'));
             var selTimecards = []
             for (var i = 0; i < timecards.length; i++) {
-                if (seldate == timecards[i].week_starts_on) {
+                if (seldate == timecards[i].week_starts_on && timecards[i].state == 'Pending') {
                     selTimecards.push(timecards[i]);
                 }
             }
@@ -460,12 +460,6 @@ angular.module('starter.services', [])
         function getApprovalsLengthLocal() {
             return getApprovalsLocal().length;
         };
-        // Statistics for hours of all timecards by specified date
-        function getTotalHrsDay() {};
-
-        function getTotalHrsWeek() {};
-
-        function getTotalHrsMonth() {};
         return {
             // Projects 
             setProjectsLocal: setProjectsLocal,
@@ -497,10 +491,6 @@ angular.module('starter.services', [])
             // Approvals
             setApprovalsLocal: setApprovalsLocal,
             getApprovalsLocal: getApprovalsLocal,
-            getApprovalsLengthLocal: getApprovalsLengthLocal,
-            // Stats
-            getTotalHrsDay: getTotalHrsDay,
-            getTotalHrsWeek: getTotalHrsWeek,
-            getTotalHrsMonth: getTotalHrsMonth
+            getApprovalsLengthLocal: getApprovalsLengthLocal
         }
     })

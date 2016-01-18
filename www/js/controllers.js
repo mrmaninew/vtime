@@ -62,7 +62,7 @@ angular.module('starter.controllers', [])
         $scope.selDay = $scope.selDate.getDay(); // 0 - 7
         $scope.selDayName = daysWeek.weekDays[$scope.selDay]; // sunday, monday
         $scope.selDateMonth = $scope.selDate.getMonth(); // 0-january, 11- December
-
+        // get total hours for current day and week
         function getTotalHrsDayWeek() {
             if ($scope.selDay == 0) {
                 var sundayDate = moment($scope.selDate).format("YYYY-MM-DD"); // 2012-11-22
@@ -74,8 +74,53 @@ angular.module('starter.controllers', [])
                 processTimecards(tcs);
             }
         };
-        //getTotalHrsDayWeek();
 
+        function processTimecards(tcs) {
+            for (i = 0; i < tcs.length; i++) {
+                $scope.totalHrsWeekly += Number(tcs[i].total);
+                if (tcs[i][$scope.selDayName] != 0) {
+                    $scope.totalHrsDay += Number(tcs[i][$scope.selDayName]);
+                }
+            }
+            processChartData(tcs);
+        };
+        // get chart data 
+        function processChartData(tcs) {
+            //console.log(tcs);
+            var sunday = 0,
+                monday = 0,
+                tuesday = 0,
+                wednesday = 0,
+                thursday = 0,
+                friday = 0,
+                saturday = 0;
+
+            for (i = 0; i < tcs.length; i++) {
+                if (tcs[i].sunday) {
+                    sunday += Number(tcs[i].sunday);
+                }
+                if (tcs[i].monday) {
+                    monday += Number(tcs[i].monday);
+                }
+                if (tcs[i].tuesday) {
+                    tuesday += Number(tcs[i].tuesday);
+                }
+                if (tcs[i].wednesday) {
+                    wednesday += Number(tcs[i].wednesday);
+                }
+                if (tcs[i].thursday) {
+                    thursday += Number(tcs[i].thursday);
+                }
+                if (tcs[i].friday) {
+                    friday += Number(tcs[i].friday);
+                }
+                if (tcs[i].saturday) {
+                    saturday += Number(tcs[i].saturday);
+                }
+            }
+            $scope.data.push([sunday, monday, tuesday, wednesday, thursday, friday, saturday]);
+        };
+        // total hours for current montj
         function getTotalHrsMonth() {
             var tc = LocalStorageService.getTimecardsByMonthYearLocal($scope.selDate);
             for (var i = 0; i < tc.length; i++) {
@@ -84,35 +129,21 @@ angular.module('starter.controllers', [])
                 }
             }
         };
-        //getTotalHrsMonth();
-
-        function processTimecards(tcs) {
-            for (i = 0; i < tcs.length; i++) {
-                $scope.totalHrsWeekly += Number(tcs[i].total);
-                if (tcs[i][$scope.selDayName] != 0) {
-                    $scope.totalHrsDay += Number(tcs[i][$scope.selDayName]);
-                }
-
-            }
-        };
-
-        // charts
-        $scope.labels = ["January", "February", "March", "April", "May", "June", "July"];
-        $scope.data = [
-            [65, 59, 80, 81, 56, 55, 40],
-            [28, 48, 40, 19, 86, 27, 90]
-        ];
+        // Bar charts
+        $scope.labels = ["sun", "mon", "tue", "wed", "thu", "fri", "sat"];
+        $scope.series = ['hrs'];
+        $scope.data = [];
         // state management 
+        $scope.$on('$ionicView.enter', function() {
+            getTotalHrsDayWeek(); // get total hours for current day, week
+            getTotalHrsMonth(); // get total hours for current month
+        });
         $scope.$on('$ionicView.leave', function() {
             $scope.totalHrsDay = 0.00;
             $scope.totalHrsWeekly = 0;
             $scope.totalHrsMonthly = 0.00;
+            $scope.data = [];
         });
-        $scope.$on('$ionicView.enter', function() {
-            getTotalHrsDayWeek(); // get total hours for current day, week
-            getTotalHrsMonth();  // get total hours for current month
-        })
-
     })
     // Login View
     .controller('LoginCtrl', function($scope, $state) {})
@@ -121,7 +152,6 @@ angular.module('starter.controllers', [])
         // footer item-right varibles 
         $scope.totalHrsDay = 0;
         $scope.totalHrsWeekly = 0;
-
         // selected date for Time cards
         $scope.selDate = new Date();
         // selected week by selected date
@@ -171,7 +201,21 @@ angular.module('starter.controllers', [])
                 }
             }
             $scope.timecards = Ptimecards;
+            console.log($scope.timecards);
         };
+
+        // on Day changed from calendar reset selDay, and call weeks methods for arraging weekly
+        function onDayChanged() {
+            var daysBefore, dayAfter;
+            if ($scope.selDay == 0) {
+                $scope.selThisWeek = getDaysInWeekBySelDate($scope.selDay, '');
+            } else {
+                $scope.selThisWeek = getDaysInWeekBySelDate($scope.selDay, daysWeek.weekEnd - $scope.selDay);
+            }
+            $scope.selDayName = daysWeek.weekDays[$scope.selDay]; // sunday, monday
+        };
+        onDayChanged();
+
 
         function getDaysInWeekBySelDate(before, after) {
             var week = [];
@@ -189,6 +233,7 @@ angular.module('starter.controllers', [])
                     for (var i = 1; i <= after; i++) {
                         arr.push((moment($scope.selDate).add(i, 'days'))._d);
                     }
+                    //console.log(arr);
                     return arr;
                 }
                 // get all dates before specified or selected date including selected date
@@ -201,17 +246,6 @@ angular.module('starter.controllers', [])
                 return getBeforeDays(getAfterDays);
             }
         };
-        // on Day changed from calendar reset selDay, and call weeks methods for arraging weekly
-        function onDayChanged() {
-            var daysBefore, dayAfter;
-            if ($scope.selDay === 0) {
-                $scope.selThisWeek = getDaysInWeekBySelDate($scope.selDay);
-            } else {
-                $scope.selThisWeek = getDaysInWeekBySelDate($scope.selDay, daysWeek.weekEnd - $scope.selDay);
-            }
-            $scope.selDayName = daysWeek.weekDays[$scope.selDay]; // sunday, monday
-        };
-        onDayChanged();
 
         $scope.refreshCards = function() {
                 getTimecardsDate();
@@ -219,9 +253,10 @@ angular.module('starter.controllers', [])
             // Weekly Tab
             // get hours for timecard day 
         $scope.getHoursDay = function(day) {
-            var day = day.getDay(); // 0 - 7
-            var dayName = daysWeek.weekDays[day]; // sunday, monday
-            if (day == 0) {
+            console.log(day);
+            var dayNumber = day.getDay(); // 0 - 7
+            var dayName = daysWeek.weekDays[dayNumber]; // sunday, monday
+            if (dayNumber == 0) {
                 var sundayDate = moment(day).format("YYYY-MM-DD");
                 var tcs = LocalStorageService.getTimecardsByDateLocal(sundayDate); // because week starts on sunday
                 return processTimecardsForHours(tcs, dayName); // get hours for all timecards by date  
@@ -471,7 +506,7 @@ angular.module('starter.controllers', [])
         $scope.approvedProcessed = 0;
         // Timecards
         $scope.timecards = LocalStorageService.getTimecardsLocal();
-
+        // process timecards 
         function preProcess() {
             for (var i = 0; i < $scope.timecards.length; i++) {
                 if ($scope.timecards[i].state === "Pending") {
@@ -496,7 +531,6 @@ angular.module('starter.controllers', [])
         $scope.getStoryNumberBySysID = function(sys_id) {
             return LocalStorageService.getStoryNumberBySysID(sys_id);
         };
-
         // submit timecard and refresh timecard local storage
         $scope.submitTimecard = function(sys_id) {
             snService.submitTimecard(sys_id)
@@ -523,7 +557,6 @@ angular.module('starter.controllers', [])
                     console.log(error);
                 })
         };
-
         // if given group is the selected group, deselect it, else select the given group
         // $scope.toggleGroup = function(timecard) {
         //     if ($scope.isGroupShown(timecard)) {
@@ -585,7 +618,6 @@ angular.module('starter.controllers', [])
         $scope.isGroupShownRej = function(timecard) {
             return $scope.shownGroupRej === timecard;
         };
-
     })
     // approvals Tab  
     .controller('approvalsCtrl', function($scope, $state, moment, snService, LocalStorageService) {
