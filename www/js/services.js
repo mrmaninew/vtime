@@ -29,7 +29,6 @@ angular.module('starter.services', [])
     })
     // Servicenow Service
     .factory('snService', function($http, $q, snCred, TokenService, UserService) {
-
         return {
             //get functions
             getProjects: function() {
@@ -54,8 +53,8 @@ angular.module('starter.services', [])
             },
             getTasks: function() {
                 // get all tasks assigned_to = user (and) state = open or pending or work in progress
-                var query = "?sysparm_limit=10&sysparm_query=state=2^ORstate=1^ORstate=-5^assigned_to=" + UserService.getUser().sys_id;
-                var url = snCred.PRODURL + 'api/now/table/' + snCred.TasksTableName;
+                var query = "?sysparm_query=state=2^ORstate=1^ORstate=-5^assigned_to=" + UserService.getUser().sys_id;
+                var url = snCred.PRODURL + 'api/now/table/' + snCred.TasksTableName + query;
                 var token = "Bearer " + TokenService.getToken();
                 var defer = $q.defer();
                 $http({
@@ -275,7 +274,7 @@ angular.module('starter.services', [])
         var tokenUrl = "";
     })
     // Local Storage Service
-    .factory('LocalStorageService', function() {
+    .factory('LocalStorageService', function(moment) {
         // Projects 
         function setProjectsLocal(result) {
             if (result) {
@@ -392,12 +391,19 @@ angular.module('starter.services', [])
             return selTimecards;
         };
 
-        function getTimecardsByMonthYearLocal(seldate){
-            var timecards = JSON.parse(LocalStorageService.getItem('timecards'));
-            var selTimecards = []
-            // for (var i=0;i<timecards.length;i++){
-
-            // }
+        function getTimecardsByMonthYearLocal(seldate) {
+            var timecards = JSON.parse(localStorage.getItem('timecards'));
+            var selTimecards = [];
+            var passDate = moment(new Date(seldate));
+            // start date and end date 
+            var startDate = passDate.clone().startOf('month');
+            var endDate = passDate.clone().endOf('month');
+            for (var i = 0; i < timecards.length; i++) {
+                if (moment(new Date(timecards[i].week_starts_on)).isBetween(startDate, endDate)) {
+                    selTimecards.push(timecards[i]);
+                }
+            }
+            return selTimecards;
         };
 
         function getTimecardByID(id) {
@@ -455,9 +461,10 @@ angular.module('starter.services', [])
             return getApprovalsLocal().length;
         };
         // Statistics for hours of all timecards by specified date
-        function getTotalHrsDay() {
-        };
+        function getTotalHrsDay() {};
+
         function getTotalHrsWeek() {};
+
         function getTotalHrsMonth() {};
         return {
             // Projects 
@@ -483,6 +490,7 @@ angular.module('starter.services', [])
             getTimecardByID: getTimecardByID,
             getTimecardByCreatedDate: getTimecardByCreatedDate,
             getTimecardsLengthLocal: getTimecardsLengthLocal,
+            getTimecardsByMonthYearLocal: getTimecardsByMonthYearLocal,
             // Users
             setUserLocal: setUserLocal,
             getUserLocal: getUserLocal,

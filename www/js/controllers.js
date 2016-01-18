@@ -74,7 +74,17 @@ angular.module('starter.controllers', [])
                 processTimecards(tcs);
             }
         };
-        getTotalHrsDayWeek();
+        //getTotalHrsDayWeek();
+
+        function getTotalHrsMonth() {
+            var tc = LocalStorageService.getTimecardsByMonthYearLocal($scope.selDate);
+            for (var i = 0; i < tc.length; i++) {
+                if (tc[i].total) {
+                    $scope.totalHrsMonthly += Number(tc[i].total);
+                }
+            }
+        };
+        //getTotalHrsMonth();
 
         function processTimecards(tcs) {
             for (i = 0; i < tcs.length; i++) {
@@ -86,19 +96,23 @@ angular.module('starter.controllers', [])
             }
         };
 
-        function getTotalHrsMonthly() {};
-        // refresh statics 
-        $scope.refreshStats = function() {
-            //console.log('in refresh stats');
-            getTotalHrsDayWeek();
-        };
-
         // charts
         $scope.labels = ["January", "February", "March", "April", "May", "June", "July"];
         $scope.data = [
             [65, 59, 80, 81, 56, 55, 40],
             [28, 48, 40, 19, 86, 27, 90]
         ];
+        // state management 
+        $scope.$on('$ionicView.leave', function() {
+            $scope.totalHrsDay = 0.00;
+            $scope.totalHrsWeekly = 0;
+            $scope.totalHrsMonthly = 0.00;
+        });
+        $scope.$on('$ionicView.enter', function() {
+            getTotalHrsDayWeek(); // get total hours for current day, week
+            getTotalHrsMonth();  // get total hours for current month
+        })
+
     })
     // Login View
     .controller('LoginCtrl', function($scope, $state) {})
