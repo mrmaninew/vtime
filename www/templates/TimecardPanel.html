@@ -12,13 +12,13 @@
                     <ion-content>
                         <div>
                             <div class="list" ng-if="timecards.length == 0">
-                                <a class="item" href="#">No Saved Time Cards</a>
+                                <a class="item text-center">No Saved Time Cards on {{selDate|date:'dd-MM-yyyy'}}</a>
                             </div>
                             <ion-list>
                                    <ion-item  class="item-avatar" ng-repeat="tc in timecards" ng-click="routeEditCard(tc.sys_id)">
                                       <span class="day-display-sizing">{{tc.selDate|date:'dd'}}</span>
                                       <h2>{{tc.selDate|date:'EEEE'}}</h2>
-                                      <p ng-if="tc.task">{{tc.task}}</p> <p ng-if="tc.story">Story: {{tc.story}}</p>
+                                      <p ng-if="tc.task"> Task: {{tc.task}}</p> <p ng-if="tc.story">Story: {{tc.story}}</p>
                                       <span class="text-align-right">
                                             {{tc.hours}} hrs
                                             &nbsp;
@@ -32,6 +32,7 @@
                     <div class="bar bar-footer">
                         <a class="button icon ion-plus-round" ng-click="routeCard()"></a>
                         <div class="title">Total: {{totalHrsDay}} hrs</div>
+                        <a class="button icon ion-refresh" ng-click="refreshCards()"></a>
                     </div>
                 </ion-view>
             </ion-tab>
@@ -51,7 +52,7 @@
                     </ion-content>
                     <div class="bar bar-footer">
                         <div class="title">Total: {{totalHrsWeekly}} hrs </div>
-                        <button class="button" ng-click="">Submit</button>
+                        <button class="button" ng-click=""> Submit</button>
                     </div>
                 </ion-view>
             </ion-tab>

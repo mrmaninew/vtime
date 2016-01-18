@@ -344,13 +344,14 @@ angular.module('starter.services', [])
         };
 
         function getStoryNumberBySysID(id) {
-            var _storyNumber = "";
-            var _stories = getStoriesLocal();
-            for (var i = 0; i < _stories.length; i++) {
-                if (_stories[i].sys_id === id) {
-                    _storyNumber = _stories[i].number;
+            var storyNumber = "";
+            var stories = getStoriesLocal();
+            for (var i = 0; i < stories.length; i++) {
+                if (stories[i].sys_id === id) {
+                    storyNumber = stories[i].number;
                 }
             }
+            return storyNumber;
         };
 
         function getStoriesLengthLocal() {

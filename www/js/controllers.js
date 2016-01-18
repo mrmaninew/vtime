@@ -40,7 +40,7 @@ angular.module('starter.controllers', [])
     .constant('timeCardStates', ['Pending', 'Submitted', 'Approved', 'Rejected', 'Processed', 'Re-submitted'])
     // re-usable methods like getNumberByID for Projects,Tasks,Stories,Timecards
     .constant('FunctionalMethods', {})
-    .controller('AppCtrl', function($scope, $ionicModal, $timeout, $rootScope, snService, LocalStorageService, UserService) {
+    .controller('AppCtrl', function($scope, $state, $ionicModal, $timeout, $rootScope, snService, LocalStorageService, UserService) {
         $scope.$on('$ionicView.enter', function(e) {
             $scope.projectLength = LocalStorageService.getProjectsLengthLocal();
             $scope.tasksLength = LocalStorageService.getTasksLengthLocal();
@@ -72,7 +72,7 @@ angular.module('starter.controllers', [])
         ];
     })
     // Login View
-    .controller('LoginCtrl', function($scope) {})
+    .controller('LoginCtrl', function($scope, $state) {})
     // Time tab for Today (or) Selected , this week (depending on current and selected date) 
     .controller('timeCardsPanelCtrl', function($scope, $cordovaToast, $ionicPlatform, $state, $ionicTabsDelegate, $ionicModal, moment, daysWeek, LocalStorageService) {
         // footer item-right varibles 
@@ -114,7 +114,7 @@ angular.module('starter.controllers', [])
                     if (tcs[i].u_project) set.u_project = LocalStorageService.getProjectNumberBySysID(tcs[i].u_project.value);
                     //if (tcs[i].task) set.task = tcs[i].task.value;
                     if (tcs[i].task) set.task = LocalStorageService.getTaskNumberBySysID(tcs[i].task.value);
-                    if (tcs[i].u_story) set.story = tcs[i].u_story.value;
+                    if (tcs[i].u_story) set.story = LocalStorageService.getStoryNumberBySysID(tcs[i].u_story.value);
                     if (tcs[i].u_billable) set.u_billable = tcs[i].u_billable;
                     if (tcs[i].category) set.category = tcs[i].category;
                     // timecard.sunday =  3 hrs;
@@ -169,8 +169,12 @@ angular.module('starter.controllers', [])
             $scope.selDayName = daysWeek.weekDays[$scope.selDay]; // sunday, monday
         };
         onDayChanged();
-        // Weekly Tab
-        // get hours for timecard day 
+
+        $scope.refreshCards = function() {
+                getTimecardsDate();
+            }
+            // Weekly Tab
+            // get hours for timecard day 
         $scope.getHoursDay = function(day) {
             var day = day.getDay(); // 0 - 7
             var dayName = daysWeek.weekDays[day]; // sunday, monday
@@ -264,7 +268,7 @@ angular.module('starter.controllers', [])
         };
     })
     // create new Timecard 
-    .controller('CardCtrl', function($scope, $filter, $stateParams, moment, daysWeek, snService, timeCardCategories, LocalStorageService, UserService) {
+    .controller('CardCtrl', function($scope, $state, $filter, $stateParams, moment, daysWeek, snService, timeCardCategories, LocalStorageService, UserService) {
         // varibles
         $scope.cards = [];
         $scope.projects = LocalStorageService.getProjectsLocal();
@@ -308,7 +312,14 @@ angular.module('starter.controllers', [])
             //insert  new Timecard into Servicenow
             snService.insertTimecard(data)
                 .then(function(result) {
-                    console.log(result);
+                    console.log(result); // response after insert timecard
+                    snService.getTimecards() // get Timecards
+                        .then(function(data) {
+                            LocalStorageService.setTimecardsLocal(data);
+                            $state.go('app.timecardPanel');
+                        }, function(error) {
+                            console.log(error);
+                        });
                 }, function(error) {
                     console.log(result);
                 })
@@ -319,7 +330,7 @@ angular.module('starter.controllers', [])
         };
     })
     // edit existing Timecard 
-    .controller('editCardCtrl', function($scope, $stateParams, moment, daysWeek, snService, timeCardCategories, timeCardStates, LocalStorageService, UserService) {
+    .controller('editCardCtrl', function($scope, $state, $stateParams, moment, daysWeek, snService, timeCardCategories, timeCardStates, LocalStorageService, UserService) {
         // controller for edit Timecard
         // scoped variables 
         $scope.projects = LocalStorageService.getProjectsLocal();
@@ -344,7 +355,7 @@ angular.module('starter.controllers', [])
                 if (tc[daysWeek.weekDays[set.passDate.getDay()]]) set.hours = tc[daysWeek.weekDays[set.passDate.getDay()]];
                 if (tc.u_project) set.u_project = tc.u_project.value;
                 if (tc.task) set.task = tc.task.value;
-                if (tc.story) set.story = tc.story.value;
+                if (tc.u_story) set.story = tc.u_story.value;
                 if (tc.category) set.category = tc.category;
                 if (tc.state) set.state = tc.state;
                 if (tc.u_billable) set.u_billable = tc.u_billable;
@@ -370,10 +381,17 @@ angular.module('starter.controllers', [])
             timecard.u_billable = $scope.tc.u_billable;
             if ($scope.tc.comments) timecard[notes] = $scope.tc.comments;
             if ($scope.tc.hours) timecard[$scope.tc.day] = $scope.tc.hours;
-            console.log(timecard, $scope.tc.sys_id);
+            //console.log(timecard, $scope.tc.sys_id);
             snService.updateTimecard($scope.tc.sys_id, timecard)
                 .then(function(result) {
-                    console.log(result);
+                    console.log(result); // response from servicenow after update
+                    snService.getTimecards() // get Timecards
+                        .then(function(data) {
+                            LocalStorageService.setTimecardsLocal(data);
+                            $state.go('app.timecardPanel');
+                        }, function(error) {
+                            console.log(error);
+                        });
                 }, function(error) {
                     console.log(error);
                 })
@@ -389,10 +407,11 @@ angular.module('starter.controllers', [])
             timecard.u_billable = $scope.tc.u_billable;
             if ($scope.tc.comments) timecard[notes] = $scope.tc.comments;
             if ($scope.tc.hours) timecard[$scope.tc.day] = $scope.tc.hours;
-            console.log(timecard, $scope.tc.sys_id);
+            //console.log(timecard, $scope.tc.sys_id);
             snService.updateTimecard($scope.tc.sys_id, timecard)
                 .then(function(result) {
                     console.log(result);
+                    $state.go('app.timecardPanel')
                 }, function(error) {
                     console.log(error);
                 })
@@ -450,18 +469,32 @@ angular.module('starter.controllers', [])
                     console.log(error);
                 })
         };
+        // refresh timecards, button on nav-header
+        $scope.refreshTimecards = function() {
+            snService.getTimecards()
+                .then(function(result) {
+                    //console.log(result);
+                    LocalStorageService.setTimecardsLocal(result);
+                    $scope.timecards = LocalStorageService.getTimecardsLocal();
+                }, function(error) {
+                    console.log(error);
+                })
+        };
+
         // if given group is the selected group, deselect it, else select the given group
-        $scope.toggleGroup = function(timecard) {
-            if ($scope.isGroupShown(timecard)) {
-                $scope.shownGroup = null;
-            } else {
-                $scope.shownGroup = timecard;
-            }
-        };
-        $scope.isGroupShown = function(timecard) {
-            return $scope.shownGroup === timecard;
-        };
-        // pending toggle code 
+        // $scope.toggleGroup = function(timecard) {
+        //     if ($scope.isGroupShown(timecard)) {
+        //         $scope.shownGroup = null;
+        //     } else {
+        //         $scope.shownGroup = timecard;
+        //     }
+        // };
+        // $scope.isGroupShown = function(timecard) {
+        //     return $scope.shownGroup === timecard;
+        // };
+
+        // toggle group for pending toggle code 
+        // if given group is the selected group, deselect it, else select the given group
         $scope.toggleGroupPen = function(timecard) {
             if ($scope.isGroupShownPen(timecard)) {
                 $scope.shownGroupPen = null;
@@ -473,7 +506,8 @@ angular.module('starter.controllers', [])
             return $scope.shownGroupPen === timecard;
         };
 
-        // Submitted toggle code
+        // toggle group for Submitted toggle code
+        // if given group is the selected group, deselect it, else select the given group
         $scope.toggleGroupSub = function(timecard) {
             if ($scope.isGroupShownSub(timecard)) {
                 $scope.shownGroupSub = null;
@@ -484,7 +518,8 @@ angular.module('starter.controllers', [])
         $scope.isGroupShownSub = function(timecard) {
             return $scope.shownGroupSub === timecard;
         };
-        // Approved
+        // toggle group for Approved
+        // if given group is the selected group, deselect it, else select the given group
         $scope.toggleGroupApp = function(timecard) {
             if ($scope.isGroupShownApp(timecard)) {
                 $scope.shownGroupApp = null;
@@ -495,7 +530,8 @@ angular.module('starter.controllers', [])
         $scope.isGroupShownApp = function(timecard) {
             return $scope.shownGroupApp === timecard;
         };
-        // Rejected
+        // toggle group for Rejected
+        // if given group is the selected group, deselect it, else select the given group
         $scope.toggleGroupRej = function(timecard) {
             if ($scope.isGroupShownRej(timecard)) {
                 $scope.shownGroupRej = null;
@@ -542,6 +578,9 @@ angular.module('starter.controllers', [])
                     console.log(error);
                 })
         };
+        $scope.refreshApprovals = function(){
+
+        };
         // functional Methods (Projects, Tasks, Stories)
         $scope.getProjectNumberBySysID = function(sys_id) {
             return LocalStorageService.getProjectNumberBySysID(sys_id);
@@ -574,7 +613,7 @@ angular.module('starter.controllers', [])
         };
     })
     // side menu (Projects)
-    .controller('projectsCtrl', function($scope, snService, LocalStorageService) {
+    .controller('projectsCtrl', function($scope, $state, snService, LocalStorageService) {
         $scope.projects = LocalStorageService.getProjectsLocal();
         // if given group is the selected group, deselect it, else select the given group
         $scope.toggleGroup = function(project) {
@@ -593,7 +632,7 @@ angular.module('starter.controllers', [])
         }
     })
     // side menu (Stories)
-    .controller('storiesCtrl', function($scope, snService, LocalStorageService) {
+    .controller('storiesCtrl', function($scope, $state, snService, LocalStorageService) {
         $scope.stories = LocalStorageService.getStoriesLocal();
         //if given group is the selected group, deselect it, else select the given group
         $scope.toggleGroup = function(story) {
@@ -612,7 +651,7 @@ angular.module('starter.controllers', [])
         };
     })
     // side menu (Tasks)
-    .controller('tasksCtrl', function($scope, snService, LocalStorageService) {
+    .controller('tasksCtrl', function($scope, $state, snService, LocalStorageService) {
         $scope.tasks = LocalStorageService.getTasksLocal();
         // if given group is the selected group, deselect it, else select the given group
         $scope.toggleGroup = function(task) {
@@ -631,7 +670,7 @@ angular.module('starter.controllers', [])
         };
     })
     // sidemmenu (Timecards)
-    .controller('timecardsCtrl', function($scope, snService, LocalStorageService) {
+    .controller('timecardsCtrl', function($scope, $state, snService, LocalStorageService) {
         $scope.timecards = LocalStorageService.getTimecardsLocal();
 
         $scope.getProjectNumberBySysID = function(sys_id) {
@@ -665,11 +704,10 @@ angular.module('starter.controllers', [])
         $scope.tasks = LocalStorageService.getTasksLengthLocal();
         $scope.stories = LocalStorageService.getStoriesLengthLocal();
         $scope.timecards = LocalStorageService.getTimecardsLengthLocal();
-        //$scope.approvals = LocalStorageService.getApprovalsLengthLocal();
+        $scope.approvals = LocalStorageService.getApprovalsLengthLocal();
         // synchronize functions
         $scope.syncNow = function() {
             console.log('syncNow');
-
             // Set Projects, Tasks, Stories, Timecards, Users and store it locally 
             snService.getProjects()
                 .then(function(result) {
@@ -692,14 +730,19 @@ angular.module('starter.controllers', [])
             snService.getTimecards()
                 .then(function(result) {
                     LocalStorageService.setTimecardsLocal(result);
-                    $state.go('app.sync');
                 }, function(error) {
                     console.log(error);
                 });
+            snService.getApprovals()
+                .then(function(result) {
+                    LocalStorageService.setApprovalsLocal(result);
+                }, function(error) {
+                    console.log(error);
+                })
         }
     })
     // side menu (Settings)
-    .controller('settingsCtrl', function($scope) {
+    .controller('settingsCtrl', function($scope, $state) {
         $scope.instanceURL = "";
         $scope.saveURL = function() {};
     })

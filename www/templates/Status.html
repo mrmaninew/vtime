@@ -1,4 +1,8 @@
 <ion-view view-title="Status">
+    <ion-nav-buttons side="right">
+        <button class="button icon ion-refresh" ng-click="refreshTimecards()">
+        </button>
+    </ion-nav-buttons>
     <ion-pane>
         <ion-tabs class="tabs-striped tabs-top tabs-background-positive tabs-color-light">
             <ion-tab title="Pending">
@@ -13,34 +17,34 @@
                                     <i class="icon text-align-right " ng-class="isGroupShownPen(timecard) ? 'ion-ios-circle-outline' : 'ion-ios-circle-filled' "></i>
                                 </ion-item>
                                 <ion-item class="item-accordion " ng-show="isGroupShownPen(timecard) ">
-                                    <p><u>Project</u>:&nbsp;{{getProjectNumberBySysID(timecard.u_project.value)}}
-                                        <p ng-if="timecard.task ">Task:&nbsp;{{getTaskNumberBySysID(timecard.task.value)}}</p>
-                                        <p ng-if="timecard.story ">Story:&nbsp;{{getStoryNumberBySysID(timecard.story.value)}}</p>
-                                        <p>Hours:&nbsp;{{timecard.total}}</p>
-                                        <p>State:&nbsp;{{timecard.state}}</p>
-                                        <div>
-                                            <div class="row header">
-                                                <div class="col text-center cols">sun</div>
-                                                <div class="col text-center cols">mon</div>
-                                                <div class="col text-center cols">tue</div>
-                                                <div class="col text-center cols">wed</div>
-                                                <div class="col text-center cols">thu</div>
-                                                <div class="col text-center cols">fri</div>
-                                                <div class="col text-center cols">sat</div>
-                                            </div>
-                                            <div class="row">
-                                                <div class="col text-center cols">{{timecard.sunday}}</div>
-                                                <div class="col text-center cols">{{timecard.monday}}</div>
-                                                <div class="col text-center cols">{{timecard.tuesday}}</div>
-                                                <div class="col text-center cols">{{timecard.wednesday}}</div>
-                                                <div class="col text-center cols">{{timecard.thursday}}</div>
-                                                <div class="col text-center cols">{{timecard.friday}}</div>
-                                                <div class="col text-center cols">{{timecard.saturday}}</div>
-                                            </div>
+                                    <p>Project:&nbsp;{{getProjectNumberBySysID(timecard.u_project.value)}}</p>
+                                    <p ng-if="timecard.task ">Task:&nbsp;{{getTaskNumberBySysID(timecard.task.value)}}</p>
+                                    <p ng-if="timecard.u_story ">Story:&nbsp;{{getStoryNumberBySysID(timecard.u_story.value)}}</p>
+                                    <p>Hours:&nbsp;{{timecard.total}}</p>
+                                    <p>State:&nbsp;{{timecard.state}}</p>
+                                    <div>
+                                        <div class="row header">
+                                            <div class="col text-center cols">sun</div>
+                                            <div class="col text-center cols">mon</div>
+                                            <div class="col text-center cols">tue</div>
+                                            <div class="col text-center cols">wed</div>
+                                            <div class="col text-center cols">thu</div>
+                                            <div class="col text-center cols">fri</div>
+                                            <div class="col text-center cols">sat</div>
                                         </div>
-                                        <button class="button button-block button-positive" ng-click="submitTimecard(timecard.sys_id)">
-                                            Submit Timecard
-                                        </button>
+                                        <div class="row">
+                                            <div class="col text-center cols">{{timecard.sunday}}</div>
+                                            <div class="col text-center cols">{{timecard.monday}}</div>
+                                            <div class="col text-center cols">{{timecard.tuesday}}</div>
+                                            <div class="col text-center cols">{{timecard.wednesday}}</div>
+                                            <div class="col text-center cols">{{timecard.thursday}}</div>
+                                            <div class="col text-center cols">{{timecard.friday}}</div>
+                                            <div class="col text-center cols">{{timecard.saturday}}</div>
+                                        </div>
+                                    </div>
+                                    <button class="button button-block button-positive" ng-click="submitTimecard(timecard.sys_id)">
+                                        Submit Timecard
+                                    </button>
                                 </ion-item>
                             </div>
                         </ion-list>
