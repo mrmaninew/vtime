@@ -28,7 +28,7 @@ angular.module('starter.services', [])
         }
     })
     // Servicenow Service
-    .factory('snService', function($http, $q, snCred, TokenService, UserService) {
+    .factory('snService', function($http, $q, snCred, TokenService, UserService, LocalStorageService) {
         return {
             //get functions
             getProjects: function() {
@@ -168,6 +168,11 @@ angular.module('starter.services', [])
                         data: JSON.stringify(timecard)
                     })
                     .success(function(data) {
+                        // update local timecard storage 
+                        var timecards = LocalStorageService.getTimecards();
+                        timecards.push(data)
+                        LocalStorageService.setTimecardsLocal(timecards);
+                        // response to promise - callback
                         defer.resolve(data);
                     })
                     .error(function(error) {
@@ -188,6 +193,9 @@ angular.module('starter.services', [])
                         data: JSON.stringify(timecard)
                     })
                     .success(function(data) {
+                        // update local timecard storage
+                        LocalStorageService.setTimecardLocalByID(data.result.sys_id);
+                        // response to promise - callback
                         defer.resolve(data.result);
                     })
                     .error(function(error) {
@@ -212,6 +220,9 @@ angular.module('starter.services', [])
                         data: data
                     })
                     .success(function(data) {
+                        //update approvals
+                        //LocalStorageService.updateApprovalsBySysID(data.result.sys_id);
+                        // response to promise  - callback
                         defer.resolve(data.result);
                     })
                     .error(function(error) {
@@ -236,6 +247,9 @@ angular.module('starter.services', [])
                         data: JSON.stringify(data)
                     })
                     .success(function(data) {
+                        //update timecard local storage 
+                        LocalStorageService.setTimecardLocalByID(data.result.sys_id);
+                        //response to promise - callback
                         defer.resolve(data.result);
                     })
                     .error(function(error) {
@@ -244,7 +258,28 @@ angular.module('starter.services', [])
                 return defer.promise;
             },
             //delete functions 
-            deleteTimecard: function() {}
+            deleteTimecard: function(sys_id) {
+                var url = snCred.PRODURL + '/api/now/table/' + snCred.TimecardTable + '/' + sys_id;
+                var token = "Bearer " + TokenService.getToken();
+                var defer = $q.defer();
+                $http({
+                    method: 'DELETE',
+                    url: url,
+                    headers: {
+                        'Authorization': token
+                    }
+                })
+                .success(function(data) {
+                        //delete timecard from local storage 
+                        //LocalStorageService.delTimecardLocalByID(data.result.sys_id);
+                        //response to promise - callback
+                        defer.resolve(data.result);
+                    })
+                    .error(function(error) {
+                        defer.reject(error);
+                    })
+                return defer.promise;
+            }
         }
     })
     // User Service (session, storage)
@@ -301,7 +336,7 @@ angular.module('starter.services', [])
 
         function getProjectsLengthLocal() {
             return getTimecardsLocal().length;
-        }
+        };
         // Tasks
         function setTasksLocal(result) {
             if (result) {
@@ -426,7 +461,6 @@ angular.module('starter.services', [])
             }
             return selTimecards;
         };
-
 
         function getTimecardsLengthLocal() {
             return getTimecardsLocal().length;
