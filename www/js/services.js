@@ -392,6 +392,14 @@ angular.module('starter.services', [])
             return selTimecards;
         };
 
+        function getTimecardsByMonthYearLocal(seldate){
+            var timecards = JSON.parse(LocalStorageService.getItem('timecards'));
+            var selTimecards = []
+            // for (var i=0;i<timecards.length;i++){
+
+            // }
+        };
+
         function getTimecardByID(id) {
             var timecards = JSON.parse(localStorage.getItem('timecards'));
             var selTimecard = {};
@@ -413,10 +421,6 @@ angular.module('starter.services', [])
             return selTimecards;
         };
 
-        function getTotalHoursMonthly(tcdate){
-            
-
-        }
 
         function getTimecardsLengthLocal() {
             return getTimecardsLocal().length;
@@ -450,11 +454,10 @@ angular.module('starter.services', [])
         function getApprovalsLengthLocal() {
             return getApprovalsLocal().length;
         };
-        // Statistics
-        function getTotalHrsDay() {};
-
+        // Statistics for hours of all timecards by specified date
+        function getTotalHrsDay() {
+        };
         function getTotalHrsWeek() {};
-
         function getTotalHrsMonth() {};
         return {
             // Projects 

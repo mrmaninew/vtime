@@ -52,17 +52,46 @@ angular.module('starter.controllers', [])
         });
     })
     // Home view 
-    .controller('HomeCtrl', function($scope, $state) {
+    .controller('HomeCtrl', function($scope, $state, moment, snService, LocalStorageService, daysWeek) {
         // calculate number hours for day, weekly, monthly
         $scope.totalHrsDay = 0.00;
-        $scope.totalHrsWeekly = 0.00;
+        $scope.totalHrsWeekly = 0;
         $scope.totalHrsMonthly = 0.00;
+        $scope.selDate = new Date();
+        // selected date of day in a week (sun:0, mon:1..,)
+        $scope.selDay = $scope.selDate.getDay(); // 0 - 7
+        $scope.selDayName = daysWeek.weekDays[$scope.selDay]; // sunday, monday
+        $scope.selDateMonth = $scope.selDate.getMonth(); // 0-january, 11- December
 
-        function getTotalHrsDay() {};
+        function getTotalHrsDayWeek() {
+            if ($scope.selDay == 0) {
+                var sundayDate = moment($scope.selDate).format("YYYY-MM-DD"); // 2012-11-22
+                var tcs = LocalStorageService.getTimecardsByDateLocal(sundayDate); // because weeks starts on sunday
+                processTimecards(tcs);
+            } else {
+                var sundayDate = moment($scope.selDate).subtract($scope.selDay, 'days').format("YYYY-MM-DD"); // 2012-11-22
+                var tcs = LocalStorageService.getTimecardsByDateLocal(sundayDate);
+                processTimecards(tcs);
+            }
+        };
+        getTotalHrsDayWeek();
 
-        function getTotalHrsWeekly() {};
+        function processTimecards(tcs) {
+            for (i = 0; i < tcs.length; i++) {
+                $scope.totalHrsWeekly += Number(tcs[i].total);
+                if (tcs[i][$scope.selDayName] != 0) {
+                    $scope.totalHrsDay += Number(tcs[i][$scope.selDayName]);
+                }
+
+            }
+        };
 
         function getTotalHrsMonthly() {};
+        // refresh statics 
+        $scope.refreshStats = function() {
+            //console.log('in refresh stats');
+            getTotalHrsDayWeek();
+        };
 
         // charts
         $scope.labels = ["January", "February", "March", "April", "May", "June", "July"];
@@ -578,7 +607,7 @@ angular.module('starter.controllers', [])
                     console.log(error);
                 })
         };
-        $scope.refreshApprovals = function(){
+        $scope.refreshApprovals = function() {
 
         };
         // functional Methods (Projects, Tasks, Stories)
