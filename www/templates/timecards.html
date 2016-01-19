@@ -9,7 +9,7 @@
                 <ion-item class="item-stable" ng-click="toggleGroup(timecard)" ng-class="{active: isGroupShown(timecard)}">
                     <span class="text-align-left">
                       <i class="icon icon ion-ios-timer TCitem"></i>
-                     </span> &nbsp; {{timecard.sys_created_on}}
+                     </span> &nbsp; {{ timecard.sys_created_on }}
                     <i class="icon text-align-right" ng-class="isGroupShown(timecard) ? 'ion-ios-circle-outline' : 'ion-ios-circle-filled'"></i>
                 </ion-item>
                 <ion-item class="item-accordion" ng-show="isGroupShown(timecard)">

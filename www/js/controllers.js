@@ -1,6 +1,7 @@
 angular.module('starter.controllers', [])
     .constant('daysWeek', {
         'weekDays': ['sunday', 'monday', 'tuesday', 'wednesday', 'thursday', 'friday', 'saturday'],
+        'weekDaysShort': ['sun', 'mon', 'tue', 'wed', 'thu', 'fri', 'sat'],
         'weekStart': 0, // sunday 
         'weekEnd': 6 // saturday
     })
@@ -120,7 +121,7 @@ angular.module('starter.controllers', [])
             }
             $scope.data.push([sunday, monday, tuesday, wednesday, thursday, friday, saturday]);
         };
-        // total hours for current montj
+        // total hours for current month
         function getTotalHrsMonth() {
             var tc = LocalStorageService.getTimecardsByMonthYearLocal($scope.selDate);
             for (var i = 0; i < tc.length; i++) {
@@ -130,18 +131,23 @@ angular.module('starter.controllers', [])
             }
         };
         // Bar charts
-        $scope.labels = ["sun", "mon", "tue", "wed", "thu", "fri", "sat"];
+        $scope.labels = ['sun', 'mon', 'tue', 'wed', 'thu', 'fri', 'sat'];
         $scope.series = ['hrs'];
         $scope.data = [];
+        $scope.colors = ['#FD1F5E', '#1EF9A1', '#7FFD1F', '#68F000', '#7FFD1F', '#68F000'];
+        $scope.onClick = function(e) {
+            //console.log(e,'chart clicked');
+            var clickDayNum = $scope.labels.indexOf(e[0].label);
+        };
         // state management 
         $scope.$on('$ionicView.enter', function() {
             getTotalHrsDayWeek(); // get total hours for current day, week
             getTotalHrsMonth(); // get total hours for current month
         });
         $scope.$on('$ionicView.leave', function() {
-            $scope.totalHrsDay = 0.00;
+            $scope.totalHrsDay = 0;
             $scope.totalHrsWeekly = 0;
-            $scope.totalHrsMonthly = 0.00;
+            $scope.totalHrsMonthly = 0;
             $scope.data = [];
         });
     })
@@ -149,22 +155,27 @@ angular.module('starter.controllers', [])
     .controller('LoginCtrl', function($scope, $state) {})
     // Time tab for Today (or) Selected , this week (depending on current and selected date) 
     .controller('timeCardsPanelCtrl', function($scope, $cordovaToast, $ionicPlatform, $state, $ionicTabsDelegate, $ionicModal, moment, daysWeek, LocalStorageService) {
-        // footer item-right varibles 
-        $scope.totalHrsDay = 0;
-        $scope.totalHrsWeekly = 0;
-        // selected date for Time cards
-        $scope.selDate = new Date();
-        // selected week by selected date
-        $scope.selThisWeek = [];
-        // selected date of day in a week (sun:0, mon:1..,)
-        $scope.selDay = $scope.selDate.getDay(); // 0 - 7
-        $scope.selDayName = daysWeek.weekDays[$scope.selDay]; // sunday, monday
-        // Timecards for "Today or Selected " date or day 
-        $scope.timecards = [];
-        // ionic view state management
-        $scope.$on('$ionicView.enter',function(e){
+
+        $scope.$on('$ionicView.enter', function(e) {
+            // footer item-right varibles 
+            $scope.totalHrsDay = 0;
+            $scope.totalHrsWeekly = 0;
+            // selected date for Time cards
+            $scope.selDate = new Date();
+            // selected week by selected date
+            $scope.selThisWeek = [];
+            // selected date of day in a week (sun:0, mon:1..,)
+            $scope.selDay = $scope.selDate.getDay(); // 0 - 7
+            $scope.selDayName = daysWeek.weekDays[$scope.selDay]; // sunday, monday
+            // Timecards for "Today or Selected " date or day 
+            $scope.timecards = [];
+            // ionic view state management
             getTimecardsDate();
             onDayChanged();
+        });
+        $scope.$on('$ionicView.leave', function(e) {
+            $scope.timecards = [];
+            $scope.selThisWeek = [];
         });
         // get all Timecards by start of the week (Sunday) by calculating present day
         function getTimecardsDate() {
@@ -247,10 +258,11 @@ angular.module('starter.controllers', [])
             }
         };
         $scope.refreshCards = function() {
+            console.log('in refresh');
             getTimecardsDate();
         };
-            // Weekly Tab
-            // get hours for timecard day 
+        // Weekly Tab
+        // get hours for timecard day 
         $scope.getHoursDay = function(day) {
             var dayNumber = day.getDay(); // 0 - 7
             var dayName = daysWeek.weekDays[dayNumber]; // sunday, monday
@@ -464,14 +476,6 @@ angular.module('starter.controllers', [])
             //console.log(timecard, $scope.tc.sys_id);
             snService.updateTimecard($scope.tc.sys_id, timecard)
                 .then(function(result) {
-                    // console.log(result); // response from servicenow after update
-                    // snService.getTimecards() // get Timecards
-                    //     .then(function(data) {
-                    //         LocalStorageService.setTimecardsLocal(data);
-                    //         $state.go('app.timecardPanel');
-                    //     }, function(error) {
-                    //         console.log(error);
-                    //     });
                     console.log(result);
                     var message = "Timecard Updated"; // local toast notification
                     $state.go('app.timecardPanel');
@@ -533,7 +537,7 @@ angular.module('starter.controllers', [])
             preProcess();
         });
 
-        $scope.$on('$ionicView.leave',function(e){
+        $scope.$on('$ionicView.leave', function(e) {
             $scope.timecards = "";
         })
 
@@ -715,9 +719,9 @@ angular.module('starter.controllers', [])
             $scope.projects = LocalStorageService.getProjectsLocal();
         });
         $scope.$on('$ionicView.leave', function(e) {
-                $scope.projects = "";
-            })
-            // if given group is the selected group, deselect it, else select the given group
+            $scope.projects = "";
+        });
+        // if given group is the selected group, deselect it, else select the given group
         $scope.toggleGroup = function(project) {
             if ($scope.isGroupShown(project)) {
                 $scope.shownGroup = null;

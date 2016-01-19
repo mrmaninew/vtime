@@ -18,7 +18,8 @@
                                    <ion-item  class="item-avatar" ng-repeat="tc in timecards" ng-click="routeEditCard(tc.sys_id)">
                                       <span class="day-display-sizing">{{tc.selDate|date:'dd'}}</span>
                                       <h2>{{tc.selDate|date:'EEEE'}}</h2>
-                                      <p ng-if="tc.task"> Task: {{tc.task}}</p> <p ng-if="tc.story">Story: {{tc.story}}</p>
+                                      <p ng-if="tc.task"> Task: {{tc.task}}</p> 
+                                      <p ng-if="tc.story">Story: {{tc.story}}</p>
                                       <span class="text-align-right">
                                             {{tc.hours}} hrs
                                             &nbsp;
@@ -52,7 +53,6 @@
                     </ion-content>
                     <div class="bar bar-footer">
                         <div class="title">Total: {{totalHrsWeekly}} hrs </div>
-                        <button class="button" ng-click=""> Submit</button>
                     </div>
                 </ion-view>
             </ion-tab>

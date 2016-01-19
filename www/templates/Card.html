@@ -12,7 +12,7 @@
                     <h3>Projects</h3>
                 </div>
                 <select ng-model="tc.u_project">
-                    <option ng-repeat="project in projects" value="{{project.sys_id}}">
+                    <option ng-repeat="project in projects" value="{{project.sys_id}}" required>
                         {{project.short_description}}
                     </option>
                 </select>

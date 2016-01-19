@@ -16,8 +16,7 @@ angular.module('starter.services', [])
     // Token Service (Access, Password)
     .factory('TokenService', function() {
         //var token = "none";
-        var _token = "bdGLANn3v5BOc5eksG3ZSH2G6bYJt2zlQgbpk-LFQKb5JhH48MKUM3UN2CqoMxPlSYdeBP8TPSln-cpfRp2WPg";
-
+        var _token = "tSjbPwRdhQMR75XcFJ52617pEBj1DNWomsvDKb6VZBsAdw--mNJUroqz8a3DBYE7Bb8GhM6CO7KPTFvHgLcMEQ";
         return {
             getToken: function() {
                 return _token;
@@ -169,11 +168,11 @@ angular.module('starter.services', [])
                     })
                     .success(function(data) {
                         // update local timecard storage 
-                        var timecards = LocalStorageService.getTimecards();
-                        timecards.push(data)
-                        LocalStorageService.setTimecardsLocal(timecards);
-                        // response to promise - callback
-                        defer.resolve(data);
+                        if (LocalStorageService.addNewTimecardLocal(data.result)) {
+                            // response to promise - callback
+                            defer.resolve(data.result);
+                        }
+
                     })
                     .error(function(error) {
                         defer.reject(error);
@@ -194,9 +193,10 @@ angular.module('starter.services', [])
                     })
                     .success(function(data) {
                         // update local timecard storage
-                        LocalStorageService.setTimecardLocalByID(data.result.sys_id);
-                        // response to promise - callback
-                        defer.resolve(data.result);
+                        if (LocalStorageService.setTimecardLocalByID(data.result.sys_id, data.result)) { // sys_id, [object]
+                            // response to promise - callback
+                            defer.resolve(data.result);
+                        }
                     })
                     .error(function(error) {
                         defer.reject(error);
@@ -248,7 +248,7 @@ angular.module('starter.services', [])
                     })
                     .success(function(data) {
                         //update timecard local storage 
-                        LocalStorageService.setTimecardLocalByID(data.result.sys_id);
+                        LocalStorageService.setTimecardLocalByID(data.result.sys_id, data.result); //(sys_id,[object])
                         //response to promise - callback
                         defer.resolve(data.result);
                     })
@@ -263,15 +263,15 @@ angular.module('starter.services', [])
                 var token = "Bearer " + TokenService.getToken();
                 var defer = $q.defer();
                 $http({
-                    method: 'DELETE',
-                    url: url,
-                    headers: {
-                        'Authorization': token
-                    }
-                })
-                .success(function(data) {
+                        method: 'DELETE',
+                        url: url,
+                        headers: {
+                            'Authorization': token
+                        }
+                    })
+                    .success(function(data) {
                         //delete timecard from local storage 
-                        //LocalStorageService.delTimecardLocalByID(data.result.sys_id);
+                        LocalStorageService.deleteTimecardLocalByID(data.result.sys_id);
                         //response to promise - callback
                         defer.resolve(data.result);
                     })
@@ -335,7 +335,7 @@ angular.module('starter.services', [])
         };
 
         function getProjectsLengthLocal() {
-            return getTimecardsLocal().length;
+            return getProjectsLocal().length;
         };
         // Tasks
         function setTasksLocal(result) {
@@ -394,21 +394,25 @@ angular.module('starter.services', [])
 
         // Timecards
         function setTimecardsLocal(result) {
-            if (result) {
-                localStorage.setItem('timecards', JSON.stringify(result));
-            } else {
-                localStorage.setItem('timecards', []);
-            }
+            localStorage.setItem('timecards', JSON.stringify(result));
         };
 
         function setTimecardLocalByID(sys_id, timecard) {
-            var timecards = localStorage.getItem('timecards');
+            var timecards = getTimecardsLocal();
             for (var i = 0; i < timecards.length; i++) {
                 if (timecards[i].sys_id === sys_id) {
-                    timecards[i] = result;
+                    timecards[i] = timecard;
                 }
             }
-            localStorage.setItem('timecards', timecards);
+            setTimecardsLocal(timecards); //  function to call setTimecardsLocal(), save timecard to Local stograe
+            return true;
+        };
+
+        function addNewTimecardLocal(timecard) {
+            var timecards = getTimecardsLocal();
+            timecards.push(timecard);
+            setTimecardsLocal(timecards);
+            return true;
         };
 
         function getTimecardsLocal() {
@@ -465,6 +469,20 @@ angular.module('starter.services', [])
         function getTimecardsLengthLocal() {
             return getTimecardsLocal().length;
         };
+
+        function deleteTimecardsLocalByID(sys_id) {
+            var timecards = getTimecardsLocal();
+            for (var i = 0; i < timecards.length; i++) {
+                if (timecards[i] === sys_id) {
+                    timecards.splice(i, 0);
+                }
+            }
+            setTimecardsLocal(timecards);
+        };
+
+        function clearAllTimecardsLocal() {
+            localStorage.setItem('timecards', []);
+        }
         // Users
         function setUserLocal(user) {
             var _user = {
@@ -511,6 +529,7 @@ angular.module('starter.services', [])
             getStoryNumberBySysID: getStoryNumberBySysID,
             getStoriesLengthLocal: getStoriesLengthLocal,
             // Timecards
+            addNewTimecardLocal: addNewTimecardLocal,
             setTimecardsLocal: setTimecardsLocal,
             setTimecardLocalByID: setTimecardLocalByID,
             getTimecardsLocal: getTimecardsLocal,
@@ -519,6 +538,7 @@ angular.module('starter.services', [])
             getTimecardByCreatedDate: getTimecardByCreatedDate,
             getTimecardsLengthLocal: getTimecardsLengthLocal,
             getTimecardsByMonthYearLocal: getTimecardsByMonthYearLocal,
+            deleteTimecardsLocalByID: deleteTimecardsLocalByID,
             // Users
             setUserLocal: setUserLocal,
             getUserLocal: getUserLocal,
