@@ -104,7 +104,7 @@ angular.module('starter.services', [])
                 return defer.promise;
             },
             getTimecards: function() {
-                var query = "?sysparm_limit=10&sysparm_query=user=" + UserService.getUser().sys_id;
+                var query = "?sysparm_query=user=" + UserService.getUser().sys_id;
                 var url = snCred.PRODURL + '/api/now/table/' + snCred.TimecardTable + query;
                 var token = "Bearer " + TokenService.getToken();
                 var defer = $q.defer();
@@ -479,12 +479,24 @@ angular.module('starter.services', [])
         function getTimecardsLocal() {
             return JSON.parse(localStorage.getItem('timecards'));
         };
-
+        // return all timecards by argument "date" and state is "Pending"
         function getTimecardsByDateLocal(seldate) {
             var timecards = JSON.parse(localStorage.getItem('timecards'));
             var selTimecards = []
             for (var i = 0; i < timecards.length; i++) {
                 if (seldate == timecards[i].week_starts_on && timecards[i].state == 'Pending') {
+                    selTimecards.push(timecards[i]);
+                }
+            }
+            return selTimecards;
+        };
+        // return all timecards by date with condition comparision with argument date and return all 
+        // timecards with any state condition
+        function getTimecardsByDateLocalForCharts(seldate) {
+            var timecards = JSON.parse(localStorage.getItem('timecards'));
+            var selTimecards = [];
+            for (var i = 0; i < timecards.length; i++) {
+                if (seldate == timecards[i].week_starts_on) {
                     selTimecards.push(timecards[i]);
                 }
             }
@@ -624,6 +636,7 @@ angular.module('starter.services', [])
             getTimecardsLengthLocal: getTimecardsLengthLocal,
             getTimecardsByMonthYearLocal: getTimecardsByMonthYearLocal,
             getTimecardNumberByID: getTimecardNumberByID,
+            getTimecardsByDateLocalForCharts: getTimecardsByDateLocalForCharts,
             deleteTimecardLocalByID: deleteTimecardLocalByID,
             // Users
             setUserLocal: setUserLocal,
@@ -636,4 +649,10 @@ angular.module('starter.services', [])
         }
     })
     // Error Service 
-    .factory('ErrorService', function() {});
+    .factory('ErrorService', function() {
+        // Error messages 
+        var errors = {
+            'token_expire': 'User Not Authenticated',
+            'no_records': 'Records Not Found'
+        };
+    });

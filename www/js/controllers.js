@@ -67,11 +67,11 @@ angular.module('starter.controllers', [])
         function getTotalHrsDayWeek() {
             if ($scope.selDay == 0) {
                 var sundayDate = moment($scope.selDate).format("YYYY-MM-DD"); // 2012-11-22
-                var tcs = LocalStorageService.getTimecardsByDateLocal(sundayDate); // because weeks starts on sunday
+                var tcs = LocalStorageService.getTimecardsByDateLocalForCharts(sundayDate); // because weeks starts on sunday
                 processTimecards(tcs);
             } else {
                 var sundayDate = moment($scope.selDate).subtract($scope.selDay, 'days').format("YYYY-MM-DD"); // 2012-11-22
-                var tcs = LocalStorageService.getTimecardsByDateLocal(sundayDate);
+                var tcs = LocalStorageService.getTimecardsByDateLocalForCharts(sundayDate);
                 processTimecards(tcs);
             }
         };
@@ -163,7 +163,7 @@ angular.module('starter.controllers', [])
                 .then(function(data) {
                     snService.getApprovals()
                         .then(function(data) {
-                            console.log(data);
+                            //console.log(data);
                         }, function(error) {
                             console.log(error);
                         })
