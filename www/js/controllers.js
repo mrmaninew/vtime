@@ -95,7 +95,6 @@ angular.module('starter.controllers', [])
                 thursday = 0,
                 friday = 0,
                 saturday = 0;
-
             for (i = 0; i < tcs.length; i++) {
                 if (tcs[i].sunday) {
                     sunday += Number(tcs[i].sunday);
@@ -159,7 +158,19 @@ angular.module('starter.controllers', [])
         };
         // state management 
         $scope.$on('$ionicView.enter', function() {
-            // libs and variables 
+            // libs and variables refresh timecards and approvals 
+            snService.getTimecards()
+                .then(function(data) {
+                    snService.getApprovals()
+                        .then(function(data) {
+                            console.log(data);
+                        }, function(error) {
+                            console.log(error);
+                        })
+                }, function(error) {
+                    console.log(error);
+                })
+            // get lengths for projects, tasks, stories, timecards
             $scope.projectLength = LocalStorageService.getProjectsLengthLocal();
             $scope.tasksLength = LocalStorageService.getTasksLengthLocal();
             $scope.storiesLength = LocalStorageService.getStoriesLengthLocal();

@@ -11,7 +11,8 @@ angular.module('starter.services', [])
         'StoriesTableName': 'rm_story', // Servicenow Stories Table
         'TimecardTable': 'time_card', // Servicenow Timecard Table
         'ApprovalsTable': 'sysapproval_approver', // Servicenow Approvals Table
-        'UserTable': 'sys_user'
+        'UserTable': 'sys_user',
+        'TokenExpireMessage':''
     })
     // Token Service (Access, Password)
     .factory('TokenService', function() {
