@@ -43,10 +43,14 @@ angular.module('starter.services', [])
                         }
                     })
                     .success(function(data) {
-                        defer.resolve(data.result);
+                        if (LocalStorageService.setProjectsLocal(data.result)) {
+                            defer.resolve(data.result);
+                        }
                     })
                     .error(function(error) {
-                        defer.reject(error);
+                        if (LocalStorageService.setProjectsLocal([])) {
+                            defer.reject(error);
+                        }
                     })
                 return defer.promise;
             },
@@ -64,10 +68,14 @@ angular.module('starter.services', [])
                         }
                     })
                     .success(function(data) {
-                        defer.resolve(data.result);
+                        if (LocalStorageService.setTasksLocal(data.result)) {
+                            defer.resolve(data.result);
+                        }
                     })
                     .error(function(error) {
-                        defer.reject(error);
+                        if (LocalStorageService.setTasksLocal([])) {
+                            defer.reject(error);
+                        }
                     })
                 return defer.promise;
             },
@@ -84,10 +92,14 @@ angular.module('starter.services', [])
                         }
                     })
                     .success(function(data) {
-                        defer.resolve(data.result);
+                        if (LocalStorageService.setStoriesLocal(data.result)) {
+                            defer.resolve(data.result);
+                        }
                     })
                     .error(function(error) {
-                        defer.reject(error);
+                        if (LocalStorageService.setStoriesLocal([])) {
+                            defer.reject(error);
+                        }
                     })
                 return defer.promise;
             },
@@ -104,10 +116,14 @@ angular.module('starter.services', [])
                         }
                     })
                     .success(function(data) {
-                        defer.resolve(data.result);
+                        if (LocalStorageService.setTimecardsLocal(data.result)) {
+                            defer.resolve(data.result);
+                        }
                     })
                     .error(function(error) {
-                        defer.reject(error);
+                        if (LocalStorageService.setTimecardsLocal([])) {
+                            defer.reject(error);
+                        }
                     })
                 return defer.promise;
             },
@@ -124,10 +140,15 @@ angular.module('starter.services', [])
                         }
                     })
                     .success(function(data) {
-                        defer.resolve(data.result);
+                        if (LocalStorageService.setApprovalsLocal(data.result)) {
+                            defer.resolve(data.result);
+                        }
                     })
                     .error(function(error) {
-                        defer.reject(error);
+                        if (LocalStorageService.setApprovalsLocal([])) {
+                            defer.reject(error);
+                        }
+
                     })
                 return defer.promise;
             },
@@ -292,13 +313,13 @@ angular.module('starter.services', [])
             'email': 'mani.gk@volteo.com',
             'sys_id': '2133326f0faa860077b6ab78b1050e5a'
         };
-
+        // set user (user_id (user_id/name), email (email),sys_id)
         function setUser(user) {
-            user.user_id = "";
-            user.email = "";
-            user.sys_id = ""
+            user.user_id = user.user_id;
+            user.email = user.email;
+            user.sys_id = user.sys_id;
         };
-
+        // retrieve user 
         function getUser() {
             return user;
         };
@@ -320,6 +341,8 @@ angular.module('starter.services', [])
             } else {
                 localStorage.setItem('projects', []);
             }
+
+            return true;
         };
 
         function getProjectsLocal() {
@@ -345,8 +368,9 @@ angular.module('starter.services', [])
             if (result) {
                 localStorage.setItem('tasks', JSON.stringify(result));
             } else {
-                ocalStorage.setItem('tasks', []);
+                localStorage.setItem('tasks', []);
             }
+            return true;
         };
 
         function getTasksLocal() {
@@ -374,6 +398,7 @@ angular.module('starter.services', [])
             } else {
                 localStorage.setItem('stories', []);
             }
+            return true;
         };
 
         function getStoriesLocal() {
@@ -397,7 +422,12 @@ angular.module('starter.services', [])
 
         // Timecards
         function setTimecardsLocal(result) {
-            localStorage.setItem('timecards', JSON.stringify(result));
+            if (result) {
+                localStorage.setItem('timecards', JSON.stringify(result));
+            } else {
+                localStorage.setItem('timecards', []);
+            }
+            return true;
         };
 
         function setTimecardLocalByID(sys_id, timecard) {
@@ -473,6 +503,17 @@ angular.module('starter.services', [])
             return getTimecardsLocal().length;
         };
 
+        function getTimecardNumberByID(sys_id) {
+            var timecardNumber = "";
+            var timecards = getTimecardsLocal();
+            for (var i = 0; i < timecards.length; i++) {
+                if (timecards[i].sys_id == sys_id) {
+                    timecardNumber = timecards[i].u_number;
+                }
+            }
+            return timecardNumber;
+        };
+
         function deleteTimecardLocalByID(sys_id) {
             var timecards = getTimecardsLocal();
             for (var i = 0; i < timecards.length; i++) {
@@ -507,6 +548,7 @@ angular.module('starter.services', [])
             } else {
                 localStorage.setItem('approvals', []);
             }
+            return true;
         };
 
         function getApprovalsLocal() {
@@ -553,6 +595,7 @@ angular.module('starter.services', [])
             getTimecardByCreatedDate: getTimecardByCreatedDate,
             getTimecardsLengthLocal: getTimecardsLengthLocal,
             getTimecardsByMonthYearLocal: getTimecardsByMonthYearLocal,
+            getTimecardNumberByID: getTimecardNumberByID,
             deleteTimecardLocalByID: deleteTimecardLocalByID,
             // Users
             setUserLocal: setUserLocal,
@@ -561,6 +604,6 @@ angular.module('starter.services', [])
             setApprovalsLocal: setApprovalsLocal,
             getApprovalsLocal: getApprovalsLocal,
             getApprovalsLengthLocal: getApprovalsLengthLocal,
-            deleteApprovalBySysID:deleteApprovalBySysID
+            deleteApprovalBySysID: deleteApprovalBySysID
         }
     })

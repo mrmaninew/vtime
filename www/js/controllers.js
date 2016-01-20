@@ -135,9 +135,27 @@ angular.module('starter.controllers', [])
         $scope.series = ['hrs'];
         $scope.data = [];
         $scope.colors = ['#FD1F5E', '#1EF9A1', '#7FFD1F', '#68F000', '#7FFD1F', '#68F000'];
+        // on bar chat click, get click date and do some coniditional ops and pass date as param to timecardpanel ctrl
         $scope.onClick = function(e) {
-            //console.log(e,'chart clicked');
-            var clickDayNum = $scope.labels.indexOf(e[0].label);
+            var clickedDate = "";
+            var chartDayNum = $scope.labels.indexOf(e[0].label);
+            // if condition met set selected date as clicked date
+            if (chartDayNum == $scope.selDay) {
+                clickedDate = $scope.selDate;
+            }
+            // if condition met add moment days to current date
+            if (chartDayNum > $scope.selDay) {
+                clickedDate = moment($scope.selDate).add(chartDayNum - $scope.selDay, 'days')._d;
+            }
+            // if condition met subtract moment days to current date
+            if (chartDayNum < $scope.selDay) {
+                clickedDate = moment($scope.selDate).subtract($scope.selDay - chartDayNum, 'days')._d;
+            }
+            $state.go('app.timecardPanelDateView', {
+                'param1': clickedDate
+            }, {
+                reload: true
+            });
         };
         // state management 
         $scope.$on('$ionicView.enter', function() {
@@ -165,14 +183,20 @@ angular.module('starter.controllers', [])
     // Login View
     .controller('LoginCtrl', function($scope, $state) {})
     // Time tab for Today (or) Selected , this week (depending on current and selected date) 
-    .controller('timeCardsPanelCtrl', function($scope, $cordovaToast, $ionicPlatform, $state, $ionicTabsDelegate, $ionicModal, moment, daysWeek, LocalStorageService) {
+    .controller('timeCardsPanelCtrl', function($scope, $cordovaToast, $ionicPlatform, $state, $stateParams, $ionicTabsDelegate, $ionicModal, moment, daysWeek, LocalStorageService) {
         // on view enter
         $scope.$on('$ionicView.enter', function(e) {
             // footer item-right varibles 
             $scope.totalHrsDay = 0;
             $scope.totalHrsWeekly = 0;
-            // selected date for Time cards
-            $scope.selDate = new Date();
+            // passDate if any params set the current date as passed date from chart click
+            if ($stateParams.param1) {
+                //console.log('passed Date timeCardsPanelCtrl' + $stateParams.param1);
+                $scope.selDate = new Date($stateParams.param1);
+            } else {
+                // selected date for Time cards
+                $scope.selDate = new Date();
+            }
             // selected week by selected date
             $scope.selThisWeek = [];
             // selected date of day in a week (sun:0, mon:1..,)
@@ -508,7 +532,7 @@ angular.module('starter.controllers', [])
         });
     })
     // Status Tab
-    .controller('statusCtrl', function($scope, $state, $ionicTabsDelegate, moment, snService, LocalStorageService) {
+    .controller('statusCtrl', function($scope, $state, $ionicTabsDelegate, $ionicPopup, $timeout, moment, snService, LocalStorageService) {
         $scope.rejected = 0;
         $scope.pending = 0;
         $scope.submitted = 0;
@@ -549,30 +573,55 @@ angular.module('starter.controllers', [])
         };
         // submit timecard and refresh timecard local storage and current view
         $scope.submitTimecard = function(sys_id) {
-            snService.submitTimecard(sys_id)
-                .then(function(data) {
-                    console.log(data);
-                    var msg = "Timecard submitted"; // local toast notifications
-                    $state.go("app.statusPanel", {}, {
-                        reload: true
-                    });
-                }, function(error) {
-                    console.log(error);
-                })
+            $ionicPopup.confirm({
+                title: 'Confirm Submission',
+                template: 'Do you want to submit Timecard:' + LocalStorageService.getTimecardNumberByID(sys_id),
+                scope: $scope,
+                buttons: [{
+                    text: 'Cancel'
+                }, {
+                    text: 'Yes',
+                    type: 'button-positive',
+                    onTap: function(e) {
+                        snService.submitTimecard(sys_id)
+                            .then(function(data) {
+                                console.log(data);
+                                var msg = "Timecard submitted"; // local toast notifications
+                                $state.go("app.statusPanel", {}, {
+                                    reload: true
+                                });
+                            }, function(error) {
+                                console.log(error);
+                            });
+                    }
+                }]
+            });
         };
         // delete timecard and refresh timecard local storage and refresh current view 
         $scope.deleteTimecard = function(sys_id) {
-            console.log('delete Timecard' + sys_id);
-            snService.deleteTimecard(sys_id)
-                .then(function(result) {
-                    console.log(result);
-                    var msg = "Timecard deleted"; // local toast notifications
-                    $state.go("app.statusPanel", {}, {
-                        reload: true
-                    });
-                }, function(error) {
-                    console.log(error);
-                })
+            $ionicPopup.confirm({
+                title: 'Confirm Delete',
+                template: 'Do you want to Delete Timecard:' + LocalStorageService.getTimecardNumberByID(sys_id),
+                scope: $scope,
+                buttons: [{
+                    text: 'Cancel'
+                }, {
+                    text: 'Yes',
+                    type: 'button-positive',
+                    onTap: function(e) {
+                        snService.deleteTimecard(sys_id)
+                            .then(function(result) {
+                                console.log(result);
+                                var msg = "Timecard deleted"; // local toast notifications
+                                $state.go("app.statusPanel", {}, {
+                                    reload: true
+                                });
+                            }, function(error) {
+                                console.log(error);
+                            });
+                    }
+                }]
+            });
         };
         // refresh timecards, button on nav-header
         $scope.refreshTimecards = function() {
@@ -585,17 +634,6 @@ angular.module('starter.controllers', [])
                     console.log(error);
                 })
         };
-        // if given group is the selected group, deselect it, else select the given group
-        // $scope.toggleGroup = function(timecard) {
-        //     if ($scope.isGroupShown(timecard)) {
-        //         $scope.shownGroup = null;
-        //     } else {
-        //         $scope.shownGroup = timecard;
-        //     }
-        // };
-        // $scope.isGroupShown = function(timecard) {
-        //     return $scope.shownGroup === timecard;
-        // };
 
         // toggle group for pending toggle code 
         // if given group is the selected group, deselect it, else select the given group

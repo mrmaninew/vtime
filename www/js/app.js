@@ -18,31 +18,36 @@ angular.module('starter', ['ionic', 'ionic-datepicker', 'starter.controllers', '
             // Set Projects, Tasks, Stories, Timecards, Users and store it locally 
             snService.getProjects() // get Projects
                 .then(function(result) {
-                    LocalStorageService.setProjectsLocal(result);
+                    //LocalStorageService.setProjectsLocal(result);
+                    //console.log(result);
                 }, function(error) {
                     console.log(error)
                 });
             snService.getTasks() // get Tasks
                 .then(function(result) {
-                    LocalStorageService.setTasksLocal(result);
+                    //LocalStorageService.setTasksLocal(result);
+                    //console.log(result);
                 }, function(error) {
                     console.log(error);
                 });
             snService.getStories() // get Stories
                 .then(function(result) {
-                    LocalStorageService.setStoriesLocal(result);
+                    //LocalStorageService.setStoriesLocal(result);
+                    //console.log(result);
                 }, function(error) {
                     console.log(error);
                 });
             snService.getTimecards() // get Timecards
                 .then(function(result) {
-                    LocalStorageService.setTimecardsLocal(result);
+                    //LocalStorageService.setTimecardsLocal(result);
+                    //console.log(result);
                 }, function(error) {
                     console.log(error);
                 });
             snService.getApprovals() // get Approvals 
                 .then(function(result) {
-                    LocalStorageService.setApprovalsLocal(result);
+                    //LocalStorageService.setApprovalsLocal(result);
+                    //console.log(result);
                 }, function(error) {
                     //console.log(error);
                     LocalStorageService.setApprovalsLocal([]);
@@ -160,10 +165,20 @@ angular.module('starter', ['ionic', 'ionic-datepicker', 'starter.controllers', '
             })
             .state('app.timecardPanel', {
                 url: '/timecardPanel',
+                cache: false,
                 views: {
                     'menuContent': {
                         templateUrl: 'templates/timeCardPanel.html',
                         controller: 'timeCardsPanelCtrl',
+                    }
+                }
+            })
+            .state('app.timecardPanelDateView',{
+                url:'/timecardPanel/:param1',
+                views:{
+                    'menuContent':{
+                        templateUrl:'templates/timecardPanel.html',
+                        controller:'timeCardsPanelCtrl'
                     }
                 }
             })
