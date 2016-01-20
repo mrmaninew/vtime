@@ -170,7 +170,7 @@ angular.module('starter.controllers', [])
                 }, function(error) {
                     console.log(error);
                 })
-            // get lengths for projects, tasks, stories, timecards
+                // get lengths for projects, tasks, stories, timecards
             $scope.projectLength = LocalStorageService.getProjectsLengthLocal();
             $scope.tasksLength = LocalStorageService.getTasksLengthLocal();
             $scope.storiesLength = LocalStorageService.getStoriesLengthLocal();
@@ -697,55 +697,67 @@ angular.module('starter.controllers', [])
         };
     })
     // approvals Tab  
-    .controller('approvalsCtrl', function($scope, $state, moment, snService, LocalStorageService) {
+    .controller('approvalsCtrl', function($scope, $state, $ionicPopup, $timeout, moment, snService, LocalStorageService) {
         $scope.$on('$ionicView.enter', function(e) {
-            var set = LocalStorageService.getApprovalsLocal();
-            $scope.approvals = [];
-            for (var i = 0; i < set.length; i++) {
-                var app = {};
-                var timecard = LocalStorageService.getTimecardByID(set[i].document_id.value);
-                app.sys_id = set[i].sys_id;
-                app.u_number = set[i].u_number;
-                app.sys_created_on = set[i].sys_created_on;
-                app.tc_submitted_by = timecard.user;
-                app.tc_total = timecard.total;
-                app.tc_state = timecard.state;
-                app.tc_project = timecard.u_project;
-                app.tc_task = timecard.task;
-                app.tc_story = timecard.story;
-                app.tc_sun = timecard.sunday;
-                app.tc_mon = timecard.monday;
-                app.tc_tue = timecard.tuesday;
-                app.tc_wed = timecard.wednesday;
-                app.tc_thu = timecard.thursday;
-                app.tc_fri = timecard.friday;
-                app.tc_sat = timecard.saturday;
-                $scope.approvals.push(app);
-            }
+                var set = LocalStorageService.getApprovalsLocal();
+                $scope.approvals = [];
+                for (var i = 0; i < set.length; i++) {
+                    var app = {};
+                    var timecard = LocalStorageService.getTimecardByID(set[i].document_id.value);
+                    app.sys_id = set[i].sys_id;
+                    app.u_number = set[i].u_number;
+                    app.sys_created_on = set[i].sys_created_on;
+                    app.tc_submitted_by = timecard.user;
+                    app.tc_total = timecard.total;
+                    app.tc_state = timecard.state;
+                    app.tc_project = timecard.u_project;
+                    app.tc_task = timecard.task;
+                    app.tc_story = timecard.story;
+                    app.tc_sun = timecard.sunday;
+                    app.tc_mon = timecard.monday;
+                    app.tc_tue = timecard.tuesday;
+                    app.tc_wed = timecard.wednesday;
+                    app.tc_thu = timecard.thursday;
+                    app.tc_fri = timecard.friday;
+                    app.tc_sat = timecard.saturday;
+                    $scope.approvals.push(app);
+                }
         });
         $scope.$on('$ionicView.leave', function(e) {
             $scope.approvals = [];
         });
         // approve timecard from approvals 
         $scope.approve = function(sys_id) {
-            snService.approveApprovals(sys_id)
-                .then(function(result) {
-                    $state.go('app.home', {}, {
-                        reload: true
-                    });
-                }, function(error) {
-                    console.log(error);
-                })
+            $ionicPopup.confirm({
+                    title: 'Confirm Approve',
+                    template: 'Do you want to Approve Timecard',
+                    scope: $scope,
+                    buttons: [{
+                        text: 'Cancel'
+                    }, {
+                        text: 'Yes',
+                        type: 'button-positive',
+                        onTap: function(e) {
+                            snService.approveApprovals(sys_id)
+                                .then(function(result) {
+                                    $state.go('app.approvalsPanel', {}, {
+                                        reload: true
+                                    });
+                                }, function(error) {
+                                    console.log(error);
+                                })
+                        }
+                    }]
+            });
         };
+
         $scope.refreshApprovals = function() {};
         // functional Methods (Projects, Tasks, Stories)
         $scope.getProjectNumberBySysID = function(sys_id) {
             return LocalStorageService.getProjectNumberBySysID(sys_id);
-        };
-        $scope.getTaskNumberBySysID = function(sys_id) {
+        }; $scope.getTaskNumberBySysID = function(sys_id) {
             return LocalStorageService.getTaskNumberBySysID(sys_id);
-        };
-        $scope.getStoryNumberBySysID = function(sys_id) {
+        }; $scope.getStoryNumberBySysID = function(sys_id) {
             return LocalStorageService.getStoryNumberBySysID(sys_id);
         };
         // $scope.getUsernameByUserID = function(sys_id) {
@@ -764,13 +776,12 @@ angular.module('starter.controllers', [])
             } else {
                 $scope.shownGroup = approval;
             }
-        };
-        $scope.isGroupShown = function(approval) {
+        }; $scope.isGroupShown = function(approval) {
             return $scope.shownGroup === approval;
         };
     })
-    // side menu (Projects)
-    .controller('projectsCtrl', function($scope, $state, snService, LocalStorageService) {
+// side menu (Projects)
+.controller('projectsCtrl', function($scope, $state, snService, LocalStorageService) {
         $scope.$on('$ionicView.enter', function(e) {
             $scope.projects = LocalStorageService.getProjectsLocal();
         });

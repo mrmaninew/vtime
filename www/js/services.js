@@ -11,8 +11,7 @@ angular.module('starter.services', [])
         'StoriesTableName': 'rm_story', // Servicenow Stories Table
         'TimecardTable': 'time_card', // Servicenow Timecard Table
         'ApprovalsTable': 'sysapproval_approver', // Servicenow Approvals Table
-        'UserTable': 'sys_user',
-        'TokenExpireMessage':''
+        'UserTable': 'sys_user'
     })
     // Token Service (Access, Password)
     .factory('TokenService', function() {
@@ -295,7 +294,7 @@ angular.module('starter.services', [])
                     })
                     .success(function(data) {
                         //update approvals
-                        if (LocalStorageService.deleteApprovalBySysID(data.result.sys_id)) {
+                        if (LocalStorageService.deleteApprovalBySysID(sys_id)) {
                             // response to promise  - callback
                             defer.resolve(data.result);
                         }
@@ -567,7 +566,7 @@ angular.module('starter.services', [])
                     approvals.splice(i, 1)
                 }
             }
-            setTimecardsLocal(approvals);
+            setApprovalsLocal(approvals);
             return true;
         };
         return {
@@ -608,3 +607,6 @@ angular.module('starter.services', [])
             deleteApprovalBySysID: deleteApprovalBySysID
         }
     })
+    // Error Service 
+    .factory('ErrorService',function(){
+    });
