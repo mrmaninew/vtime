@@ -304,6 +304,34 @@ angular.module('starter.services', [])
                     })
                 return defer.promise;
             },
+            // reject timecard in approvals 
+            rejectApprovals: function(sys_id) {
+                var url = snCred.PRODURL + '/api/now/table/' + snCred.ApprovalsTable + '/' + sys_id;
+                var token = "Bearer " + TokenService.getToken();
+                var defer = $q.defer();
+                var data = {
+                    'state': 'rejected'
+                };
+                $http({
+                        method: 'PUT',
+                        url: url,
+                        headers: {
+                            'Authorization': token
+                        },
+                        data: data
+                    })
+                    .success(function(data) {
+                        //update approvals
+                        if (LocalStorageService.deleteApprovalBySysID(sys_id)) {
+                            // response to promise  - callback
+                            defer.resolve(data.result);
+                        }
+                    })
+                    .error(function(error) {
+                        defer.reject(error);
+                    })
+                return defer.promise;
+            }
         }
     })
     // User Service (session, storage)
@@ -608,5 +636,4 @@ angular.module('starter.services', [])
         }
     })
     // Error Service 
-    .factory('ErrorService',function(){
-    });
+    .factory('ErrorService', function() {});

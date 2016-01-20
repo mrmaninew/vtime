@@ -750,7 +750,31 @@ angular.module('starter.controllers', [])
                     }]
             });
         };
-
+        // reject timecard from approvals
+        $scope.reject = function(sys_id){
+            $ionicPopup.confirm({
+                title:'Confirm Reject',
+                template:'Do you want to Reject Timecard',
+                scope: $scope,
+                buttons:[{
+                    text:'Cancel'
+                },{
+                    text:'Yes',
+                    type: 'button-positive',
+                    onTap: function(e){
+                        snService.rejectApprovals(sys_id)
+                        .then(function(result){
+                            $state.go('app.approvalsPanel',{},{
+                                reload:true
+                            });
+                        },function(error){
+                            console.log(error);
+                        })
+                    }
+                }]
+            })
+        };
+        // refresh approvals view - UI 
         $scope.refreshApprovals = function() {};
         // functional Methods (Projects, Tasks, Stories)
         $scope.getProjectNumberBySysID = function(sys_id) {
