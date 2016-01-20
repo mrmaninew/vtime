@@ -63,6 +63,7 @@ angular.module('starter.controllers', [])
         $scope.selDay = $scope.selDate.getDay(); // 0 - 7
         $scope.selDayName = daysWeek.weekDays[$scope.selDay]; // sunday, monday
         $scope.selDateMonth = $scope.selDate.getMonth(); // 0-january, 11- December
+        $scope.todayTCS = []; // current day timecards (Today - List)
         // get total hours for current day and week
         function getTotalHrsDayWeek() {
             if ($scope.selDay == 0) {
@@ -77,12 +78,23 @@ angular.module('starter.controllers', [])
         };
 
         function processTimecards(tcs) {
+            var Ptimecards = [];
             for (i = 0; i < tcs.length; i++) {
                 $scope.totalHrsWeekly += Number(tcs[i].total);
                 if (tcs[i][$scope.selDayName] != 0) {
                     $scope.totalHrsDay += Number(tcs[i][$scope.selDayName]);
                 }
+                if (tcs[i][$scope.selDayName] != 0 && tcs[i].state == "Pending") {
+                    var set = {};
+                    set.selDate = new Date($scope.selDate);
+                    if (tcs[i].sys_id) set.sys_id = tcs[i].sys_id;
+                    if (tcs[i].task) set.task = LocalStorageService.getTaskNumberBySysID(tcs[i].task.value);
+                    if (tcs[i].u_story) set.story = LocalStorageService.getStoryNumberBySysID(tcs[i].u_story.value);
+                    if (tcs[i][$scope.selDayName]) set.hours = tcs[i][$scope.selDayName] || 0;
+                    Ptimecards.push(set);
+                }
             }
+            $scope.todayTCS = Ptimecards;
             processChartData(tcs);
         };
         // get chart data 
@@ -128,6 +140,13 @@ angular.module('starter.controllers', [])
                     $scope.totalHrsMonthly += Number(tc[i].total);
                 }
             }
+        };
+        $scope.routeEditCard = function(sys_id) {
+            //ref="#/app/editCard/:{{tc.sys_id}}/:{{selDate}}"
+            $state.go('app.editCard', {
+                param1: sys_id,
+                param2: $scope.selDate
+            })
         };
         // Bar charts
         $scope.labels = ['sun', 'mon', 'tue', 'wed', 'thu', 'fri', 'sat'];
@@ -699,29 +718,29 @@ angular.module('starter.controllers', [])
     // approvals Tab  
     .controller('approvalsCtrl', function($scope, $state, $ionicPopup, $timeout, moment, snService, LocalStorageService) {
         $scope.$on('$ionicView.enter', function(e) {
-                var set = LocalStorageService.getApprovalsLocal();
-                $scope.approvals = [];
-                for (var i = 0; i < set.length; i++) {
-                    var app = {};
-                    var timecard = LocalStorageService.getTimecardByID(set[i].document_id.value);
-                    app.sys_id = set[i].sys_id;
-                    app.u_number = set[i].u_number;
-                    app.sys_created_on = set[i].sys_created_on;
-                    app.tc_submitted_by = timecard.user;
-                    app.tc_total = timecard.total;
-                    app.tc_state = timecard.state;
-                    app.tc_project = timecard.u_project;
-                    app.tc_task = timecard.task;
-                    app.tc_story = timecard.story;
-                    app.tc_sun = timecard.sunday;
-                    app.tc_mon = timecard.monday;
-                    app.tc_tue = timecard.tuesday;
-                    app.tc_wed = timecard.wednesday;
-                    app.tc_thu = timecard.thursday;
-                    app.tc_fri = timecard.friday;
-                    app.tc_sat = timecard.saturday;
-                    $scope.approvals.push(app);
-                }
+            var set = LocalStorageService.getApprovalsLocal();
+            $scope.approvals = [];
+            for (var i = 0; i < set.length; i++) {
+                var app = {};
+                var timecard = LocalStorageService.getTimecardByID(set[i].document_id.value);
+                app.sys_id = set[i].sys_id;
+                app.u_number = set[i].u_number;
+                app.sys_created_on = set[i].sys_created_on;
+                app.tc_submitted_by = timecard.user;
+                app.tc_total = timecard.total;
+                app.tc_state = timecard.state;
+                app.tc_project = timecard.u_project;
+                app.tc_task = timecard.task;
+                app.tc_story = timecard.story;
+                app.tc_sun = timecard.sunday;
+                app.tc_mon = timecard.monday;
+                app.tc_tue = timecard.tuesday;
+                app.tc_wed = timecard.wednesday;
+                app.tc_thu = timecard.thursday;
+                app.tc_fri = timecard.friday;
+                app.tc_sat = timecard.saturday;
+                $scope.approvals.push(app);
+            }
         });
         $scope.$on('$ionicView.leave', function(e) {
             $scope.approvals = [];
@@ -729,47 +748,47 @@ angular.module('starter.controllers', [])
         // approve timecard from approvals 
         $scope.approve = function(sys_id) {
             $ionicPopup.confirm({
-                    title: 'Confirm Approve',
-                    template: 'Do you want to Approve Timecard',
-                    scope: $scope,
-                    buttons: [{
-                        text: 'Cancel'
-                    }, {
-                        text: 'Yes',
-                        type: 'button-positive',
-                        onTap: function(e) {
-                            snService.approveApprovals(sys_id)
-                                .then(function(result) {
-                                    $state.go('app.approvalsPanel', {}, {
-                                        reload: true
-                                    });
-                                }, function(error) {
-                                    console.log(error);
-                                })
-                        }
-                    }]
+                title: 'Confirm Approve',
+                template: 'Do you want to Approve Timecard',
+                scope: $scope,
+                buttons: [{
+                    text: 'Cancel'
+                }, {
+                    text: 'Yes',
+                    type: 'button-positive',
+                    onTap: function(e) {
+                        snService.approveApprovals(sys_id)
+                            .then(function(result) {
+                                $state.go('app.approvalsPanel', {}, {
+                                    reload: true
+                                });
+                            }, function(error) {
+                                console.log(error);
+                            })
+                    }
+                }]
             });
         };
         // reject timecard from approvals
-        $scope.reject = function(sys_id){
+        $scope.reject = function(sys_id) {
             $ionicPopup.confirm({
-                title:'Confirm Reject',
-                template:'Do you want to Reject Timecard',
+                title: 'Confirm Reject',
+                template: 'Do you want to Reject Timecard',
                 scope: $scope,
-                buttons:[{
-                    text:'Cancel'
-                },{
-                    text:'Yes',
+                buttons: [{
+                    text: 'Cancel'
+                }, {
+                    text: 'Yes',
                     type: 'button-positive',
-                    onTap: function(e){
+                    onTap: function(e) {
                         snService.rejectApprovals(sys_id)
-                        .then(function(result){
-                            $state.go('app.approvalsPanel',{},{
-                                reload:true
-                            });
-                        },function(error){
-                            console.log(error);
-                        })
+                            .then(function(result) {
+                                $state.go('app.approvalsPanel', {}, {
+                                    reload: true
+                                });
+                            }, function(error) {
+                                console.log(error);
+                            })
                     }
                 }]
             })
@@ -779,9 +798,11 @@ angular.module('starter.controllers', [])
         // functional Methods (Projects, Tasks, Stories)
         $scope.getProjectNumberBySysID = function(sys_id) {
             return LocalStorageService.getProjectNumberBySysID(sys_id);
-        }; $scope.getTaskNumberBySysID = function(sys_id) {
+        };
+        $scope.getTaskNumberBySysID = function(sys_id) {
             return LocalStorageService.getTaskNumberBySysID(sys_id);
-        }; $scope.getStoryNumberBySysID = function(sys_id) {
+        };
+        $scope.getStoryNumberBySysID = function(sys_id) {
             return LocalStorageService.getStoryNumberBySysID(sys_id);
         };
         // $scope.getUsernameByUserID = function(sys_id) {
@@ -800,12 +821,13 @@ angular.module('starter.controllers', [])
             } else {
                 $scope.shownGroup = approval;
             }
-        }; $scope.isGroupShown = function(approval) {
+        };
+        $scope.isGroupShown = function(approval) {
             return $scope.shownGroup === approval;
         };
     })
-// side menu (Projects)
-.controller('projectsCtrl', function($scope, $state, snService, LocalStorageService) {
+    // side menu (Projects)
+    .controller('projectsCtrl', function($scope, $state, snService, LocalStorageService) {
         $scope.$on('$ionicView.enter', function(e) {
             $scope.projects = LocalStorageService.getProjectsLocal();
         });

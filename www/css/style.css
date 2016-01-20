@@ -32,15 +32,14 @@
 
 .dash-top {
     background-color: #444;
-    height: 30vh;
     margin-bottom: 6px;
-    padding: 0px;
 }
 
 .dash-middle {
-    height: 20vh;
+   /* height: 20vh; */
     border: 1px solid grey;
-    padding: 0px;
+    padding-bottom: 0px;
+    margin-bottom: 10px;
 }
 
 .col-33-middle {

@@ -8,7 +8,7 @@
         <div class="row col-100">
             <div class="card" style="height:100%;width:100%">
                 <div class="item item-divider">
-                    Weekly 
+                    Weekly
                 </div>
                 <div class="item item-text-wrap">
                     <canvas id="bar" class="chart chart-bar" chart-data="data" chart-labels="labels" chart-series="series" chart-colours="colors" click="onClick">
@@ -40,6 +40,24 @@
                 </div>
             </div>
         </div>
+        <!--bottom-->
+        <ion-list>
+            <div class="item item-divider">
+                Today: {{selDate |date:'dd-MM-yyyy'}}
+            </div>
+            <ion-item class="item-avatar" ng-repeat="tc in todayTCS" ng-click="routeEditCard(tc.sys_id)">
+                <span class="day-display-sizing">{{tc.selDate|date:'dd'}}</span>
+                <h2>{{tc.selDate|date:'EEEE'}}</h2>
+                <p ng-if="tc.task"> Task: {{tc.task}}</p>
+                <p ng-if="tc.story">Story: {{tc.story}}</p>
+                <span class="text-align-right">
+                                            {{tc.hours}} hrs
+                                            &nbsp;
+                                            <i class="icon ion-ios-arrow-forward"></i>
+                                      </span>
+                <p>{{tc.selDate|date:'MMM yyyy'}}</p>
+            </ion-item>
+        </ion-list>
     </ion-content>
     <ion-footer-bar class="bar bar-dark">
         <div class="button-bar">
