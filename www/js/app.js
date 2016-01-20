@@ -44,7 +44,8 @@ angular.module('starter', ['ionic', 'ionic-datepicker', 'starter.controllers', '
                 .then(function(result) {
                     LocalStorageService.setApprovalsLocal(result);
                 }, function(error) {
-                    console.log(error);
+                    //console.log(error);
+                    LocalStorageService.setApprovalsLocal([]);
                 });
         });
     })
@@ -128,6 +129,7 @@ angular.module('starter', ['ionic', 'ionic-datepicker', 'starter.controllers', '
             })
             .state('app.home', {
                 url: '/home',
+                cache: false,
                 views: {
                     'menuContent': {
                         templateUrl: 'templates/home.html',

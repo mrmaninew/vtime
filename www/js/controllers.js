@@ -141,6 +141,12 @@ angular.module('starter.controllers', [])
         };
         // state management 
         $scope.$on('$ionicView.enter', function() {
+            // libs and variables 
+            $scope.projectLength = LocalStorageService.getProjectsLengthLocal();
+            $scope.tasksLength = LocalStorageService.getTasksLengthLocal();
+            $scope.storiesLength = LocalStorageService.getStoriesLengthLocal();
+            $scope.timecardsLength = LocalStorageService.getTimecardsLengthLocal();
+            // init functions 
             getTotalHrsDayWeek(); // get total hours for current day, week
             getTotalHrsMonth(); // get total hours for current month
         });
@@ -149,13 +155,18 @@ angular.module('starter.controllers', [])
             $scope.totalHrsWeekly = 0;
             $scope.totalHrsMonthly = 0;
             $scope.data = [];
+            // libs and variables 
+            $scope.projectLength = "";
+            $scope.tasksLength = "";
+            $scope.storiesLength = "";
+            $scope.timecardsLength = "";
         });
     })
     // Login View
     .controller('LoginCtrl', function($scope, $state) {})
     // Time tab for Today (or) Selected , this week (depending on current and selected date) 
     .controller('timeCardsPanelCtrl', function($scope, $cordovaToast, $ionicPlatform, $state, $ionicTabsDelegate, $ionicModal, moment, daysWeek, LocalStorageService) {
-
+        // on view enter
         $scope.$on('$ionicView.enter', function(e) {
             // footer item-right varibles 
             $scope.totalHrsDay = 0;
@@ -173,6 +184,7 @@ angular.module('starter.controllers', [])
             getTimecardsDate();
             onDayChanged();
         });
+        // on view leave
         $scope.$on('$ionicView.leave', function(e) {
             $scope.timecards = [];
             $scope.selThisWeek = [];
@@ -402,7 +414,9 @@ angular.module('starter.controllers', [])
                 .then(function(result) {
                     console.log(result); // response after insert timecard
                     var msg = "Created New Timecard"; // internal toast message
-                    $state.go('app.timecardPanel');
+                    $state.go('app.timecardPanel', {}, {
+                        reload: true
+                    });
                 }, function(error) {
                     console.log(result);
                 })
@@ -478,27 +492,9 @@ angular.module('starter.controllers', [])
                 .then(function(result) {
                     console.log(result);
                     var message = "Timecard Updated"; // local toast notification
-                    $state.go('app.timecardPanel');
-                }, function(error) {
-                    console.log(error);
-                })
-        };
-        $scope.submitTC = function() {
-            var notes = "u_" + $scope.tc.day + "_work_notes";
-            var timecard = {};
-            if ($scope.tc.u_project) timecard.u_project = $scope.tc.u_project;
-            if ($scope.tc.task) timecard.task = $scope.tc.task;
-            if ($scope.tc.story) timecard.u_story = $scope.tc.story;
-            if ($scope.tc.category) timecard.category = $scope.tc.category;
-            if ($scope.tc.state) timecard.state = "Submitted";
-            timecard.u_billable = $scope.tc.u_billable;
-            if ($scope.tc.comments) timecard[notes] = $scope.tc.comments;
-            if ($scope.tc.hours) timecard[$scope.tc.day] = $scope.tc.hours;
-            //console.log(timecard, $scope.tc.sys_id);
-            snService.updateTimecard($scope.tc.sys_id, timecard)
-                .then(function(result) {
-                    console.log(result);
-                    $state.go('app.timecardPanel');
+                    $state.go('app.timecardPanel', {}, {
+                        reload: true
+                    });
                 }, function(error) {
                     console.log(error);
                 })
@@ -517,6 +513,7 @@ angular.module('starter.controllers', [])
         $scope.pending = 0;
         $scope.submitted = 0;
         $scope.approvedProcessed = 0;
+        // on-view enter
         $scope.$on('$ionicView.enter', function(e) {
             // Timecards
             $scope.timecards = LocalStorageService.getTimecardsLocal();
@@ -533,14 +530,13 @@ angular.module('starter.controllers', [])
                         $scope.approvedProcessed++;
                     }
                 }
-            };
+            }
             preProcess();
         });
-
+        // on-view leave
         $scope.$on('$ionicView.leave', function(e) {
             $scope.timecards = "";
-        })
-
+        });
         // functional Methods (Projects, Tasks, Stories)
         $scope.getProjectNumberBySysID = function(sys_id) {
             return LocalStorageService.getProjectNumberBySysID(sys_id);
@@ -551,20 +547,29 @@ angular.module('starter.controllers', [])
         $scope.getStoryNumberBySysID = function(sys_id) {
             return LocalStorageService.getStoryNumberBySysID(sys_id);
         };
-        // submit timecard and refresh timecard local storage
+        // submit timecard and refresh timecard local storage and current view
         $scope.submitTimecard = function(sys_id) {
             snService.submitTimecard(sys_id)
                 .then(function(data) {
-                    // snService.getTimecards()
-                    //     .then(function(result) {
-                    //         LocalStorageService.setTimecardsLocal(result);
-                    //         $state.go('app.home');
-                    //     }, function(error) {
-                    //         console.log(error);
-                    //     })
                     console.log(data);
-                    var msg = "Timecard Submitted"; // local toast notifications
-                    $state.go("app.home");
+                    var msg = "Timecard submitted"; // local toast notifications
+                    $state.go("app.statusPanel", {}, {
+                        reload: true
+                    });
+                }, function(error) {
+                    console.log(error);
+                })
+        };
+        // delete timecard and refresh timecard local storage and refresh current view 
+        $scope.deleteTimecard = function(sys_id) {
+            console.log('delete Timecard' + sys_id);
+            snService.deleteTimecard(sys_id)
+                .then(function(result) {
+                    console.log(result);
+                    var msg = "Timecard deleted"; // local toast notifications
+                    $state.go("app.statusPanel", {}, {
+                        reload: true
+                    });
                 }, function(error) {
                     console.log(error);
                 })
@@ -651,6 +656,7 @@ angular.module('starter.controllers', [])
                 var app = {};
                 var timecard = LocalStorageService.getTimecardByID(set[i].document_id.value);
                 app.sys_id = set[i].sys_id;
+                app.u_number = set[i].u_number;
                 app.sys_created_on = set[i].sys_created_on;
                 app.tc_submitted_by = timecard.user;
                 app.tc_total = timecard.total;
@@ -673,10 +679,11 @@ angular.module('starter.controllers', [])
         });
         // approve timecard from approvals 
         $scope.approve = function(sys_id) {
-            console.log(sys_id);
             snService.approveApprovals(sys_id)
                 .then(function(result) {
-                    $state.go('app.home');
+                    $state.go('app.home', {}, {
+                        reload: true
+                    });
                 }, function(error) {
                     console.log(error);
                 })

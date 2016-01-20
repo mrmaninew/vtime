@@ -10,7 +10,7 @@
                 <ion-item class="item-stable" ng-click=" toggleGroup(approval) " ng-class="{active: isGroupShown(approval)}">
                     <span class="text-align-left">
                       <i class="icon ion-android-checkmark-circle TCmenu"></i>
-                     </span> &nbsp; {{approval.sys_created_on}}
+                     </span> &nbsp; {{approval.u_number}}
                     <i class="icon text-align-right" ng-class="isGroupShown(approval) ? 'ion-ios-circle-outline' : 'ion-ios-circle-filled'"></i>
                 </ion-item>
                 <ion-item class="item-accordion" ng-show="isGroupShown(approval) ">
@@ -20,6 +20,7 @@
                     <!-- <p ng-if="approval.tc_submitted_by">Submitted By:&nbsp;{{getUsernameByUserID(approval.tc_submitted_by.value)}}</p> -->
                     <p>Hours:&nbsp;{{approval.tc_total}}</p>
                     <p>State:&nbsp;{{approval.tc_state}}</p>
+                    <p>Create on:&nbsp;{{approval.sys_created_on}}</p>
                     <div>
                         <div class="row header">
                             <div class="col text-center cols">sun</div>
@@ -45,6 +46,11 @@
                     </button>
                 </ion-item>
             </div>
+        </ion-list>
+        <ion-list class="padding" ng-if="approvals.length == 0">
+            <ion-item>
+                <h2 class="text-center"> '0' Approval Records </h2>
+            </ion-item>
         </ion-list>
     </ion-content>
 </ion-view>

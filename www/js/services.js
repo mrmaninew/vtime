@@ -203,33 +203,6 @@ angular.module('starter.services', [])
                     })
                 return defer.promise;
             },
-            // approve timecard in approvals 
-            approveApprovals: function(sys_id) {
-                var url = snCred.PRODURL + '/api/now/table/' + snCred.ApprovalsTable + '/' + sys_id;
-                var token = "Bearer " + TokenService.getToken();
-                var defer = $q.defer();
-                var data = {
-                    'state': 'approved'
-                };
-                $http({
-                        method: 'PUT',
-                        url: url,
-                        headers: {
-                            'Authorization': token
-                        },
-                        data: data
-                    })
-                    .success(function(data) {
-                        //update approvals
-                        //LocalStorageService.updateApprovalsBySysID(data.result.sys_id);
-                        // response to promise  - callback
-                        defer.resolve(data.result);
-                    })
-                    .error(function(error) {
-                        defer.reject(error);
-                    })
-                return defer.promise;
-            },
             // only edit state value and use sys_id as param 
             submitTimecard: function(sys_id) {
                 var url = snCred.PRODURL + '/api/now/table/' + snCred.TimecardTable + '/' + sys_id;
@@ -248,9 +221,10 @@ angular.module('starter.services', [])
                     })
                     .success(function(data) {
                         //update timecard local storage 
-                        LocalStorageService.setTimecardLocalByID(data.result.sys_id, data.result); //(sys_id,[object])
-                        //response to promise - callback
-                        defer.resolve(data.result);
+                        if (LocalStorageService.setTimecardLocalByID(data.result.sys_id, data.result)) { //(sys_id,[object])
+                            //response to promise - callback
+                            defer.resolve(data.result);
+                        }
                     })
                     .error(function(error) {
                         defer.reject(error);
@@ -269,17 +243,46 @@ angular.module('starter.services', [])
                             'Authorization': token
                         }
                     })
-                    .success(function(data) {
+                    .success(function() {
                         //delete timecard from local storage 
-                        LocalStorageService.deleteTimecardLocalByID(data.result.sys_id);
-                        //response to promise - callback
-                        defer.resolve(data.result);
+                        if (LocalStorageService.deleteTimecardLocalByID(sys_id)) {
+                            //response to promise - callback
+                            defer.resolve("deleted");
+                        }
                     })
                     .error(function(error) {
                         defer.reject(error);
                     })
                 return defer.promise;
-            }
+            },
+            // approve timecard in approvals 
+            approveApprovals: function(sys_id) {
+                var url = snCred.PRODURL + '/api/now/table/' + snCred.ApprovalsTable + '/' + sys_id;
+                var token = "Bearer " + TokenService.getToken();
+                var defer = $q.defer();
+                var data = {
+                    'state': 'approved'
+                };
+                $http({
+                        method: 'PUT',
+                        url: url,
+                        headers: {
+                            'Authorization': token
+                        },
+                        data: data
+                    })
+                    .success(function(data) {
+                        //update approvals
+                        if (LocalStorageService.deleteApprovalBySysID(data.result.sys_id)) {
+                            // response to promise  - callback
+                            defer.resolve(data.result);
+                        }
+                    })
+                    .error(function(error) {
+                        defer.reject(error);
+                    })
+                return defer.promise;
+            },
         }
     })
     // User Service (session, storage)
@@ -470,14 +473,15 @@ angular.module('starter.services', [])
             return getTimecardsLocal().length;
         };
 
-        function deleteTimecardsLocalByID(sys_id) {
+        function deleteTimecardLocalByID(sys_id) {
             var timecards = getTimecardsLocal();
             for (var i = 0; i < timecards.length; i++) {
-                if (timecards[i] === sys_id) {
-                    timecards.splice(i, 0);
+                if (timecards[i].sys_id == sys_id) {
+                    timecards.splice(i, 1);
                 }
             }
             setTimecardsLocal(timecards);
+            return true;
         };
 
         function clearAllTimecardsLocal() {
@@ -512,6 +516,17 @@ angular.module('starter.services', [])
         function getApprovalsLengthLocal() {
             return getApprovalsLocal().length;
         };
+
+        function deleteApprovalBySysID(sys_id) {
+            var approvals = getApprovalsLocal();
+            for (var i = 0; i < approvals.length; i++) {
+                if (approvals[i].sys_id == sys_id) {
+                    approvals.splice(i, 1)
+                }
+            }
+            setTimecardsLocal(approvals);
+            return true;
+        };
         return {
             // Projects 
             setProjectsLocal: setProjectsLocal,
@@ -538,13 +553,14 @@ angular.module('starter.services', [])
             getTimecardByCreatedDate: getTimecardByCreatedDate,
             getTimecardsLengthLocal: getTimecardsLengthLocal,
             getTimecardsByMonthYearLocal: getTimecardsByMonthYearLocal,
-            deleteTimecardsLocalByID: deleteTimecardsLocalByID,
+            deleteTimecardLocalByID: deleteTimecardLocalByID,
             // Users
             setUserLocal: setUserLocal,
             getUserLocal: getUserLocal,
             // Approvals
             setApprovalsLocal: setApprovalsLocal,
             getApprovalsLocal: getApprovalsLocal,
-            getApprovalsLengthLocal: getApprovalsLengthLocal
+            getApprovalsLengthLocal: getApprovalsLengthLocal,
+            deleteApprovalBySysID:deleteApprovalBySysID
         }
     })

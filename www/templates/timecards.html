@@ -9,15 +9,18 @@
                 <ion-item class="item-stable" ng-click="toggleGroup(timecard)" ng-class="{active: isGroupShown(timecard)}">
                     <span class="text-align-left">
                       <i class="icon icon ion-ios-timer TCitem"></i>
-                     </span> &nbsp; {{ timecard.sys_created_on }}
+                     </span> &nbsp; {{ timecard.u_number }}
                     <i class="icon text-align-right" ng-class="isGroupShown(timecard) ? 'ion-ios-circle-outline' : 'ion-ios-circle-filled'"></i>
                 </ion-item>
                 <ion-item class="item-accordion" ng-show="isGroupShown(timecard)">
                     <p>Project:&nbsp;{{getProjectNumberBySysID(timecard.u_project.value)}}</p>
                     <p ng-if="timecard.task">Task:&nbsp;{{getTaskNumberBySysID(timecard.task.value)}}</p>
                     <p ng-if="timecard.story">Story:&nbsp;{{getStoryNumberBySysID(timecard.story.value)}}</p>
-                    <p>Hours:&nbsp;{{timecard.total}}</p>
-                    <p>state:&nbsp;{{timecard.state}}</p>
+                    <p>
+                        <p>Hours:&nbsp;{{timecard.total}}</p>
+                        <p>state:&nbsp;{{timecard.state}}</p>
+                        <p>Category:&nbsp;{{timecard.category}}</p>
+                        <p>Created On:&nbsp;{{timecard.sys_created_on}}</p>
                 </ion-item>
             </div>
         </ion-list>
