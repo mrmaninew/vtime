@@ -1,4 +1,4 @@
-<ion-view view-title="Time - {{selDate | date:'dd/MM'}}">
+<ion-view view-title="Time - {{selDate | date:'MMM dd, yyyy'}}">
     <ion-nav-buttons side="right">
         <ionic-datepicker input-obj="datepickerObject">
             <button class="button icon ion-calendar" ng-click="getCalendar()">
@@ -25,7 +25,7 @@
                                             &nbsp;
                                             <i class="icon ion-ios-arrow-forward"></i>
                                       </span>
-                                      <p>{{tc.selDate|date:'MMM yyyy'}}</p>
+                                      <p>Project: {{tc.u_project}}</p>
                                    </ion-item>
                             </ion-list>
                         </div>

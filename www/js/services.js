@@ -378,19 +378,30 @@ angular.module('starter.services', [])
         };
 
         function getProjectNumberBySysID(id) {
-            var projectName = "";
+            var projectNumber = "";
             var projects = getProjectsLocal();
             for (var i = 0; i < projects.length; i++) {
                 if (projects[i].sys_id == id) {
-                    projectName = projects[i].number;
+                    projectNumber = projects[i].number;
                 }
             }
-            return projectName;
+            return projectNumber;
         };
 
         function getProjectsLengthLocal() {
             return getProjectsLocal().length;
         };
+
+        function getProjectNameBySysID(id) {
+            var projectName = "";
+            var projects = getProjectsLocal();
+            for (var i = 0; i < projects.length; i++) {
+                if (projects[i].sys_id == id) {
+                    projectName = projects[i].short_description;
+                }
+            }
+            return projectName;
+        }
         // Tasks
         function setTasksLocal(result) {
             if (result) {
@@ -614,6 +625,7 @@ angular.module('starter.services', [])
             setProjectsLocal: setProjectsLocal,
             getProjectsLocal: getProjectsLocal,
             getProjectNumberBySysID: getProjectNumberBySysID,
+            getProjectNameBySysID: getProjectNameBySysID,
             getProjectsLengthLocal: getProjectsLengthLocal,
             // Tasks
             setTasksLocal: setTasksLocal,

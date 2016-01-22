@@ -13,7 +13,7 @@
                                 <ion-item class="item-stable" ng-if="timecard.state == 'Pending'" ng-click=" toggleGroupPen(timecard) " ng-class="{active: isGroupShownPen(timecard)} ">
                                     <span class="text-align-left ">
                       <i class="icon icon ion-ios-timer TCitem "></i>
-                     </span> &nbsp; {{timecard.u_number}}
+                     </span> &nbsp; {{timecard.u_number}} &nbsp; - &nbsp;{{timecard.week_starts_on}}
                                     <i class="icon text-align-right " ng-class="isGroupShownPen(timecard) ? 'ion-ios-circle-outline' : 'ion-ios-circle-filled' "></i>
                                 </ion-item>
                                 <ion-item class="item-accordion " ng-show="isGroupShownPen(timecard) ">
@@ -67,7 +67,7 @@
                                 <ion-item class="item-stable" ng-if="timecard.state == 'Submitted'" ng-click=" toggleGroupSub(timecard) " ng-class="{active: isGroupShownSub(timecard)} ">
                                     <span class="text-align-left ">
                       <i class="icon icon ion-ios-timer TCitem "></i>
-                     </span> &nbsp; {{timecard.u_number}}
+                     </span> &nbsp; {{timecard.u_number}}&nbsp; - &nbsp;{{timecard.week_starts_on}}
                                     <i class="icon text-align-right " ng-class="isGroupShownSub(timecard) ? 'ion-ios-circle-outline' : 'ion-ios-circle-filled' "></i>
                                 </ion-item>
                                 <ion-item class="item-accordion " ng-show="isGroupShownSub(timecard) ">
@@ -97,7 +97,7 @@
                                 <ion-item class="item-stable" ng-if="timecard.state == 'Processed'|| timecard.state == 'Approved' " ng-click=" toggleGroupApp(timecard) " ng-class="{active: isGroupShownApp(timecard)} ">
                                     <span class="text-align-left ">
                       <i class="icon icon ion-ios-timer TCitem "></i>
-                     </span> &nbsp; {{timecard.u_number}}
+                     </span> &nbsp; {{timecard.u_number}}&nbsp; - &nbsp;{{timecard.week_starts_on}}
                                     <i class="icon text-align-right " ng-class="isGroupShownApp(timecard) ? 'ion-ios-circle-outline' : 'ion-ios-circle-filled' "></i>
                                 </ion-item>
                                 <ion-item class="item-accordion " ng-show="isGroupShownApp(timecard) ">
@@ -127,7 +127,7 @@
                                 <ion-item class="item-stable" ng-if="timecard.state == 'Rejected'" ng-click=" toggleGroupRej(timecard) " ng-class="{active: isGroupShownRej(timecard)} ">
                                     <span class="text-align-left ">
                       <i class="icon icon ion-ios-timer TCitem "></i>
-                     </span> &nbsp; {{timecard.u_number}}
+                     </span> &nbsp; {{timecard.u_number}}&nbsp; - &nbsp;{{timecard.week_starts_on}}
                                     <i class="icon text-align-right " ng-class="isGroupShownRej(timecard) ? 'ion-ios-circle-outline' : 'ion-ios-circle-filled' "></i>
                                 </ion-item>
                                 <ion-item class="item-accordion " ng-show="isGroupShownRej(timecard) ">

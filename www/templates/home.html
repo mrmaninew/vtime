@@ -1,4 +1,4 @@
-<ion-view view-title="Volteo">
+<ion-view view-title="Vtime">
     <!-- <ion-nav-buttons side="right">
         <button class="button icon ion-refresh" ng-click="refreshStats()">
         </button>
@@ -8,7 +8,7 @@
         <div class="row col-100">
             <div class="card" style="height:100%;width:100%">
                 <div class="item item-divider">
-                    Weekly
+                    Current Week
                 </div>
                 <div class="item item-text-wrap">
                     <canvas id="bar" class="chart chart-bar" chart-data="data" chart-labels="labels" chart-series="series" chart-colours="colors" click="onClick">
@@ -43,7 +43,7 @@
         <!--bottom-->
         <ion-list>
             <div class="item item-divider">
-                Today: {{selDate |date:'dd-MM-yyyy'}}
+                Today {{selDate |date:'MMM dd, yyyy'}}
             </div>
             <ion-item class="item-avatar" ng-repeat="tc in todayTCS" ng-click="routeEditCard(tc.sys_id)">
                 <span class="day-display-sizing">{{tc.selDate|date:'dd'}}</span>
@@ -55,7 +55,7 @@
                                             &nbsp;
                                             <i class="icon ion-ios-arrow-forward"></i>
                                       </span>
-                <p>{{tc.selDate|date:'MMM yyyy'}}</p>
+                <p>Project: {{tc.project}}</p>
             </ion-item>
         </ion-list>
     </ion-content>

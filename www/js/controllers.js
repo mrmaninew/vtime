@@ -90,6 +90,7 @@ angular.module('starter.controllers', [])
                     if (tcs[i].sys_id) set.sys_id = tcs[i].sys_id;
                     if (tcs[i].task) set.task = LocalStorageService.getTaskNumberBySysID(tcs[i].task.value);
                     if (tcs[i].u_story) set.story = LocalStorageService.getStoryNumberBySysID(tcs[i].u_story.value);
+                    if (tcs[i].u_project) set.project = LocalStorageService.getProjectNameBySysID(tcs[i].u_project.value);
                     if (tcs[i][$scope.selDayName]) set.hours = tcs[i][$scope.selDayName] || 0;
                     Ptimecards.push(set);
                 }
@@ -220,6 +221,7 @@ angular.module('starter.controllers', [])
             $scope.totalHrsDay = 0;
             $scope.totalHrsWeekly = 0;
             // passDate if any params set the current date as passed date from chart click
+            // else select current date as selected date 
             if ($stateParams.param1) {
                 //console.log('passed Date timeCardsPanelCtrl' + $stateParams.param1);
                 $scope.selDate = new Date($stateParams.param1);
@@ -265,7 +267,7 @@ angular.module('starter.controllers', [])
                     set.selDate = new Date($scope.selDate);
                     if (tcs[i].sys_id) set.sys_id = tcs[i].sys_id;
                     //if (tcs[i].u_project) set.u_project = tcs[i].u_project.value;
-                    if (tcs[i].u_project) set.u_project = LocalStorageService.getProjectNumberBySysID(tcs[i].u_project.value);
+                    if (tcs[i].u_project) set.u_project = LocalStorageService.getProjectNameBySysID(tcs[i].u_project.value);
                     //if (tcs[i].task) set.task = tcs[i].task.value;
                     if (tcs[i].task) set.task = LocalStorageService.getTaskNumberBySysID(tcs[i].task.value);
                     if (tcs[i].u_story) set.story = LocalStorageService.getStoryNumberBySysID(tcs[i].u_story.value);
@@ -283,7 +285,7 @@ angular.module('starter.controllers', [])
             }
             $scope.timecards = Ptimecards;
         };
-        // on Day changed from calendar reset selDay, and call weeks methods for arraging weekly
+        // on Day changed from calendar reset selDay, and call weeks methods for arranging "weekly" tab
         function onDayChanged() {
             var daysBefore, dayAfter;
             if ($scope.selDay == 0) {
@@ -310,7 +312,6 @@ angular.module('starter.controllers', [])
                     for (var i = 1; i <= after; i++) {
                         arr.push((moment($scope.selDate).add(i, 'days'))._d);
                     }
-                    //console.log(arr);
                     return arr;
                 }
                 // get all dates before specified or selected date including selected date
@@ -324,9 +325,9 @@ angular.module('starter.controllers', [])
             }
         };
         $scope.refreshCards = function() {
-            console.log('in refresh');
             getTimecardsDate();
         };
+
         // Weekly Tab
         // get hours for timecard day 
         $scope.getHoursDay = function(day) {
@@ -342,6 +343,7 @@ angular.module('starter.controllers', [])
                 return processTimecardsForHours(tcs, dayName); // get hours for all timecards by date
             }
         };
+
         // get hours for each day in entire week
         function processTimecardsForHours(tcs, dayName) { // ([timecard.obj,timecard.obj], saturday)
             var hrs = 0;
@@ -727,11 +729,11 @@ angular.module('starter.controllers', [])
                 app.u_number = set[i].u_number;
                 app.sys_created_on = set[i].sys_created_on;
                 app.tc_submitted_by = timecard.user;
-                app.tc_total = timecard.total;
+                app.tc_total = timecard.total; 
                 app.tc_state = timecard.state;
                 app.tc_project = timecard.u_project;
                 app.tc_task = timecard.task;
-                app.tc_story = timecard.story;
+                app.tc_story = timecard.u_story;
                 app.tc_sun = timecard.sunday;
                 app.tc_mon = timecard.monday;
                 app.tc_tue = timecard.tuesday;
@@ -805,15 +807,7 @@ angular.module('starter.controllers', [])
         $scope.getStoryNumberBySysID = function(sys_id) {
             return LocalStorageService.getStoryNumberBySysID(sys_id);
         };
-        // $scope.getUsernameByUserID = function(sys_id) {
-        //     snService.getUsernameBySysID(sys_id)
-        //         .then(function(result) {
-        //             return result;
-        //         }, function(error) {
-        //             console.log(error);
-        //             return;
-        //         })
-        // };
+
         // if given group is the selected group, deselect it, else select the given group
         $scope.toggleGroup = function(approval) {
             if ($scope.isGroupShown(approval)) {
