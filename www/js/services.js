@@ -361,6 +361,9 @@ angular.module('starter.services', [])
         var tokenUrl = "";
     })
     // Local Storage Service
+    // for phase 2 - revision(app release) (use prototypical inhertiance ) create Project, Task, Story, 
+    // Timecard, Approval, User, objects and create their prototype methods (get,set,del)
+    // and make code more reusable  
     .factory('LocalStorageService', function(moment) {
         // Projects 
         function setProjectsLocal(result) {

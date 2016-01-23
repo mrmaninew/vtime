@@ -40,6 +40,7 @@ angular.module('starter.controllers', [])
     // Timecard States for field "State"
     .constant('timeCardStates', ['Pending', 'Submitted', 'Approved', 'Rejected', 'Processed', 'Re-submitted'])
     // re-usable methods like getNumberByID for Projects,Tasks,Stories,Timecards
+    // phase 2 (app release )- revision updates 
     .constant('FunctionalMethods', {})
     .controller('AppCtrl', function($scope, $state, $ionicModal, $timeout, $rootScope, snService, LocalStorageService, UserService) {
         $scope.$on('$ionicView.enter', function(e) {
@@ -212,7 +213,7 @@ angular.module('starter.controllers', [])
         });
     })
     // Login View
-    .controller('LoginCtrl', function($scope, $state) {})
+    .controller('LoginCtrl', function($scope, $state, $cordovaToast, snService, LocalStorageService) {})
     // Time tab for Today (or) Selected , this week (depending on current and selected date) 
     .controller('timeCardsPanelCtrl', function($scope, $cordovaToast, $ionicPlatform, $state, $stateParams, $ionicTabsDelegate, $ionicModal, moment, daysWeek, LocalStorageService) {
         // on view enter
@@ -424,7 +425,7 @@ angular.module('starter.controllers', [])
         };
     })
     // create new Timecard 
-    .controller('CardCtrl', function($scope, $state, $filter, $stateParams, moment, daysWeek, snService, timeCardCategories, LocalStorageService, UserService) {
+    .controller('CardCtrl', function($scope, $state, $filter, $stateParams, $cordovaToast, moment, daysWeek, snService, timeCardCategories, LocalStorageService, UserService) {
         // varibles
         $scope.cards = [];
         $scope.projects = LocalStorageService.getProjectsLocal();
@@ -469,12 +470,17 @@ angular.module('starter.controllers', [])
             snService.insertTimecard(data)
                 .then(function(result) {
                     console.log(result); // response after insert timecard
-                    var msg = "Created New Timecard"; // internal toast message
-                    $state.go('app.timecardPanel', {}, {
-                        reload: true
+                    // internal toast message
+                    var msg = "Created New Timecard";
+                    $cordovaToast.showShortTop(msg).then(function(success) {
+                        $state.go('app.timecardPanel', {}, {
+                            reload: true
+                        });
+                    }, function(error) {
+                        console.log(error); // error
                     });
                 }, function(error) {
-                    console.log(result);
+                    console.log(error); // error
                 })
         };
         $scope.submitTC = function() {};
@@ -492,7 +498,7 @@ angular.module('starter.controllers', [])
         };
     })
     // edit existing Timecard 
-    .controller('editCardCtrl', function($scope, $state, $stateParams, moment, daysWeek, snService, timeCardCategories, timeCardStates, LocalStorageService, UserService) {
+    .controller('editCardCtrl', function($scope, $state, $stateParams, $cordovaToast, moment, daysWeek, snService, timeCardCategories, timeCardStates, LocalStorageService, UserService) {
         // controller for edit Timecard
         // scoped variables 
         $scope.projects = LocalStorageService.getProjectsLocal();
@@ -564,7 +570,7 @@ angular.module('starter.controllers', [])
         });
     })
     // Status Tab
-    .controller('statusCtrl', function($scope, $state, $ionicTabsDelegate, $ionicPopup, $timeout, moment, snService, LocalStorageService) {
+    .controller('statusCtrl', function($scope, $state, $ionicTabsDelegate, $ionicPopup, $cordovaToast, $timeout, moment, snService, LocalStorageService) {
         $scope.rejected = 0;
         $scope.pending = 0;
         $scope.submitted = 0;
@@ -718,7 +724,7 @@ angular.module('starter.controllers', [])
         };
     })
     // approvals Tab  
-    .controller('approvalsCtrl', function($scope, $state, $ionicPopup, $timeout, moment, snService, LocalStorageService) {
+    .controller('approvalsCtrl', function($scope, $state, $ionicPopup, $timeout, $cordovaToast, moment, snService, LocalStorageService) {
         $scope.$on('$ionicView.enter', function(e) {
             var set = LocalStorageService.getApprovalsLocal();
             $scope.approvals = [];
@@ -729,7 +735,7 @@ angular.module('starter.controllers', [])
                 app.u_number = set[i].u_number;
                 app.sys_created_on = set[i].sys_created_on;
                 app.tc_submitted_by = timecard.user;
-                app.tc_total = timecard.total; 
+                app.tc_total = timecard.total;
                 app.tc_state = timecard.state;
                 app.tc_project = timecard.u_project;
                 app.tc_task = timecard.task;
@@ -917,7 +923,7 @@ angular.module('starter.controllers', [])
         };
     })
     // side menu (Synchronize)
-    .controller('syncCtrl', function($scope, $state, snService, LocalStorageService) {
+    .controller('syncCtrl', function($scope, $state, $cordovaToast, snService, LocalStorageService) {
         $scope.projects = LocalStorageService.getProjectsLengthLocal();
         $scope.tasks = LocalStorageService.getTasksLengthLocal();
         $scope.stories = LocalStorageService.getStoriesLengthLocal();

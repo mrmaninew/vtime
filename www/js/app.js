@@ -1,6 +1,6 @@
-angular.module('starter', ['ionic', 'ionic-datepicker', 'starter.controllers', 'starter.services', 'angularMoment', 'ngCordova','chart.js'])
+angular.module('starter', ['ionic', 'ionic-datepicker', 'starter.controllers', 'starter.services', 'angularMoment', 'ngCordova', 'chart.js'])
 
-.run(function($ionicPlatform, snService, LocalStorageService) {
+.run(function($ionicPlatform, $cordovaToast, snService, LocalStorageService) {
         $ionicPlatform.ready(function() {
             // Hide the accessory bar by default (remove this to show the accessory bar above the keyboard
             // for form inputs)
@@ -12,49 +12,42 @@ angular.module('starter', ['ionic', 'ionic-datepicker', 'starter.controllers', '
                 // org.apache.cordova.statusbar required
                 StatusBar.styleDefault();
             }
-            // intialize and load LokiDB and refresh Projects, Tasks, Users, Stories , Timecards - collections
-            //DBService.initDB();
-            
-            // Set Projects, Tasks, Stories, Timecards, Users and store it locally 
-            snService.getProjects() // get Projects
+            // get Projects, Tasks, Stories, Timecards,Users, Approvals and store it locally 
+            snService.getProjects()     // get Projects
                 .then(function(result) {
-                    //LocalStorageService.setProjectsLocal(result);
                     //console.log(result);
+                    snService.getTasks()     // get Tasks
+                        .then(function(result) {
+                            //console.log(result);
+                            snService.getStories()  // get Stories
+                                .then(function(result) {
+                                    //console.log(result);
+                                    snService.getTimecards()    // get Timecards
+                                        .then(function(result) {
+                                            //console.log(result);
+                                            snService.getApprovals()    // get Approvals 
+                                                .then(function(result) {
+                                                    //console.log(result);
+                                                }, function(error) {
+                                                    //console.log(error);
+                                                    LocalStorageService.setApprovalsLocal([]);
+                                                });
+                                        }, function(error) {
+                                            console.log(error);
+                                        });
+                                }, function(error) {
+                                    console.log(error);
+                                });
+                        }, function(error) {
+                            console.log(error);
+                        });
                 }, function(error) {
                     console.log(error)
                 });
-            snService.getTasks() // get Tasks
-                .then(function(result) {
-                    //LocalStorageService.setTasksLocal(result);
-                    //console.log(result);
-                }, function(error) {
-                    console.log(error);
-                });
-            snService.getStories() // get Stories
-                .then(function(result) {
-                    //LocalStorageService.setStoriesLocal(result);
-                    //console.log(result);
-                }, function(error) {
-                    console.log(error);
-                });
-            snService.getTimecards() // get Timecards
-                .then(function(result) {
-                    //LocalStorageService.setTimecardsLocal(result);
-                    //console.log(result);
-                }, function(error) {
-                    console.log(error);
-                });
-            snService.getApprovals() // get Approvals 
-                .then(function(result) {
-                    //LocalStorageService.setApprovalsLocal(result);
-                    //console.log(result);
-                }, function(error) {
-                    //console.log(error);
-                    LocalStorageService.setApprovalsLocal([]);
-                });
+
         });
     })
-    .config(function($stateProvider, $urlRouterProvider) {
+.config(function($stateProvider, $urlRouterProvider) {
         $stateProvider
             .state('app', {
                 url: '/app',
@@ -173,12 +166,12 @@ angular.module('starter', ['ionic', 'ionic-datepicker', 'starter.controllers', '
                     }
                 }
             })
-            .state('app.timecardPanelDateView',{
-                url:'/timecardPanel/:param1',
-                views:{
-                    'menuContent':{
-                        templateUrl:'templates/timecardPanel.html',
-                        controller:'timeCardsPanelCtrl'
+            .state('app.timecardPanelDateView', {
+                url: '/timecardPanel/:param1',
+                views: {
+                    'menuContent': {
+                        templateUrl: 'templates/timecardPanel.html',
+                        controller: 'timeCardsPanelCtrl'
                     }
                 }
             })
