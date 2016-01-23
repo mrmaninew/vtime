@@ -448,23 +448,23 @@ angular.module('starter.controllers', [])
             var dayNum = $scope.tc.passDate.getDay();
             var _day = daysWeek.weekDays[dayNum];
             var _dayNotesKey = "u_" + _day + "_work_notes";
+            var data = {};
             // "week_starts_on": "2015-11-22", [yyyy-MM-dd]
             var generateWeekStartsOn = function() {
                 var weekStartOn = (moment($scope.tc.passDate).subtract(dayNum, 'days'))._d;
                 return weekStartOn;
             }
-            var data = {
-                //'week_starts_on': generateWeekStartsOn(),
-                'task': $scope.tc.task,
-                'u_story': $scope.tc.story,
-                [_day]: $scope.tc.hours,
-                [_dayNotesKey]: $scope.tc.comments,
-                'u_project': $scope.tc.u_project,
-                'u_billable': $scope.tc.u_billable,
-                'category': $scope.tc.category,
-                'user': UserService.getUser().sys_id,
-                'sys_created_by': UserService.getUser().user_id
-            };
+
+            data.task = $scope.tc.task;
+            data.u_story = $scope.tc.story;
+            data[_day] = $scope.tc.hours;
+            data[_dayNotesKey] = $scope.tc.comments;
+            data.u_project = $scope.tc.u_project;
+            data.u_billable = $scope.tc.u_billable;
+            data.category = $scope.tc.category;
+            data.user = UserService.getUser().sys_id;
+            data.sys_created_by = UserService.getUser().user_id;
+
             // console.log(data);
             //insert  new Timecard into Servicenow
             snService.insertTimecard(data)
