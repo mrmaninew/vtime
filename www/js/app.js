@@ -15,7 +15,7 @@ angular.module('starter', ['ionic', 'ionic-datepicker', 'starter.controllers', '
             // check the token value if its have some value go the home view else, redirect
             // to login page 
             if (TokenService.getToken() == null) {
-                $state.go('app.login');
+                $state.go('login');
             } else {
                 console.log('already authenticated and got some token information');
                 // Server API calls 
@@ -57,21 +57,18 @@ angular.module('starter', ['ionic', 'ionic-datepicker', 'starter.controllers', '
     })
     .config(function($stateProvider, $urlRouterProvider) {
         $stateProvider
+            // Login 
+            .state('login', {
+                url: '/login',
+                templateUrl: 'templates/login.html',
+                controller: 'LoginCtrl'
+            })
+            // app state 
             .state('app', {
                 url: '/app',
                 abstract: true,
                 templateUrl: 'templates/menu.html',
                 controller: 'AppCtrl'
-            })
-            // Login 
-            .state('app.login', {
-                url: '/login',
-                views: {
-                    'menuContent': {
-                        templateUrl: 'templates/login.html',
-                        controller: 'LoginCtrl'
-                    }
-                }
             })
             // side menu (Projects)
             .state('app.projects', {

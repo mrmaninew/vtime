@@ -223,7 +223,7 @@ angular.module('starter.controllers', [])
         });
         // login function 
         $scope.doLogin = function() {
-            console.log($scope.loginData.username, $scope.loginData.password);
+            // call login service "LoginService"
             LoginService.doLogin($scope.loginData.username, $scope.loginData.password);
         };
     })
