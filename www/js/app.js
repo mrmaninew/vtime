@@ -1,6 +1,6 @@
 angular.module('starter', ['ionic', 'ionic-datepicker', 'starter.controllers', 'starter.services', 'angularMoment', 'ngCordova', 'chart.js'])
 
-.run(function($ionicPlatform, $cordovaToast, snService, LocalStorageService) {
+.run(function($ionicPlatform, $cordovaToast, $state, snService, TokenService, LocalStorageService) {
         $ionicPlatform.ready(function() {
             // Hide the accessory bar by default (remove this to show the accessory bar above the keyboard
             // for form inputs)
@@ -12,48 +12,66 @@ angular.module('starter', ['ionic', 'ionic-datepicker', 'starter.controllers', '
                 // org.apache.cordova.statusbar required
                 StatusBar.styleDefault();
             }
-            // get Projects, Tasks, Stories, Timecards,Users, Approvals and store it locally 
-            snService.getProjects()     // get Projects
-                .then(function(result) {
-                    //console.log(result);
-                    snService.getTasks()     // get Tasks
-                        .then(function(result) {
-                            //console.log(result);
-                            snService.getStories()  // get Stories
-                                .then(function(result) {
-                                    //console.log(result);
-                                    snService.getTimecards()    // get Timecards
-                                        .then(function(result) {
-                                            //console.log(result);
-                                            snService.getApprovals()    // get Approvals 
-                                                .then(function(result) {
-                                                    //console.log(result);
-                                                }, function(error) {
-                                                    //console.log(error);
-                                                    LocalStorageService.setApprovalsLocal([]);
-                                                });
-                                        }, function(error) {
-                                            console.log(error);
-                                        });
-                                }, function(error) {
-                                    console.log(error);
-                                });
-                        }, function(error) {
-                            console.log(error);
-                        });
-                }, function(error) {
-                    console.log(error)
-                });
+            // check the token value if its have some value go the home view else, redirect
+            // to login page 
+            if (TokenService.getToken().length == 0) {
+                $state.go('app.login');
+            } else {
+                console.log('already authenticated and got some token information');
+                // Server API calls 
+                // get Projects, Tasks, Stories, Timecards,Users, Approvals and store it locally 
+                snService.getProjects() // get Projects
+                    .then(function(result) {
+                        //console.log(result);
+                        snService.getTasks() // get Tasks
+                            .then(function(result) {
+                                //console.log(result);
+                                snService.getStories() // get Stories
+                                    .then(function(result) {
+                                        //console.log(result);
+                                        snService.getTimecards() // get Timecards
+                                            .then(function(result) {
+                                                //console.log(result);
+                                                snService.getApprovals() // get Approvals 
+                                                    .then(function(result) {
+                                                        //console.log(result);
+                                                    }, function(error) {
+                                                        //console.log(error);
+                                                        LocalStorageService.setApprovalsLocal([]);
+                                                    });
+                                            }, function(error) {
+                                                console.log(error);
+                                            });
+                                    }, function(error) {
+                                        console.log(error);
+                                    });
+                            }, function(error) {
+                                console.log(error);
+                            });
+                    }, function(error) {
+                        console.log(error)
+                    }); // end of Server API Calls 
+            }
 
         });
     })
-.config(function($stateProvider, $urlRouterProvider) {
+    .config(function($stateProvider, $urlRouterProvider) {
         $stateProvider
             .state('app', {
                 url: '/app',
                 abstract: true,
                 templateUrl: 'templates/menu.html',
                 controller: 'AppCtrl'
+            })
+            // Login 
+            .state('app.login', {
+                url: '/login',
+                views: {
+                    'menuContent': {
+                        templateUrl: 'templates/login.html',
+                        controller: 'LoginCtrl'
+                    }
+                }
             })
             // side menu (Projects)
             .state('app.projects', {

@@ -213,7 +213,20 @@ angular.module('starter.controllers', [])
         });
     })
     // Login View
-    .controller('LoginCtrl', function($scope, $state, $cordovaToast, snService, LocalStorageService) {})
+    .controller('LoginCtrl', function($scope, $state, $cordovaToast, $ionicSideMenuDelegate, LoginService, snService, LocalStorageService) {
+        $scope.loginData = {};
+        // hide side menu
+        $ionicSideMenuDelegate.canDragContent(false);
+        // on ionic view leave enable sidemenu drag content
+        $scope.$on('$ionicView.leave', function() {
+            $ionicSideMenuDelegate.canDragContent(true)
+        });
+        // login function 
+        $scope.doLogin = function() {
+            console.log($scope.loginData.username, $scope.loginData.password);
+            LoginService.doLogin($scope.loginData.username, $scope.loginData.password);
+        };
+    })
     // Time tab for Today (or) Selected , this week (depending on current and selected date) 
     .controller('timeCardsPanelCtrl', function($scope, $cordovaToast, $ionicPlatform, $state, $stateParams, $ionicTabsDelegate, $ionicModal, moment, daysWeek, LocalStorageService) {
         // on view enter

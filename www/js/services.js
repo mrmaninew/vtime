@@ -13,10 +13,13 @@ angular.module('starter.services', [])
         'ApprovalsTable': 'sysapproval_approver', // Servicenow Approvals Table
         'UserTable': 'sys_user'
     })
+    .constant('errorService', {
+        'AuthMessage': 'User Not Authenticated'
+    })
     // Token Service (Access, Password)
     .factory('TokenService', function() {
-        //var token = "none";
-        var _token = "tSjbPwRdhQMR75XcFJ52617pEBj1DNWomsvDKb6VZBsAdw--mNJUroqz8a3DBYE7Bb8GhM6CO7KPTFvHgLcMEQ";
+        //var _token = "tSjbPwRdhQMR75XcFJ52617pEBj1DNWomsvDKb6VZBsAdw--mNJUroqz8a3DBYE7Bb8GhM6CO7KPTFvHgLcMEQ";
+        var _token = "";
         return {
             getToken: function() {
                 return _token;
@@ -27,7 +30,7 @@ angular.module('starter.services', [])
         }
     })
     // Servicenow Service
-    .factory('snService', function($http, $q, snCred, TokenService, UserService, LocalStorageService) {
+    .factory('snService', function($http, $q, $state, snCred, errorService, TokenService, UserService, LocalStorageService) {
         return {
             //get functions
             getProjects: function() {
@@ -48,9 +51,20 @@ angular.module('starter.services', [])
                         }
                     })
                     .error(function(error) {
-                        if (LocalStorageService.setProjectsLocal([])) {
-                            defer.reject(error);
+                        console.log(error.error.message);
+                        // if error message equals to "AuthMessage" redirect to login
+                        // and get new access token and set it in the TokenService 
+                        // Local Storage 
+                        if (error.error.message == errorService.AuthMessage) {
+                            $state.go('app.login');
+                        } else {
+                            // if some other store the empty array in localstorage 
+                            // for Projects 
+                            if (LocalStorageService.setProjectsLocal([])) {
+                                defer.reject(error);
+                            }
                         }
+
                     })
                 return defer.promise;
             },
@@ -121,9 +135,13 @@ angular.module('starter.services', [])
                         }
                     })
                     .error(function(error) {
-                        if (LocalStorageService.setTimecardsLocal([])) {
-                            defer.reject(error);
+                        console.log(error.error.message);
+                        if (error.error.message == errorService.AuthMessage) {
+                            $state.go('app.login');
                         }
+                        // if (LocalStorageService.setTimecardsLocal([])) {
+                        //     defer.reject(error);
+                        // }
                     })
                 return defer.promise;
             },
@@ -245,6 +263,7 @@ angular.module('starter.services', [])
                         if (LocalStorageService.setTimecardLocalByID(data.result.sys_id, data.result)) { //(sys_id,[object])
                             //response to promise - callback
                             defer.resolve(data.result);
+
                         }
                     })
                     .error(function(error) {
@@ -357,8 +376,24 @@ angular.module('starter.services', [])
         };
     })
     // Login Service
-    .factory('LoginService', function($http, $timeout, snCred) {
-        var tokenUrl = "";
+    .factory('LoginService', function($http, $timeout, $q, snCred) {
+        var tokenUrl = snCred.PRODURL + 'oauth_token.do';
+        // Request Method = POST
+        return {
+            doLogin: function(username, password) {
+                var data = "grant_type=password&client_id=" + snCred.Client_id + "&client_secret=" + snCred.Client_secret + "&username=" + username + "&password=" + password;
+                $http({
+                    method: 'POST',
+                    url: login,
+                    headers: {
+                        'Content-Type': 'application/x-www-form-urlencoded'
+                    },
+                    data: data
+                }).success(function(response) {
+                    console.log(response);
+                });
+            }
+        }
     })
     // Local Storage Service
     // for phase 2 - revision(app release) (use prototypical inhertiance ) create Project, Task, Story, 
@@ -662,12 +697,4 @@ angular.module('starter.services', [])
             getApprovalsLengthLocal: getApprovalsLengthLocal,
             deleteApprovalBySysID: deleteApprovalBySysID
         }
-    })
-    // Error Service 
-    .factory('ErrorService', function() {
-        // Error messages 
-        var errors = {
-            'token_expire': 'User Not Authenticated',
-            'no_records': 'Records Not Found'
-        };
     });
