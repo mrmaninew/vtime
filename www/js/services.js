@@ -4,28 +4,39 @@ angular.module('starter.services', [])
         'Client_id': 'ac0dd3408c1031006907010c2cc6ef6d',
         'Client_secret': '1yihwfk2xbl686v45s8a',
         'grant_type': ['password', 'access'],
+                     // remove '/' at the end of the url like "https://.....now.com" without '/'
         //'PRODURL': 'https://volteollcdemo1.service-now.com/', // Servicenow Instance URL
-        'PRODURL': '', // Temp empty URL for development environment and this will changed when deploying PROD
+        'PRODURL': '/api', // Temp empty URL for development environment and this will changed when deploying PROD
         'PrjTableName': 'pm_project', // Servicenow Project Table
         'TasksTableName': 'pm_project_task', // Servicenow Tasks Table
         'StoriesTableName': 'rm_story', // Servicenow Stories Table
         'TimecardTable': 'time_card', // Servicenow Timecard Table
         'ApprovalsTable': 'sysapproval_approver', // Servicenow Approvals Table
-        'UserTable': 'sys_user'
+        'UserTable': 'sys_user' // Servicenow User Table (sys_user)
     })
+    // status and error code for http response checks 
     .constant('errorService', {
-        'AuthMessage': 'User Not Authenticated'
+        'AuthMessage': 'User Not Authenticated', // Token expired 
+        'NoMatchingRecord': '',
+        'Success': 200, // 200 "Success" Success with response body.
+        'Created': 201, // 201 "Created" Success with response body.
+        'Success-No-body': 204, // 204 "Success" Success with no response body.
+        'Bad-Request': 400, // 400 "Bad Request" The request URI does not match the APIs in the system, or the operation failed for unknown reasons. Invalid headers can also cause this error.
+        'Unauthorized': 401,  // 401 "Unauthorized" The user is not authorized to use the API.
+        'Forbidden':403, // 403 "Forbidden" The requested operation is not permitted for the user. This error can also be caused by ACL failures, or business rule or data policy constraints.
+        'Not-found': 404, // 404 "Not found"  The requested resource was not found. This can be caused by an ACL constraint or if the resource does not exist.
+        'method-not-allowed': 405 // 405 "Method not allowed" The HTTP action is not allowed for the requested REST API, or it is not supported by any API.       
     })
     // Token Service (Access, Password)
-    .factory('TokenService', function() {
+    .factory('TokenService', function(LocalStorageService) {
         //var _token = "tSjbPwRdhQMR75XcFJ52617pEBj1DNWomsvDKb6VZBsAdw--mNJUroqz8a3DBYE7Bb8GhM6CO7KPTFvHgLcMEQ";
-        var _token = "";
         return {
             getToken: function() {
-                return _token;
+                return localStorage.getItem('token');
             },
             setToken: function(token) {
-                _token = token;
+                localStorage.setItem('token',token);
+                return true;
             }
         }
     })
@@ -34,7 +45,7 @@ angular.module('starter.services', [])
         return {
             //get functions
             getProjects: function() {
-                var url = snCred.PRODURL + 'api/now/table/' + snCred.PrjTableName;
+                var url = snCred.PRODURL + '/api/now/table/' + snCred.PrjTableName;
                 var token = "Bearer " + TokenService.getToken();
                 var defer = $q.defer()
                     //$http.defaults.headers.common.Authorization = "Bearer" + TokenService.getToken();
@@ -45,13 +56,13 @@ angular.module('starter.services', [])
                             'Authorization': token
                         }
                     })
-                    .success(function(data) {
+                    .success(function(data, status) {
                         if (LocalStorageService.setProjectsLocal(data.result)) {
                             defer.resolve(data.result);
                         }
                     })
-                    .error(function(error) {
-                        console.log(error.error.message);
+                    .error(function(error, status) {
+                        console.log(error.error.message, status);
                         // if error message equals to "AuthMessage" redirect to login
                         // and get new access token and set it in the TokenService 
                         // Local Storage 
@@ -71,7 +82,7 @@ angular.module('starter.services', [])
             getTasks: function() {
                 // get all tasks assigned_to = user (and) state = open or pending or work in progress
                 var query = "?sysparm_query=state=2^ORstate=1^ORstate=-5^assigned_to=" + UserService.getUser().sys_id;
-                var url = snCred.PRODURL + 'api/now/table/' + snCred.TasksTableName + query;
+                var url = snCred.PRODURL + '/api/now/table/' + snCred.TasksTableName + query;
                 var token = "Bearer " + TokenService.getToken();
                 var defer = $q.defer();
                 $http({
@@ -95,7 +106,7 @@ angular.module('starter.services', [])
             },
             getStories: function() {
                 var query = "?sysparm_query=state!=3^ORstate!=4^ORstate!=20^assigned_to=" + UserService.getUser().sys_id;
-                var url = snCred.PRODURL + 'api/now/table/' + snCred.StoriesTableName + query;
+                var url = snCred.PRODURL + '/api/now/table/' + snCred.StoriesTableName + query;
                 var token = "Bearer " + TokenService.getToken();
                 var defer = $q.defer();
                 $http({
@@ -129,13 +140,13 @@ angular.module('starter.services', [])
                             'Authorization': token
                         }
                     })
-                    .success(function(data) {
+                    .success(function(data, status) {
                         if (LocalStorageService.setTimecardsLocal(data.result)) {
                             defer.resolve(data.result);
                         }
                     })
-                    .error(function(error) {
-                        console.log(error.error.message);
+                    .error(function(error, status) {
+                        console.log(error.error.message, status);
                         if (error.error.message == errorService.AuthMessage) {
                             $state.go('app.login');
                         }
@@ -174,7 +185,7 @@ angular.module('starter.services', [])
             getUsernameBySysID: function(sys_id) {
                 console.log(sys_id);
                 var query = "?sysparm_query=sys_id=" + sys_id;
-                var url = snCred.PRODURL + 'api/now/table/' + snCred.UserTable + query;
+                var url = snCred.PRODURL + '/api/now/table/' + snCred.UserTable + query;
                 var token = "Bearer " + TokenService.getToken();
                 var defer = $q.defer();
                 $http({
@@ -376,21 +387,34 @@ angular.module('starter.services', [])
         };
     })
     // Login Service
-    .factory('LoginService', function($http, $timeout, $q, snCred) {
-        var tokenUrl = snCred.PRODURL + 'oauth_token.do';
+    .factory('LoginService', function($http, $timeout, $q, $state, $httpParamSerializer, $httpParamSerializerJQLike, TokenService, errorService, snCred) {
+        var tokenUrl = snCred.PRODURL + '/oauth_token.do';
         // Request Method = POST
         return {
             doLogin: function(username, password) {
-                var data = "grant_type=password&client_id=" + snCred.Client_id + "&client_secret=" + snCred.Client_secret + "&username=" + username + "&password=" + password;
+                // Body data (grant_type=password,client_id,client_secret,username,password)
+                var data = "grant_type=password&client_id=" +
+                    encodeURIComponent(snCred.Client_id) +
+                    "&client_secret=" +
+                    encodeURIComponent(snCred.Client_secret) +
+                    "&username=" + encodeURIComponent(username) +
+                    "&password=" + encodeURIComponent(password);
                 $http({
                     method: 'POST',
-                    url: login,
+                    url: tokenUrl,
                     headers: {
                         'Content-Type': 'application/x-www-form-urlencoded'
                     },
                     data: data
-                }).success(function(response) {
-                    console.log(response);
+                }).success(function(response, status) {
+                    console.log(response, status);
+                    if(status == errorService.Success){
+                       if(TokenService.setToken(response.access_token)){
+                          $state.go('app.home');
+                       }
+                    }
+                }).error(function(response, status) {
+                    console.log(response, status);
                 });
             }
         }
@@ -658,6 +682,7 @@ angular.module('starter.services', [])
             setApprovalsLocal(approvals);
             return true;
         };
+
         return {
             // Projects 
             setProjectsLocal: setProjectsLocal,
