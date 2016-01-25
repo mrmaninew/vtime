@@ -1,7 +1,7 @@
 <ion-view view-title="Vtime">
     <ion-nav-buttons side="right">
         <ion-spinner icon="spiral" ng-show="hideSpinner"></ion-spinner>
-    </ion-nav-buttons> 
+    </ion-nav-buttons>
     <ion-content>
         <!-- Top -->
         <div class="row col-100">
@@ -55,6 +55,11 @@
                                             <i class="icon ion-ios-arrow-forward"></i>
                                       </span>
                 <p>Project: {{tc.project}}</p>
+            </ion-item>
+        </ion-list>
+        <ion-list class="padding" ng-if="todayTCS.length == 0">
+            <ion-item>
+                <h2 class="text-center"> '0' Timecards</h2>
             </ion-item>
         </ion-list>
     </ion-content>

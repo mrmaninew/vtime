@@ -41,7 +41,7 @@ angular.module('starter.controllers', [])
     .constant('timeCardStates', ['Pending', 'Submitted', 'Approved', 'Rejected', 'Processed', 'Re-submitted'])
     // re-usable methods like getNumberByID for Projects,Tasks,Stories,Timecards
     // phase 2 (app release )- revision updates 
-    .constant('FunctionalMethods', {})
+    // .constant('FunctionalMethods', {})
     .controller('AppCtrl', function($scope, $state, $timeout, $ionicLoading, $rootScope, snService, LocalStorageService, UserService) {
         $scope.$on('$ionicView.enter', function() {
             $scope.projectLength = LocalStorageService.getProjectsLengthLocal();
@@ -149,7 +149,7 @@ angular.module('starter.controllers', [])
             $state.go('app.editCard', {
                 param1: sys_id,
                 param2: $scope.selDate
-            })
+            });
         };
         // Bar charts
         $scope.labels = ['sun', 'mon', 'tue', 'wed', 'thu', 'fri', 'sat'];
@@ -203,7 +203,7 @@ angular.module('starter.controllers', [])
                 });
         });
         $scope.$on('$ionicView.enter', function() {
-            // libs and variables refresh timecards and approvals 
+            $scope.data = [];
             getTotalHrsDayWeek(); // get total hours for current day, week
             getTotalHrsMonth(); // get total hours for current month
         });
@@ -215,24 +215,29 @@ angular.module('starter.controllers', [])
         });
     })
     // Login View
-    .controller('LoginCtrl', function($scope, $state, $cordovaToast, $ionicSideMenuDelegate, LoginService, snService, LocalStorageService) {
+    .controller('loginCtrl', function($scope, $state, $cordovaToast, $ionicSideMenuDelegate, $stateParams, LoginService, snService, LocalStorageService) {
         $scope.loginData = {};
-        $scope.loginStatus = "login";
         // hide side menu
         $ionicSideMenuDelegate.canDragContent(false);
-        // on ionic view leave enable sidemenu drag content
-        $scope.$on('$ionicView.leave', function() {
-            $ionicSideMenuDelegate.canDragContent(true)
-        });
+        if ($stateParams.param1) {
+            console.log($stateParams.param1);
+            $scope.loginStatus = "Re-login";
+        } else {
+            $scope.loginStatus = "login";
+        }
         // login function 
         $scope.doLogin = function() {
             // call login service "LoginService"
             $scope.loginStatus = "Logging in";
             LoginService.doLogin($scope.loginData.username, $scope.loginData.password);
         };
+        // on ionic view leave enable sidemenu drag content
+        $scope.$on('$ionicView.leave', function() {
+            $ionicSideMenuDelegate.canDragContent(true)
+        });
     })
     // Time tab for Today (or) Selected , this week (depending on current and selected date) 
-    .controller('timeCardsPanelCtrl', function($scope, $cordovaToast, $ionicPlatform, $state, $stateParams, $ionicTabsDelegate, $ionicModal, moment, daysWeek, LocalStorageService) {
+    .controller('timeCardsPanelCtrl', function($scope, $cordovaToast, $ionicPlatform, $ionicHistory, $state, $stateParams, $ionicTabsDelegate, $ionicModal, moment, daysWeek, LocalStorageService) {
         // on view enter
         $scope.$on('$ionicView.enter', function(e) {
             // footer item-right varibles 
@@ -442,7 +447,7 @@ angular.module('starter.controllers', [])
         };
     })
     // create new Timecard 
-    .controller('CardCtrl', function($scope, $state, $filter, $stateParams, $cordovaToast, moment, daysWeek, snService, timeCardCategories, LocalStorageService, UserService) {
+    .controller('cardCtrl', function($scope, $state, $filter, $stateParams, $cordovaToast, moment, daysWeek, snService, timeCardCategories, LocalStorageService, UserService) {
         // varibles
         $scope.cards = [];
         $scope.projects = LocalStorageService.getProjectsLocal();
@@ -489,12 +494,8 @@ angular.module('starter.controllers', [])
                     console.log(result); // response after insert timecard
                     // internal toast message
                     var msg = "Created New Timecard";
-                    $cordovaToast.showShortTop(msg).then(function(success) {
-                        $state.go('app.timecardPanel', {}, {
-                            reload: true
-                        });
-                    }, function(error) {
-                        console.log(error); // error
+                    $state.go('app.timecardPanel', {}, {
+                        reload: true
                     });
                 }, function(error) {
                     console.log(error); // error
@@ -515,7 +516,7 @@ angular.module('starter.controllers', [])
         };
     })
     // edit existing Timecard 
-    .controller('editCardCtrl', function($scope, $state, $stateParams, $cordovaToast, moment, daysWeek, snService, timeCardCategories, timeCardStates, LocalStorageService, UserService) {
+    .controller('editCardCtrl', function($scope, $state, $stateParams, $ionicHistory, $cordovaToast, moment, daysWeek, snService, timeCardCategories, timeCardStates, LocalStorageService, UserService) {
         // controller for edit Timecard
         // scoped variables 
         $scope.projects = LocalStorageService.getProjectsLocal();
@@ -571,9 +572,10 @@ angular.module('starter.controllers', [])
                 .then(function(result) {
                     console.log(result);
                     var message = "Timecard Updated"; // local toast notification
-                    $state.go('app.timecardPanel', {}, {
-                        reload: true
-                    });
+                    // $state.go('app.timecardPanel', {}, {
+                    //     reload: true
+                    // });
+                    $ionicHistory.goBack();
                 }, function(error) {
                     console.log(error);
                 })
@@ -969,37 +971,37 @@ angular.module('starter.controllers', [])
         // synchronize functions
         $scope.syncNow = function() {
             console.log('syncNow');
-            // Set Projects, Tasks, Stories, Timecards, Users and store it locally 
-            snService.getProjects()
+            // get Projects, Tasks, Stories, Timecards, Approvals 
+            snService.getProjects() // projects 
                 .then(function(result) {
-                    LocalStorageService.setProjectsLocal(result);
+                    //console.log(result);
+                    snService.getTasks() // tasks
+                        .then(function(result) {
+                            //console.log(result);
+                            snService.getStories() // stories 
+                                .then(function(result) {
+                                    //console.log(result);
+                                    snService.getTimecards() // timecards
+                                        .then(function(result) {
+                                            //console.log(result);
+                                            snService.getApprovals() // approvals 
+                                                .then(function(result) {
+                                                    // console.log(result);
+                                                }, function(error) {
+                                                    console.log(error);
+                                                })
+                                        }, function(error) {
+                                            console.log(error);
+                                        });
+                                }, function(error) {
+                                    console.log(error);
+                                });
+                        }, function(error) {
+                            console.log(error);
+                        });
                 }, function(error) {
                     console.log(error)
                 });
-            snService.getTasks()
-                .then(function(result) {
-                    LocalStorageService.setTasksLocal(result);
-                }, function(error) {
-                    console.log(error);
-                });
-            snService.getStories()
-                .then(function(result) {
-                    LocalStorageService.setStoriesLocal(result);
-                }, function(error) {
-                    console.log(error);
-                });
-            snService.getTimecards()
-                .then(function(result) {
-                    LocalStorageService.setTimecardsLocal(result);
-                }, function(error) {
-                    console.log(error);
-                });
-            snService.getApprovals()
-                .then(function(result) {
-                    LocalStorageService.setApprovalsLocal(result);
-                }, function(error) {
-                    console.log(error);
-                })
         }
     })
     // side menu (Settings)
@@ -1008,9 +1010,23 @@ angular.module('starter.controllers', [])
         $scope.saveURL = function() {};
     })
     // side menu (Accounts)
-    .controller('accountsCtrl', function($scope, $state, LocalStorageService, UserService) {
+    .controller('accountsCtrl', function($scope, $state, $ionicPopup, LocalStorageService, snService, UserService, LogoutService) {
         $scope.user = UserService.getUser();
         $scope.logout = function() {
-            $state.go('Login');
+            $ionicPopup.confirm({
+                title: 'Confirm Logout',
+                template: 'Sure you want to logout',
+                scope: $scope,
+                buttons: [{
+                    text: 'Cancel'
+                }, {
+                    text: 'Yes',
+                    type: 'button-positive',
+                    onTap: function(e) {
+                        LogoutService.clearAll();
+                        $state.go('login');
+                    }
+                }]
+            });
         };
     });

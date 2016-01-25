@@ -1,6 +1,6 @@
 angular.module('starter', ['ionic', 'ionic-datepicker', 'starter.controllers', 'starter.services', 'angularMoment', 'ngCordova', 'chart.js'])
 
-.run(function($ionicPlatform, $cordovaToast, $state, snService, TokenService, LocalStorageService) {
+    .run(function($ionicPlatform, $cordovaToast, $state, snService, TokenService, LocalStorageService) {
         $ionicPlatform.ready(function() {
             // Hide the accessory bar by default (remove this to show the accessory bar above the keyboard
             // for form inputs)
@@ -19,16 +19,21 @@ angular.module('starter', ['ionic', 'ionic-datepicker', 'starter.controllers', '
             } else {
                 console.log('already authenticated and got some token information');
             }
-
         });
     })
-.config(function($stateProvider, $urlRouterProvider) {
+    .config(function($stateProvider, $urlRouterProvider) {
         $stateProvider
-        // Login 
+            // Login 
             .state('login', {
                 url: '/login',
                 templateUrl: 'templates/login.html',
-                controller: 'LoginCtrl'
+                controller: 'loginCtrl'
+            })
+            // error in the login 
+            .state('errorlogin',{
+                url:'/login/:param1',
+                templateUrl:'templates/login.html',
+                controller: 'loginCtrl'
             })
             // app state 
             .state('app', {
@@ -37,6 +42,7 @@ angular.module('starter', ['ionic', 'ionic-datepicker', 'starter.controllers', '
                 templateUrl: 'templates/menu.html',
                 controller: 'AppCtrl'
             })
+            // home view
             .state('app.home', {
                 url: '/home',
                 cache: false,
@@ -68,6 +74,7 @@ angular.module('starter', ['ionic', 'ionic-datepicker', 'starter.controllers', '
                     }
                 }
             })
+            // timecard panel view
             .state('app.timecardPanel', {
                 url: '/timecardPanel',
                 cache: false,
@@ -78,6 +85,7 @@ angular.module('starter', ['ionic', 'ionic-datepicker', 'starter.controllers', '
                     }
                 }
             })
+            // timecard panel view with date params 
             .state('app.timecardPanelDateView', {
                 url: '/timecardPanel/:param1',
                 views: {
@@ -92,12 +100,12 @@ angular.module('starter', ['ionic', 'ionic-datepicker', 'starter.controllers', '
                 url: '/card:param1,',
                 views: {
                     'menuContent': {
-                        templateUrl: 'templates/Card.html',
-                        controller: 'CardCtrl'
+                        templateUrl: 'templates/card.html',
+                        controller: 'cardCtrl'
                     }
                 }
             })
-            // edit existing timecard
+            // edit existing timecard with sys_id, date params
             .state('app.editCard', {
                 url: '/editCard/:param1/:param2', //'/editcard/:sys_id/:passDate'
                 views: {
@@ -179,4 +187,4 @@ angular.module('starter', ['ionic', 'ionic-datepicker', 'starter.controllers', '
             });
         // if none of the above states are matched, use this as the fallback
         $urlRouterProvider.otherwise('/app/home');
-});
+    });

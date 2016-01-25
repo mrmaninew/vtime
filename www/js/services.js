@@ -38,12 +38,15 @@ angular.module('starter.services', [])
                 return true;
             },
             hasToken: function() {
-                var token = getToken();
+                var token = localStorage.getItem('token');
                 if (token != null) {
                     return true;
                 } else {
                     return false;
                 }
+            },
+            clearToken: function() {
+                localStorage.removeItem('token');
             }
         }
     })
@@ -279,12 +282,13 @@ angular.module('starter.services', [])
                         data: JSON.stringify(timecard)
                     })
                     .success(function(data, status) {
-                        // update local timecard storage 
-                        if (LocalStorageService.addNewTimecardLocal(data.result)) {
-                            // response to promise - callback
-                            defer.resolve(data.result);
+                        // update local timecard storage
+                        if (status == errorService.Success || status == errorService.Created) {
+                            if (LocalStorageService.addNewTimecardLocal(data.result)) {
+                                // response to promise - callback
+                                defer.resolve(data.result);
+                            }
                         }
-
                     })
                     .error(function(error, status) {
                         if (status == errorService.Unauthorized) {
@@ -308,10 +312,13 @@ angular.module('starter.services', [])
                         data: JSON.stringify(timecard)
                     })
                     .success(function(data, status) {
-                        // update local timecard storage
-                        if (LocalStorageService.setTimecardLocalByID(data.result.sys_id, data.result)) { // sys_id, [object]
-                            // response to promise - callback
-                            defer.resolve(data.result);
+                        console.log(status);
+                        if (status == errorService.Success) {
+                            // update local timecard storage
+                            if (LocalStorageService.setTimecardLocalByID(data.result.sys_id, data.result)) { // sys_id, [object]
+                                // response to promise - callback
+                                defer.resolve(data.result);
+                            }
                         }
                     })
                     .error(function(error, status) {
@@ -340,11 +347,13 @@ angular.module('starter.services', [])
                         data: JSON.stringify(data)
                     })
                     .success(function(data, status) {
-                        //update timecard local storage 
-                        if (LocalStorageService.setTimecardLocalByID(data.result.sys_id, data.result)) { //(sys_id,[object])
-                            //response to promise - callback
-                            defer.resolve(data.result);
+                        console.log(data, status);
+                        if (status == errorService.Success) {
+                            if (LocalStorageService.setTimecardLocalByID(data.result.sys_id, data.result)) { //(sys_id,[object])
+                                //response to promise - callback
+                                defer.resolve(data.result);
 
+                            }
                         }
                     })
                     .error(function(error, status) {
@@ -470,9 +479,14 @@ angular.module('starter.services', [])
                 $state.go('app.login');
             }
         };
+        // remove user
+        function clearUser() {
+            localStorage.removeItem('user');
+        }
         return {
             setUser: setUser,
-            getUser: getUser
+            getUser: getUser,
+            clearUser: clearUser
         };
     })
     .factory('preLoadDataService', function($http, $q, $state, snService) {
@@ -551,7 +565,23 @@ angular.module('starter.services', [])
                     }
                 }).error(function(response, status) {
                     console.log(response, status);
+                    if (status == errorService.Unauthorized) {
+                        $state.go('errorlogin', {
+                            'param1': 'Unauthorized'
+                        }, {
+                            reload: true
+                        });
+                    }
                 });
+            }
+        }
+    })
+    .factory('LogoutService', function($q, TokenService, UserService, LocalStorageService) {
+        return {
+            clearAll: function() {
+                TokenService.clearToken();
+                LocalStorageService.clearAllItems();
+                UserService.clearUser();
             }
         }
     })
@@ -873,6 +903,14 @@ angular.module('starter.services', [])
             setApprovalsLocal(approvals);
             return true;
         };
+        // remove all items in localstorage (projects, tasks, stories, timecards, approvals)
+        function clearAllItems() {
+            localStorage.removeItem('projects');
+            localStorage.removeItem('tasks');
+            localStorage.removeItem('stories');
+            localStorage.removeItem('timecards');
+            localStorage.removeItem('approvals');
+        }
 
         return {
             // Projects 
@@ -908,6 +946,8 @@ angular.module('starter.services', [])
             setApprovalsLocal: setApprovalsLocal,
             getApprovalsLocal: getApprovalsLocal,
             getApprovalsLengthLocal: getApprovalsLengthLocal,
-            deleteApprovalBySysID: deleteApprovalBySysID
+            deleteApprovalBySysID: deleteApprovalBySysID,
+            // clear all items (Projects, Tasks, Stories, Timecards, Approvals)
+            clearAllItems: clearAllItems
         }
     });
