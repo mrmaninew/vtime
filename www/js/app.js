@@ -18,46 +18,13 @@ angular.module('starter', ['ionic', 'ionic-datepicker', 'starter.controllers', '
                 $state.go('login');
             } else {
                 console.log('already authenticated and got some token information');
-                // Server API calls 
-                // get Projects, Tasks, Stories, Timecards,Users, Approvals and store it locally 
-                snService.getProjects() // get Projects
-                    .then(function(result) {
-                        //console.log(result);
-                        snService.getTasks() // get Tasks
-                            .then(function(result) {
-                                //console.log(result);
-                                snService.getStories() // get Stories
-                                    .then(function(result) {
-                                        //console.log(result);
-                                        snService.getTimecards() // get Timecards
-                                            .then(function(result) {
-                                                //console.log(result);
-                                                snService.getApprovals() // get Approvals 
-                                                    .then(function(result) {
-                                                        //console.log(result);
-                                                    }, function(error) {
-                                                        //console.log(error);
-                                                        LocalStorageService.setApprovalsLocal([]);
-                                                    });
-                                            }, function(error) {
-                                                console.log(error);
-                                            });
-                                    }, function(error) {
-                                        console.log(error);
-                                    });
-                            }, function(error) {
-                                console.log(error);
-                            });
-                    }, function(error) {
-                        console.log(error)
-                    }); // end of Server API Calls 
             }
 
         });
     })
-    .config(function($stateProvider, $urlRouterProvider) {
+.config(function($stateProvider, $urlRouterProvider) {
         $stateProvider
-            // Login 
+        // Login 
             .state('login', {
                 url: '/login',
                 templateUrl: 'templates/login.html',
@@ -69,76 +36,6 @@ angular.module('starter', ['ionic', 'ionic-datepicker', 'starter.controllers', '
                 abstract: true,
                 templateUrl: 'templates/menu.html',
                 controller: 'AppCtrl'
-            })
-            // side menu (Projects)
-            .state('app.projects', {
-                url: '/projects',
-                views: {
-                    'menuContent': {
-                        templateUrl: 'templates/projects.html',
-                        controller: 'projectsCtrl'
-                    }
-                }
-            })
-            // side menu (Tasks)
-            .state('app.tasks', {
-                url: '/tasks',
-                views: {
-                    'menuContent': {
-                        templateUrl: 'templates/tasks.html',
-                        controller: 'tasksCtrl'
-                    }
-                }
-            })
-            // side menu (Stories)
-            .state('app.stories', {
-                url: '/stories',
-                views: {
-                    'menuContent': {
-                        templateUrl: 'templates/stories.html',
-                        controller: 'storiesCtrl'
-                    }
-                }
-            })
-            // side menu (Timecards)
-            .state('app.timecards', {
-                url: '/timecards',
-                views: {
-                    'menuContent': {
-                        templateUrl: 'templates/timecards.html',
-                        controller: 'timecardsCtrl'
-                    }
-                }
-            })
-            // side menu (Tasks)
-            .state('app.sync', {
-                url: '/sync',
-                views: {
-                    'menuContent': {
-                        templateUrl: 'templates/sync.html',
-                        controller: 'syncCtrl'
-                    }
-                }
-            })
-            // side menu (Settings)
-            .state('app.settings', {
-                url: '/settings',
-                views: {
-                    'menuContent': {
-                        templateUrl: 'templates/settings.html',
-                        controller: 'settingsCtrl'
-                    }
-                }
-            })
-            // side menu (Accounts)
-            .state('app.accounts', {
-                url: '/accounts',
-                views: {
-                    'menuContent': {
-                        templateUrl: 'templates/accounts.html',
-                        controller: 'accountsCtrl'
-                    }
-                }
             })
             .state('app.home', {
                 url: '/home',
@@ -209,7 +106,77 @@ angular.module('starter', ['ionic', 'ionic-datepicker', 'starter.controllers', '
                         controller: 'editCardCtrl'
                     }
                 }
+            })
+            // side menu (Projects)
+            .state('app.projects', {
+                url: '/projects',
+                views: {
+                    'menuContent': {
+                        templateUrl: 'templates/projects.html',
+                        controller: 'projectsCtrl'
+                    }
+                }
+            })
+            // side menu (Tasks)
+            .state('app.tasks', {
+                url: '/tasks',
+                views: {
+                    'menuContent': {
+                        templateUrl: 'templates/tasks.html',
+                        controller: 'tasksCtrl'
+                    }
+                }
+            })
+            // side menu (Stories)
+            .state('app.stories', {
+                url: '/stories',
+                views: {
+                    'menuContent': {
+                        templateUrl: 'templates/stories.html',
+                        controller: 'storiesCtrl'
+                    }
+                }
+            })
+            // side menu (Timecards)
+            .state('app.timecards', {
+                url: '/timecards',
+                views: {
+                    'menuContent': {
+                        templateUrl: 'templates/timecards.html',
+                        controller: 'timecardsCtrl'
+                    }
+                }
+            })
+            // side menu (Tasks)
+            .state('app.sync', {
+                url: '/sync',
+                views: {
+                    'menuContent': {
+                        templateUrl: 'templates/sync.html',
+                        controller: 'syncCtrl'
+                    }
+                }
+            })
+            // side menu (Settings)
+            .state('app.settings', {
+                url: '/settings',
+                views: {
+                    'menuContent': {
+                        templateUrl: 'templates/settings.html',
+                        controller: 'settingsCtrl'
+                    }
+                }
+            })
+            // side menu (Accounts)
+            .state('app.accounts', {
+                url: '/accounts',
+                views: {
+                    'menuContent': {
+                        templateUrl: 'templates/accounts.html',
+                        controller: 'accountsCtrl'
+                    }
+                }
             });
         // if none of the above states are matched, use this as the fallback
         $urlRouterProvider.otherwise('/app/home');
-    });
+});

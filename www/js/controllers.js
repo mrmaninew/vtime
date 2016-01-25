@@ -42,8 +42,8 @@ angular.module('starter.controllers', [])
     // re-usable methods like getNumberByID for Projects,Tasks,Stories,Timecards
     // phase 2 (app release )- revision updates 
     .constant('FunctionalMethods', {})
-    .controller('AppCtrl', function($scope, $state, $ionicModal, $timeout, $rootScope, snService, LocalStorageService, UserService) {
-        $scope.$on('$ionicView.enter', function(e) {
+    .controller('AppCtrl', function($scope, $state, $timeout, $ionicLoading, $rootScope, snService, LocalStorageService, UserService) {
+        $scope.$on('$ionicView.enter', function() {
             $scope.projectLength = LocalStorageService.getProjectsLengthLocal();
             $scope.tasksLength = LocalStorageService.getTasksLengthLocal();
             $scope.storiesLength = LocalStorageService.getStoriesLengthLocal();
@@ -54,7 +54,7 @@ angular.module('starter.controllers', [])
         });
     })
     // Home view 
-    .controller('HomeCtrl', function($scope, $state, moment, snService, LocalStorageService, daysWeek) {
+    .controller('HomeCtrl', function($scope, $state, $ionicLoading, moment, snService, LocalStorageService, daysWeek) {
         // calculate number hours for day, weekly, monthly
         $scope.totalHrsDay = 0.00;
         $scope.totalHrsWeekly = 0;
@@ -65,6 +65,7 @@ angular.module('starter.controllers', [])
         $scope.selDayName = daysWeek.weekDays[$scope.selDay]; // sunday, monday
         $scope.selDateMonth = $scope.selDate.getMonth(); // 0-january, 11- December
         $scope.todayTCS = []; // current day timecards (Today - List)
+        $scope.hideSpinner = false;
         // get total hours for current day and week
         function getTotalHrsDayWeek() {
             if ($scope.selDay == 0) {
@@ -178,25 +179,31 @@ angular.module('starter.controllers', [])
             });
         };
         // state management 
-        $scope.$on('$ionicView.enter', function() {
-            // libs and variables refresh timecards and approvals 
+        $scope.$on('$ionicView.loaded', function() {
+            $scope.hideSpinner = true;
             snService.getTimecards()
                 .then(function(data) {
                     snService.getApprovals()
                         .then(function(data) {
-                            //console.log(data);
+                            // clear existing data in variables 
+                            $scope.totalHrsDay = 0;
+                            $scope.totalHrsWeekly = 0;
+                            $scope.totalHrsMonthly = 0;
+                            $scope.data = [];
+                            // init functions 
+                            getTotalHrsDayWeek(); // get total hours for current day, week
+                            getTotalHrsMonth(); // get total hours for current month
+                            console.log('loaded and done');
+                            $scope.hideSpinner = false; // hide the spinner after data refreshed for timecards and approvals 
                         }, function(error) {
                             console.log(error);
                         })
                 }, function(error) {
                     console.log(error);
-                })
-                // get lengths for projects, tasks, stories, timecards
-            $scope.projectLength = LocalStorageService.getProjectsLengthLocal();
-            $scope.tasksLength = LocalStorageService.getTasksLengthLocal();
-            $scope.storiesLength = LocalStorageService.getStoriesLengthLocal();
-            $scope.timecardsLength = LocalStorageService.getTimecardsLengthLocal();
-            // init functions 
+                });
+        });
+        $scope.$on('$ionicView.enter', function() {
+            // libs and variables refresh timecards and approvals 
             getTotalHrsDayWeek(); // get total hours for current day, week
             getTotalHrsMonth(); // get total hours for current month
         });
@@ -205,16 +212,12 @@ angular.module('starter.controllers', [])
             $scope.totalHrsWeekly = 0;
             $scope.totalHrsMonthly = 0;
             $scope.data = [];
-            // libs and variables 
-            $scope.projectLength = "";
-            $scope.tasksLength = "";
-            $scope.storiesLength = "";
-            $scope.timecardsLength = "";
         });
     })
     // Login View
     .controller('LoginCtrl', function($scope, $state, $cordovaToast, $ionicSideMenuDelegate, LoginService, snService, LocalStorageService) {
         $scope.loginData = {};
+        $scope.loginStatus = "login";
         // hide side menu
         $ionicSideMenuDelegate.canDragContent(false);
         // on ionic view leave enable sidemenu drag content
@@ -224,6 +227,7 @@ angular.module('starter.controllers', [])
         // login function 
         $scope.doLogin = function() {
             // call login service "LoginService"
+            $scope.loginStatus = "Logging in";
             LoginService.doLogin($scope.loginData.username, $scope.loginData.password);
         };
     })
@@ -842,7 +846,12 @@ angular.module('starter.controllers', [])
     // side menu (Projects)
     .controller('projectsCtrl', function($scope, $state, snService, LocalStorageService) {
         $scope.$on('$ionicView.enter', function(e) {
-            $scope.projects = LocalStorageService.getProjectsLocal();
+            var projects = LocalStorageService.getProjectsLocal();
+            if (projects != null || projects.length > 0) {
+                $scope.projects = projects;
+            } else {
+                $scope.projects = [];
+            }
         });
         $scope.$on('$ionicView.leave', function(e) {
             $scope.projects = "";
@@ -865,7 +874,12 @@ angular.module('starter.controllers', [])
     })
     // side menu (Stories)
     .controller('storiesCtrl', function($scope, $state, snService, LocalStorageService) {
-        $scope.stories = LocalStorageService.getStoriesLocal();
+        var stories = LocalStorageService.getStoriesLocal();
+        if (stories != null || stories.length > 0) {
+            $scope.stories = stories;
+        } else {
+            $scope.stories = [];
+        }
         //if given group is the selected group, deselect it, else select the given group
         $scope.toggleGroup = function(story) {
             if ($scope.isGroupShown(story)) {
@@ -884,7 +898,12 @@ angular.module('starter.controllers', [])
     })
     // side menu (Tasks)
     .controller('tasksCtrl', function($scope, $state, snService, LocalStorageService) {
-        $scope.tasks = LocalStorageService.getTasksLocal();
+        var tasks = LocalStorageService.getTasksLocal();
+        if (tasks != null || tasks.length > 0) {
+            $scope.tasks = tasks
+        } else {
+            $scope.tasks = [];
+        }
         // if given group is the selected group, deselect it, else select the given group
         $scope.toggleGroup = function(task) {
             if ($scope.isGroupShown(task)) {
@@ -904,7 +923,12 @@ angular.module('starter.controllers', [])
     // sidemmenu (Timecards)
     .controller('timecardsCtrl', function($scope, $state, snService, LocalStorageService) {
         $scope.$on('$ionicView.enter', function(e) {
-            $scope.timecards = LocalStorageService.getTimecardsLocal();
+            var timecards = LocalStorageService.getTimecardsLocal();
+            if (timecards != null || timecards.length > 0) {
+                $scope.timecards = timecards
+            } else {
+                $scope.timecards = [];
+            }
         });
         $scope.$on('$ionicView.leave', function(e) {
                 $scope.timecards = "";

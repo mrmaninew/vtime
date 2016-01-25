@@ -18,5 +18,10 @@
                 </ion-item>
             </div>
         </ion-list>
+        <ion-list class="padding" ng-if="projects.length == 0 || pending == 0">
+            <ion-item>
+                <h2 class="text-center"> '0' Projects</h2>
+            </ion-item>
+        </ion-list>
     </ion-content>
 </ion-view>

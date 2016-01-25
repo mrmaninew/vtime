@@ -16,8 +16,6 @@ angular.module('starter.services', [])
     })
     // status and error code for http response checks 
     .constant('errorService', {
-        'AuthMessage': 'User Not Authenticated', // Token expired 
-        'NoMatchingRecord': '',
         'Success': 200, // 200 "Success" Success with response body.
         'Created': 201, // 201 "Created" Success with response body.
         'Success-No-body': 204, // 204 "Success" Success with no response body.
@@ -28,6 +26,7 @@ angular.module('starter.services', [])
         'method-not-allowed': 405 // 405 "Method not allowed" The HTTP action is not allowed for the requested REST API, or it is not supported by any API.       
     })
     // Token Service (Access, Password)
+    // in phase 2, we try to utilize $httpInterceptor for default adding token to all req
     .factory('TokenService', function(LocalStorageService) {
         //var _token = "tSjbPwRdhQMR75XcFJ52617pEBj1DNWomsvDKb6VZBsAdw--mNJUroqz8a3DBYE7Bb8GhM6CO7KPTFvHgLcMEQ";
         return {
@@ -37,6 +36,14 @@ angular.module('starter.services', [])
             setToken: function(token) {
                 localStorage.setItem('token', token);
                 return true;
+            },
+            hasToken: function() {
+                var token = getToken();
+                if (token != null) {
+                    return true;
+                } else {
+                    return false;
+                }
             }
         }
     })
@@ -468,8 +475,50 @@ angular.module('starter.services', [])
             getUser: getUser
         };
     })
+    .factory('preLoadDataService', function($http, $q, $state, snService) {
+        return {
+            loadAll: function() {
+
+                    snService.getProjects() // get Projects
+                        .then(function(result) {
+                            //console.log(result);
+                            snService.getTasks() // get Tasks
+                                .then(function(result) {
+                                    //console.log(result);
+                                    snService.getStories() // get Stories
+                                        .then(function(result) {
+                                            //console.log(result);
+                                            snService.getTimecards() // get Timecards
+                                                .then(function(result) {
+                                                    //console.log(result);
+                                                    snService.getApprovals() // get Approvals and final function to call 
+                                                        .then(function(result) {
+                                                            //console.log(result);
+                                                            $state.go('app.home', {}, {
+                                                                reload: true
+                                                            });
+                                                        }, function(error) {
+                                                            //console.log(error);
+                                                            LocalStorageService.setApprovalsLocal([]);
+                                                        });
+                                                }, function(error) {
+                                                    console.log(error);
+                                                });
+                                        }, function(error) {
+                                            console.log(error);
+                                        });
+                                }, function(error) {
+                                    console.log(error);
+                                });
+                        }, function(error) {
+                            console.log(error)
+                        }); // end of Server API Calls 
+                    return true;
+                } // end of loadAll() function 
+        } // end of return 
+    })
     // Login Service
-    .factory('LoginService', function($http, $timeout, $q, $location, $state, $httpParamSerializer, $httpParamSerializerJQLike, TokenService, errorService, snCred, snService) {
+    .factory('LoginService', function($http, $timeout, $q, $location, $state, $httpParamSerializer, $httpParamSerializerJQLike, preLoadDataService, TokenService, errorService, snCred, snService) {
         var tokenUrl = snCred.PRODURL + '/oauth_token.do';
         // Request Method = POST
         return {
@@ -494,8 +543,7 @@ angular.module('starter.services', [])
                         if (TokenService.setToken(response.access_token)) {
                             snService.getUserDetailsByUsername(username, response.access_token)
                                 .then(function(response) {
-                                    //$state.go('app.home');
-                                    $location.path('app/home');
+                                    preLoadDataService.loadAll();
                                 }, function(error) {
                                     console.log(error);
                                 })
@@ -523,7 +571,12 @@ angular.module('starter.services', [])
         };
 
         function getProjectsLocal() {
-            return JSON.parse(localStorage.getItem('projects'));
+            var projects = JSON.parse(localStorage.getItem('projects'));
+            if (projects != null) {
+                return projects;
+            } else {
+                return [];
+            }
         };
 
         function getProjectNumberBySysID(id) {
@@ -567,18 +620,27 @@ angular.module('starter.services', [])
         };
 
         function getTasksLocal() {
-            return JSON.parse(localStorage.getItem('tasks'));
+            var tasks = JSON.parse(localStorage.getItem('tasks'));
+            if (tasks != null) {
+                return tasks
+            } else {
+                return [];
+            }
         };
 
         function getTaskNumberBySysID(id) {
             var taskNumber = "";
             var tasks = getTasksLocal();
-            for (var i = 0; i < tasks.length; i++) {
-                if (tasks[i].sys_id === id) {
-                    taskNumber = tasks[i].number;
+            if (tasks != null) {
+                for (var i = 0; i < tasks.length; i++) {
+                    if (tasks[i].sys_id === id) {
+                        taskNumber = tasks[i].number;
+                    }
                 }
+                return taskNumber;
+            } else {
+                return taskNumber;
             }
-            return taskNumber;
         };
 
         function getTasksLengthLocal() {
@@ -657,25 +719,33 @@ angular.module('starter.services', [])
         // return all timecards by argument "date" and state is "Pending"
         function getTimecardsByDateLocal(seldate) {
             var timecards = JSON.parse(localStorage.getItem('timecards'));
-            var selTimecards = []
-            for (var i = 0; i < timecards.length; i++) {
-                if (seldate == timecards[i].week_starts_on && timecards[i].state == 'Pending') {
-                    selTimecards.push(timecards[i]);
+            var selTimecards = [];
+            if (timecards != null) {
+                for (var i = 0; i < timecards.length; i++) {
+                    if (seldate == timecards[i].week_starts_on && timecards[i].state == 'Pending') {
+                        selTimecards.push(timecards[i]);
+                    }
                 }
+                return selTimecards;
+            } else {
+                return selTimecards;
             }
-            return selTimecards;
         };
         // return all timecards by date with condition comparision with argument date and return all 
         // timecards with any state condition
         function getTimecardsByDateLocalForCharts(seldate) {
             var timecards = JSON.parse(localStorage.getItem('timecards'));
             var selTimecards = [];
-            for (var i = 0; i < timecards.length; i++) {
-                if (seldate == timecards[i].week_starts_on) {
-                    selTimecards.push(timecards[i]);
+            if (timecards != null) {
+                for (var i = 0; i < timecards.length; i++) {
+                    if (seldate == timecards[i].week_starts_on) {
+                        selTimecards.push(timecards[i]);
+                    }
                 }
+                return selTimecards;
+            } else {
+                return selTimecards;
             }
-            return selTimecards;
         };
 
         function getTimecardsByMonthYearLocal(seldate) {
@@ -685,33 +755,46 @@ angular.module('starter.services', [])
             // start date and end date 
             var startDate = passDate.clone().startOf('month');
             var endDate = passDate.clone().endOf('month');
-            for (var i = 0; i < timecards.length; i++) {
-                if (moment(new Date(timecards[i].week_starts_on)).isBetween(startDate, endDate)) {
-                    selTimecards.push(timecards[i]);
+            if (timecards != null) {
+                for (var i = 0; i < timecards.length; i++) {
+                    if (moment(new Date(timecards[i].week_starts_on)).isBetween(startDate, endDate)) {
+                        selTimecards.push(timecards[i]);
+                    }
                 }
+                return selTimecards;
+            } else {
+                return selTimecards;
             }
-            return selTimecards;
+
         };
 
         function getTimecardByID(id) {
             var timecards = JSON.parse(localStorage.getItem('timecards'));
             var selTimecard = {};
-            for (var i = 0; i < timecards.length; i++) {
-                if (timecards[i].sys_id === id) {
-                    selTimecard = timecards[i];
+            if (timecards != null) {
+                for (var i = 0; i < timecards.length; i++) {
+                    if (timecards[i].sys_id === id) {
+                        selTimecard = timecards[i];
+                    }
                 }
+                return selTimecard;
+            } else {
+                return selTimecard;
             }
-            return selTimecard;
         };
 
         function getTimecardByCreatedDate(tcdate) {
             var timecards = JSON.parse(localStorage.getItem('timecards'));
             var dt = new Date("Time Card: Created 2016-01-05 19:58:34");
             var selTimecards = "";
-            for (var i = 0; i < timecards.length; i++) {
-                console.log((new Date(timecards[i].sys_created_on)));
+            if (timecards != null) {
+                for (var i = 0; i < timecards.length; i++) {
+                    console.log((new Date(timecards[i].sys_created_on)));
+                }
+                return selTimecards;
+            } else {
+                return selTimecards;
             }
-            return selTimecards;
         };
 
         function getTimecardsLengthLocal() {
@@ -726,12 +809,16 @@ angular.module('starter.services', [])
         function getTimecardNumberByID(sys_id) {
             var timecardNumber = "";
             var timecards = getTimecardsLocal();
-            for (var i = 0; i < timecards.length; i++) {
-                if (timecards[i].sys_id == sys_id) {
-                    timecardNumber = timecards[i].u_number;
+            if (timecards != null) {
+                for (var i = 0; i < timecards.length; i++) {
+                    if (timecards[i].sys_id == sys_id) {
+                        timecardNumber = timecards[i].u_number;
+                    }
                 }
+                return timecardNumber;
+            } else {
+                return timecardNumber;
             }
-            return timecardNumber;
         };
 
         function deleteTimecardLocalByID(sys_id) {
@@ -759,7 +846,12 @@ angular.module('starter.services', [])
         };
 
         function getApprovalsLocal() {
-            return JSON.parse(localStorage.getItem('approvals'));
+            var approvals = JSON.parse(localStorage.getItem('approvals'));
+            if (approvals != null) {
+                return approvals;
+            } else {
+                return [];
+            }
         };
 
         function getApprovalsLengthLocal() {
