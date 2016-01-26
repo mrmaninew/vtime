@@ -14,7 +14,7 @@ angular.module('starter', ['ionic', 'ionic-datepicker', 'starter.controllers', '
             }
             // check the token value if its have some value go the home view else, redirect
             // to login page 
-            if (TokenService.getToken() == null) {
+            if (TokenService.getToken() === null) {
                 $state.go('login');
             } else {
                 console.log('already authenticated and got some token information');

@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <widget id="com.ionicframework.starter" version="0.0.1" xmlns="http://www.w3.org/ns/widgets" xmlns:cdv="http://cordova.apache.org/ns/1.0">
-  <name>VTime</name>
+  <name>vTime</name>
   <description>
-        Servicenow Time Cards
+        Servicenow Time Sheets  
     </description>
   <author email="manikanta@live.in" href="http://example.com.com/">
       manikanta
@@ -17,6 +17,7 @@
   <preference name="SplashScreen" value="screen"/>
   <preference name="SplashScreenDelay" value="3000"/>
   <preference name="StatusBarOverlaysWebView" value="false"/>
+  <preference name="Orientation" value="portrait" />
   <feature name="StatusBar">
     <param name="ios-package" value="CDVStatusBar" onload="true"/>
   </feature>

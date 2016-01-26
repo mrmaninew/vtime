@@ -39,7 +39,7 @@ angular.module('starter.services', [])
             },
             hasToken: function() {
                 var token = localStorage.getItem('token');
-                if (token != null) {
+                if (token !== null) {
                     return true;
                 } else {
                     return false;
@@ -48,7 +48,7 @@ angular.module('starter.services', [])
             clearToken: function() {
                 localStorage.removeItem('token');
             }
-        }
+        };
     })
     // Servicenow Service
     .factory('snService', function($http, $q, $state, snCred, errorService, TokenService, UserService, LocalStorageService) {
@@ -57,7 +57,7 @@ angular.module('starter.services', [])
             getProjects: function() {
                 var url = snCred.PRODURL + '/api/now/table/' + snCred.PrjTableName;
                 var token = "Bearer " + TokenService.getToken();
-                var defer = $q.defer()
+                var defer = $q.defer();
                     //$http.defaults.headers.common.Authorization = "Bearer" + TokenService.getToken();
                 $http({
                         method: 'GET',
@@ -86,7 +86,7 @@ angular.module('starter.services', [])
                             }
                         }
 
-                    })
+                    });
                 return defer.promise;
             },
             getTasks: function() {
@@ -118,7 +118,7 @@ angular.module('starter.services', [])
                             }
                         }
 
-                    })
+                    });
                 return defer.promise;
             },
             getStories: function() {
@@ -148,7 +148,7 @@ angular.module('starter.services', [])
                                 defer.reject(error);
                             }
                         }
-                    })
+                    });
                 return defer.promise;
             },
             getTimecards: function() {
@@ -180,7 +180,7 @@ angular.module('starter.services', [])
                             }
                         }
 
-                    })
+                    });
                 return defer.promise;
             },
             getApprovals: function() {
@@ -212,7 +212,7 @@ angular.module('starter.services', [])
                             }
                         }
 
-                    })
+                    });
                 return defer.promise;
             },
             // get username by sys_id passed by
@@ -239,14 +239,14 @@ angular.module('starter.services', [])
                         } else {
                             defer.reject(error);
                         }
-                    })
+                    });
                 return defer.promise;
             },
             // get user details like user_id, email, sys_id
-            getUserDetailsByUsername: function(username, token) {
+            getUserDetailsByUsername: function(username, tokens) {
                 var query = "?sysparm_query=user_name=" + username;
                 var url = snCred.PRODURL + '/api/now/table/' + snCred.UserTable + query;
-                var token = "Bearer " + token;
+                var token = "Bearer " + tokens;
                 var defer = $q.defer();
                 $http({
                         method: 'GET',
@@ -265,7 +265,7 @@ angular.module('starter.services', [])
                         if (status == errorService.Unauthorized) {
                             $state.go('app.login');
                         }
-                    })
+                    });
                 return defer.promise;
             },
             //set (insert, update) functions 
@@ -296,7 +296,7 @@ angular.module('starter.services', [])
                         } else {
                             defer.reject(error);
                         }
-                    })
+                    });
                 return defer.promise;
             },
             updateTimecard: function(sys_id, timecard) {
@@ -327,7 +327,7 @@ angular.module('starter.services', [])
                         } else {
                             defer.reject(error);
                         }
-                    })
+                    });
                 return defer.promise;
             },
             // only edit state value and use sys_id as param 
@@ -337,7 +337,7 @@ angular.module('starter.services', [])
                 var defer = $q.defer();
                 var data = {
                     'state': 'Submitted'
-                }
+                };
                 $http({
                         method: 'PATCH',
                         url: url,
@@ -362,7 +362,7 @@ angular.module('starter.services', [])
                         } else {
                             defer.reject(error);
                         }
-                    })
+                    });
                 return defer.promise;
             },
             //delete functions 
@@ -390,7 +390,7 @@ angular.module('starter.services', [])
                         } else {
                             defer.reject(error);
                         }
-                    })
+                    });
                 return defer.promise;
             },
             // approve timecard in approvals 
@@ -422,7 +422,7 @@ angular.module('starter.services', [])
                         } else {
                             defer.reject(error);
                         }
-                    })
+                    });
                 return defer.promise;
             },
             // reject timecard in approvals 
@@ -454,10 +454,10 @@ angular.module('starter.services', [])
                         } else {
                             defer.reject(error);
                         }
-                    })
+                    });
                 return defer.promise;
             }
-        }
+        };
     })
     // User Service (session, storage)
     .factory('UserService', function($state) {
@@ -469,16 +469,16 @@ angular.module('starter.services', [])
             user.sys_id = users.sys_id;
             localStorage.setItem('user', JSON.stringify(user));
             return true;
-        };
+        }
         // retrieve user 
         function getUser() {
             var user = JSON.parse(localStorage.getItem('user'));
-            if (user != null) {
+            if (user !== null) {
                 return user;
             } else {
                 $state.go('app.login');
             }
-        };
+        }
         // remove user
         function clearUser() {
             localStorage.removeItem('user');
@@ -525,11 +525,11 @@ angular.module('starter.services', [])
                                     console.log(error);
                                 });
                         }, function(error) {
-                            console.log(error)
+                            console.log(error);
                         }); // end of Server API Calls 
                     return true;
                 } // end of loadAll() function 
-        } // end of return 
+        };// end of return 
     })
     // Login Service
     .factory('LoginService', function($http, $timeout, $q, $location, $state, $httpParamSerializer, $httpParamSerializerJQLike, preLoadDataService, TokenService, errorService, snCred, snService) {
@@ -560,7 +560,7 @@ angular.module('starter.services', [])
                                     preLoadDataService.loadAll();
                                 }, function(error) {
                                     console.log(error);
-                                })
+                                });
                         }
                     }
                 }).error(function(response, status) {
@@ -574,7 +574,7 @@ angular.module('starter.services', [])
                     }
                 });
             }
-        }
+        };
     })
     .factory('LogoutService', function($q, TokenService, UserService, LocalStorageService) {
         return {
@@ -583,7 +583,7 @@ angular.module('starter.services', [])
                 LocalStorageService.clearAllItems();
                 UserService.clearUser();
             }
-        }
+        };
     })
     // Local Storage Service
     // for phase 2 - revision(app release) (use prototypical inhertiance ) create Project, Task, Story, 
@@ -598,16 +598,16 @@ angular.module('starter.services', [])
                 localStorage.setItem('projects', []);
             }
             return true;
-        };
+        }
 
         function getProjectsLocal() {
             var projects = JSON.parse(localStorage.getItem('projects'));
-            if (projects != null) {
+            if (projects !== null) {
                 return projects;
             } else {
                 return [];
             }
-        };
+        }
 
         function getProjectNumberBySysID(id) {
             var projectNumber = "";
@@ -618,16 +618,16 @@ angular.module('starter.services', [])
                 }
             }
             return projectNumber;
-        };
+        }
 
         function getProjectsLengthLocal() {
             var projects = getProjectsLocal();
-            if (projects != null) {
+            if (projects !== null) {
                 return projects.length;
             } else {
                 return 0;
             }
-        };
+        }
 
         function getProjectNameBySysID(id) {
             var projectName = "";
@@ -647,21 +647,21 @@ angular.module('starter.services', [])
                 localStorage.setItem('tasks', []);
             }
             return true;
-        };
+        }
 
         function getTasksLocal() {
             var tasks = JSON.parse(localStorage.getItem('tasks'));
-            if (tasks != null) {
-                return tasks
+            if (tasks !== null) {
+                return tasks;
             } else {
                 return [];
             }
-        };
+        }
 
         function getTaskNumberBySysID(id) {
             var taskNumber = "";
             var tasks = getTasksLocal();
-            if (tasks != null) {
+            if (tasks !== null) {
                 for (var i = 0; i < tasks.length; i++) {
                     if (tasks[i].sys_id === id) {
                         taskNumber = tasks[i].number;
@@ -671,16 +671,16 @@ angular.module('starter.services', [])
             } else {
                 return taskNumber;
             }
-        };
+        }
 
         function getTasksLengthLocal() {
             var tasks = getTasksLocal();
-            if (tasks != null) {
-                return tasks.length
+            if (tasks !== null) {
+                return tasks.length;
             } else {
                 return 0;
             }
-        };
+        }
         // Stories 
         function setStoriesLocal(result) {
             if (result) {
@@ -689,11 +689,11 @@ angular.module('starter.services', [])
                 localStorage.setItem('stories', []);
             }
             return true;
-        };
+        }
 
         function getStoriesLocal() {
             return JSON.parse(localStorage.getItem('stories'));
-        };
+        }
 
         function getStoryNumberBySysID(id) {
             var storyNumber = "";
@@ -704,16 +704,16 @@ angular.module('starter.services', [])
                 }
             }
             return storyNumber;
-        };
+        }
 
         function getStoriesLengthLocal() {
             var stories = getStoriesLocal();
-            if (stories != null) {
+            if (stories !== null) {
                 return stories.length;
             } else {
                 return 0;
             }
-        };
+        }
 
         // Timecards
         function setTimecardsLocal(result) {
@@ -723,7 +723,7 @@ angular.module('starter.services', [])
                 localStorage.setItem('timecards', []);
             }
             return true;
-        };
+        }
 
         function setTimecardLocalByID(sys_id, timecard) {
             var timecards = getTimecardsLocal();
@@ -734,23 +734,23 @@ angular.module('starter.services', [])
             }
             setTimecardsLocal(timecards); //  function to call setTimecardsLocal(), save timecard to Local stograe
             return true;
-        };
+        }
 
         function addNewTimecardLocal(timecard) {
             var timecards = getTimecardsLocal();
             timecards.push(timecard);
             setTimecardsLocal(timecards);
             return true;
-        };
+        }
 
         function getTimecardsLocal() {
             return JSON.parse(localStorage.getItem('timecards'));
-        };
+        }
         // return all timecards by argument "date" and state is "Pending"
         function getTimecardsByDateLocal(seldate) {
             var timecards = JSON.parse(localStorage.getItem('timecards'));
             var selTimecards = [];
-            if (timecards != null) {
+            if (timecards !== null) {
                 for (var i = 0; i < timecards.length; i++) {
                     if (seldate == timecards[i].week_starts_on && timecards[i].state == 'Pending') {
                         selTimecards.push(timecards[i]);
@@ -760,13 +760,13 @@ angular.module('starter.services', [])
             } else {
                 return selTimecards;
             }
-        };
+        }
         // return all timecards by date with condition comparision with argument date and return all 
         // timecards with any state condition
         function getTimecardsByDateLocalForCharts(seldate) {
             var timecards = JSON.parse(localStorage.getItem('timecards'));
             var selTimecards = [];
-            if (timecards != null) {
+            if (timecards !== null) {
                 for (var i = 0; i < timecards.length; i++) {
                     if (seldate == timecards[i].week_starts_on) {
                         selTimecards.push(timecards[i]);
@@ -776,7 +776,7 @@ angular.module('starter.services', [])
             } else {
                 return selTimecards;
             }
-        };
+        }
 
         function getTimecardsByMonthYearLocal(seldate) {
             var timecards = JSON.parse(localStorage.getItem('timecards'));
@@ -785,7 +785,7 @@ angular.module('starter.services', [])
             // start date and end date 
             var startDate = passDate.clone().startOf('month');
             var endDate = passDate.clone().endOf('month');
-            if (timecards != null) {
+            if (timecards !== null) {
                 for (var i = 0; i < timecards.length; i++) {
                     if (moment(new Date(timecards[i].week_starts_on)).isBetween(startDate, endDate)) {
                         selTimecards.push(timecards[i]);
@@ -796,12 +796,12 @@ angular.module('starter.services', [])
                 return selTimecards;
             }
 
-        };
+        }
 
         function getTimecardByID(id) {
             var timecards = JSON.parse(localStorage.getItem('timecards'));
             var selTimecard = {};
-            if (timecards != null) {
+            if (timecards !== null) {
                 for (var i = 0; i < timecards.length; i++) {
                     if (timecards[i].sys_id === id) {
                         selTimecard = timecards[i];
@@ -811,13 +811,13 @@ angular.module('starter.services', [])
             } else {
                 return selTimecard;
             }
-        };
+        }
 
         function getTimecardByCreatedDate(tcdate) {
             var timecards = JSON.parse(localStorage.getItem('timecards'));
             var dt = new Date("Time Card: Created 2016-01-05 19:58:34");
             var selTimecards = "";
-            if (timecards != null) {
+            if (timecards !== null) {
                 for (var i = 0; i < timecards.length; i++) {
                     console.log((new Date(timecards[i].sys_created_on)));
                 }
@@ -825,21 +825,21 @@ angular.module('starter.services', [])
             } else {
                 return selTimecards;
             }
-        };
+        }
 
         function getTimecardsLengthLocal() {
             var timecards = getTimecardsLocal();
-            if (timecards != null) {
+            if (timecards !== null) {
                 return timecards.length;
             } else {
                 return 0;
             }
-        };
+        }
 
         function getTimecardNumberByID(sys_id) {
             var timecardNumber = "";
             var timecards = getTimecardsLocal();
-            if (timecards != null) {
+            if (timecards !== null) {
                 for (var i = 0; i < timecards.length; i++) {
                     if (timecards[i].sys_id == sys_id) {
                         timecardNumber = timecards[i].u_number;
@@ -849,7 +849,7 @@ angular.module('starter.services', [])
             } else {
                 return timecardNumber;
             }
-        };
+        }
 
         function deleteTimecardLocalByID(sys_id) {
             var timecards = getTimecardsLocal();
@@ -860,7 +860,7 @@ angular.module('starter.services', [])
             }
             setTimecardsLocal(timecards);
             return true;
-        };
+        }
 
         function clearAllTimecardsLocal() {
             localStorage.setItem('timecards', []);
@@ -873,36 +873,36 @@ angular.module('starter.services', [])
                 localStorage.setItem('approvals', []);
             }
             return true;
-        };
+        }
 
         function getApprovalsLocal() {
             var approvals = JSON.parse(localStorage.getItem('approvals'));
-            if (approvals != null) {
+            if (approvals !== null) {
                 return approvals;
             } else {
                 return [];
             }
-        };
+        }
 
         function getApprovalsLengthLocal() {
             var approvals = getApprovalsLocal();
-            if (approvals != null) {
+            if (approvals !== null) {
                 return approvals.length;
             } else {
                 return 0;
             }
-        };
+        }
 
         function deleteApprovalBySysID(sys_id) {
             var approvals = getApprovalsLocal();
             for (var i = 0; i < approvals.length; i++) {
                 if (approvals[i].sys_id == sys_id) {
-                    approvals.splice(i, 1)
+                    approvals.splice(i, 1);
                 }
             }
             setApprovalsLocal(approvals);
             return true;
-        };
+        }
         // remove all items in localstorage (projects, tasks, stories, timecards, approvals)
         function clearAllItems() {
             localStorage.removeItem('projects');
@@ -949,5 +949,5 @@ angular.module('starter.services', [])
             deleteApprovalBySysID: deleteApprovalBySysID,
             // clear all items (Projects, Tasks, Stories, Timecards, Approvals)
             clearAllItems: clearAllItems
-        }
+        };
     });

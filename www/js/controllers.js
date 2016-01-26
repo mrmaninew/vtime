@@ -68,25 +68,25 @@ angular.module('starter.controllers', [])
         $scope.hideSpinner = false;
         // get total hours for current day and week
         function getTotalHrsDayWeek() {
-            if ($scope.selDay == 0) {
-                var sundayDate = moment($scope.selDate).format("YYYY-MM-DD"); // 2012-11-22
-                var tcs = LocalStorageService.getTimecardsByDateLocalForCharts(sundayDate); // because weeks starts on sunday
-                processTimecards(tcs);
+            if ($scope.selDay === 0) {
+                var sundayDateSun = moment($scope.selDate).format("YYYY-MM-DD"); // 2012-11-22
+                var tcsSun = LocalStorageService.getTimecardsByDateLocalForCharts(sundayDateSun); // because weeks starts on sunday
+                processTimecards(tcsSun);
             } else {
                 var sundayDate = moment($scope.selDate).subtract($scope.selDay, 'days').format("YYYY-MM-DD"); // 2012-11-22
-                var tcs = LocalStorageService.getTimecardsByDateLocalForCharts(sundayDate);
+                var tcs = LocalStorageService.getTimecardsByDateLocalForCharts(sundayDates);
                 processTimecards(tcs);
             }
-        };
+        }
 
         function processTimecards(tcs) {
             var Ptimecards = [];
             for (i = 0; i < tcs.length; i++) {
                 $scope.totalHrsWeekly += Number(tcs[i].total);
-                if (tcs[i][$scope.selDayName] != 0) {
+                if (tcs[i][$scope.selDayName] !== 0) {
                     $scope.totalHrsDay += Number(tcs[i][$scope.selDayName]);
                 }
-                if (tcs[i][$scope.selDayName] != 0 && tcs[i].state == "Pending") {
+                if (tcs[i][$scope.selDayName] !== 0 && tcs[i].state == "Pending") {
                     var set = {};
                     set.selDate = new Date($scope.selDate);
                     if (tcs[i].sys_id) set.sys_id = tcs[i].sys_id;
@@ -99,7 +99,7 @@ angular.module('starter.controllers', [])
             }
             $scope.todayTCS = Ptimecards;
             processChartData(tcs);
-        };
+        }
         // get chart data 
         function processChartData(tcs) {
             //console.log(tcs);
@@ -134,7 +134,7 @@ angular.module('starter.controllers', [])
                 }
             }
             $scope.data.push([sunday, monday, tuesday, wednesday, thursday, friday, saturday]);
-        };
+        }
         // total hours for current month
         function getTotalHrsMonth() {
             var tc = LocalStorageService.getTimecardsByMonthYearLocal($scope.selDate);
@@ -143,7 +143,7 @@ angular.module('starter.controllers', [])
                     $scope.totalHrsMonthly += Number(tc[i].total);
                 }
             }
-        };
+        }
         $scope.routeEditCard = function(sys_id) {
             //ref="#/app/editCard/:{{tc.sys_id}}/:{{selDate}}"
             $state.go('app.editCard', {
@@ -197,7 +197,7 @@ angular.module('starter.controllers', [])
                             $scope.hideSpinner = false; // hide the spinner after data refreshed for timecards and approvals 
                         }, function(error) {
                             console.log(error);
-                        })
+                        });
                 }, function(error) {
                     console.log(error);
                 });
@@ -233,7 +233,7 @@ angular.module('starter.controllers', [])
         };
         // on ionic view leave enable sidemenu drag content
         $scope.$on('$ionicView.leave', function() {
-            $ionicSideMenuDelegate.canDragContent(true)
+            $ionicSideMenuDelegate.canDragContent(true);
         });
     })
     // Time tab for Today (or) Selected , this week (depending on current and selected date) 
@@ -270,22 +270,23 @@ angular.module('starter.controllers', [])
         });
         // get all Timecards by start of the week (Sunday) by calculating present day
         function getTimecardsDate() {
-            if ($scope.selDay == 0) {
-                var sundayDate = moment($scope.selDate).format("YYYY-MM-DD"); // 2012-11-22
-                var tcs = LocalStorageService.getTimecardsByDateLocal(sundayDate); // because weeks starts on sunday
-                processTimecards(tcs);
+            if ($scope.selDay === 0) {
+                // becuase selDay === 0  "it is sunday and day of week start"
+                var sundayDateSun = moment($scope.selDate).format("YYYY-MM-DD"); // 2012-11-22
+                var tcsSun = LocalStorageService.getTimecardsByDateLocal(sundayDateSun); // because weeks starts on sunday
+                processTimecards(tcsSun);
             } else {
                 var sundayDate = moment($scope.selDate).subtract($scope.selDay, 'days').format("YYYY-MM-DD"); // 2012-11-22
                 var tcs = LocalStorageService.getTimecardsByDateLocal(sundayDate);
                 processTimecards(tcs);
             }
-        };
+        }
         // process timecards by adding more details after retrieving TC from LocalStorage
         function processTimecards(tcs) {
-            var Ptimecards = []
+            var Ptimecards = [];
             $scope.totalHrsDay = 0;
             for (i = 0; i < tcs.length; i++) {
-                if (tcs[i][$scope.selDayName] != 0) { // Ex: tcs.tuesday!= 0
+                if (tcs[i][$scope.selDayName] !== 0) { // Ex: tcs.tuesday!= 0
                     var set = {};
                     set.selDate = new Date($scope.selDate);
                     if (tcs[i].sys_id) set.sys_id = tcs[i].sys_id;
@@ -307,17 +308,17 @@ angular.module('starter.controllers', [])
                 }
             }
             $scope.timecards = Ptimecards;
-        };
+        }
         // on Day changed from calendar reset selDay, and call weeks methods for arranging "weekly" tab
         function onDayChanged() {
             var daysBefore, dayAfter;
-            if ($scope.selDay == 0) {
+            if ($scope.selDay === 0) {
                 $scope.selThisWeek = getDaysInWeekBySelDate($scope.selDay, '');
             } else {
                 $scope.selThisWeek = getDaysInWeekBySelDate($scope.selDay, daysWeek.weekEnd - $scope.selDay);
             }
             $scope.selDayName = daysWeek.weekDays[$scope.selDay]; // sunday, monday
-        };
+        }
         // get all days in week from sunday to saturday by selected or current date
         function getDaysInWeekBySelDate(before, after) {
             var week = [];
@@ -343,10 +344,10 @@ angular.module('starter.controllers', [])
                         arr.push((moment($scope.selDate).subtract(i, 'days'))._d);
                     }
                     return callback(arr.reverse());
-                };
+                }
                 return getBeforeDays(getAfterDays);
             }
-        };
+        }
         $scope.refreshCards = function() {
             getTimecardsDate();
         };
@@ -356,10 +357,10 @@ angular.module('starter.controllers', [])
         $scope.getHoursDay = function(day) {
             var dayNumber = day.getDay(); // 0 - 7
             var dayName = daysWeek.weekDays[dayNumber]; // sunday, monday
-            if (dayNumber == 0) {
-                var sundayDate = moment(day).format("YYYY-MM-DD");
-                var tcs = LocalStorageService.getTimecardsByDateLocal(sundayDate); // because week starts on sunday
-                return processTimecardsForHours(tcs, dayName); // get hours for all timecards by date  
+            if (dayNumber === 0) {
+                var sundayDateSun = moment(day).format("YYYY-MM-DD");
+                var tcsSun = LocalStorageService.getTimecardsByDateLocal(sundayDateSun); // because week starts on sunday
+                return processTimecardsForHours(tcsSun, dayName); // get hours for all timecards by date  
             } else {
                 var sundayDate = moment($scope.selDate).subtract($scope.selDay, 'days').format("YYYY-MM-DD"); // 2012-11-22
                 var tcs = LocalStorageService.getTimecardsByDateLocal(sundayDate);
@@ -371,12 +372,12 @@ angular.module('starter.controllers', [])
         function processTimecardsForHours(tcs, dayName) { // ([timecard.obj,timecard.obj], saturday)
             var hrs = 0;
             for (var i = 0; i < tcs.length; i++) {
-                if (tcs[i][dayName] != 0) {
+                if (tcs[i][dayName] !== 0) {
                     hrs += Number(tcs[i][dayName]);
                 }
             }
             return hrs;
-        };
+        }
         // set $scope.totalHrsWeekly 
         $scope.totalWeek = function(hrs) {
             $scope.totalHrsWeekly += hrs;
@@ -443,7 +444,7 @@ angular.module('starter.controllers', [])
             $state.go('app.editCard', {
                 param1: sys_id,
                 param2: $scope.selDate
-            })
+            });
         };
     })
     // create new Timecard 
@@ -475,7 +476,7 @@ angular.module('starter.controllers', [])
             var generateWeekStartsOn = function() {
                 var weekStartOn = (moment($scope.tc.passDate).subtract(dayNum, 'days'))._d;
                 return weekStartOn;
-            }
+            };
 
             data.task = $scope.tc.task;
             data.u_story = $scope.tc.story;
@@ -499,7 +500,7 @@ angular.module('starter.controllers', [])
                     });
                 }, function(error) {
                     console.log(error); // error
-                })
+                });
         };
         $scope.submitTC = function() {};
         $scope.resetTC = function() {
@@ -531,7 +532,7 @@ angular.module('starter.controllers', [])
             var tc = LocalStorageService.getTimecardByID($stateParams.param1); // param1: sys_id
             var paramDate = $stateParams.param2; // param2: passed date (Thu Jan 14 2016 00:00:00 GMT+0530 (IST))
             processTimecard(tc, paramDate, $stateParams.param1);
-        };
+        }
         getTimecardDetails();
 
         function processTimecard(tc, paramDate, sys_id) {
@@ -552,7 +553,7 @@ angular.module('starter.controllers', [])
             }
             $scope.tc = set;
             //console.log($scope.tc);
-        };
+        }
         $scope.changeBillable = function() {
             $scope.tc.u_billable = !$scope.tc.u_billable;
         };
@@ -578,7 +579,7 @@ angular.module('starter.controllers', [])
                     $ionicHistory.goBack();
                 }, function(error) {
                     console.log(error);
-                })
+                });
         };
         $scope.resetTC = function() {
             $scope.tc = {};
@@ -689,7 +690,7 @@ angular.module('starter.controllers', [])
                     $scope.timecards = LocalStorageService.getTimecardsLocal();
                 }, function(error) {
                     console.log(error);
-                })
+                });
         };
 
         // toggle group for pending toggle code 
@@ -791,7 +792,7 @@ angular.module('starter.controllers', [])
                                 });
                             }, function(error) {
                                 console.log(error);
-                            })
+                            });
                     }
                 }]
             });
@@ -815,10 +816,10 @@ angular.module('starter.controllers', [])
                                 });
                             }, function(error) {
                                 console.log(error);
-                            })
+                            });
                     }
                 }]
-            })
+            });
         };
         // refresh approvals view - UI 
         $scope.refreshApprovals = function() {};
@@ -849,7 +850,7 @@ angular.module('starter.controllers', [])
     .controller('projectsCtrl', function($scope, $state, snService, LocalStorageService) {
         $scope.$on('$ionicView.enter', function(e) {
             var projects = LocalStorageService.getProjectsLocal();
-            if (projects != null || projects.length > 0) {
+            if (projects !== null || projects.length > 0) {
                 $scope.projects = projects;
             } else {
                 $scope.projects = [];
@@ -872,12 +873,12 @@ angular.module('starter.controllers', [])
         // synchronize on user request
         $scope.syncProjects = function() {
             $scope.projects = LocalStorageService.getProjectsLocal();
-        }
+        };
     })
     // side menu (Stories)
     .controller('storiesCtrl', function($scope, $state, snService, LocalStorageService) {
         var stories = LocalStorageService.getStoriesLocal();
-        if (stories != null || stories.length > 0) {
+        if (stories !== null || stories.length > 0) {
             $scope.stories = stories;
         } else {
             $scope.stories = [];
@@ -901,8 +902,8 @@ angular.module('starter.controllers', [])
     // side menu (Tasks)
     .controller('tasksCtrl', function($scope, $state, snService, LocalStorageService) {
         var tasks = LocalStorageService.getTasksLocal();
-        if (tasks != null || tasks.length > 0) {
-            $scope.tasks = tasks
+        if (tasks !== null || tasks.length > 0) {
+            $scope.tasks = tasks;
         } else {
             $scope.tasks = [];
         }
@@ -926,15 +927,15 @@ angular.module('starter.controllers', [])
     .controller('timecardsCtrl', function($scope, $state, snService, LocalStorageService) {
         $scope.$on('$ionicView.enter', function(e) {
             var timecards = LocalStorageService.getTimecardsLocal();
-            if (timecards != null || timecards.length > 0) {
-                $scope.timecards = timecards
+            if (timecards !== null || timecards.length > 0) {
+                $scope.timecards = timecards;
             } else {
                 $scope.timecards = [];
             }
         });
         $scope.$on('$ionicView.leave', function(e) {
-                $scope.timecards = "";
-            })
+            $scope.timecards = "";
+        });
             // functional methods for  project, Task, Story - Number 
         $scope.getProjectNumberBySysID = function(sys_id) {
             return LocalStorageService.getProjectNumberBySysID(sys_id);
@@ -989,7 +990,7 @@ angular.module('starter.controllers', [])
                                                     // console.log(result);
                                                 }, function(error) {
                                                     console.log(error);
-                                                })
+                                                });
                                         }, function(error) {
                                             console.log(error);
                                         });
@@ -1000,9 +1001,9 @@ angular.module('starter.controllers', [])
                             console.log(error);
                         });
                 }, function(error) {
-                    console.log(error)
+                    console.log(error);
                 });
-        }
+        };
     })
     // side menu (Settings)
     .controller('settingsCtrl', function($scope, $state) {
