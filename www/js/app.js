@@ -1,6 +1,6 @@
 angular.module('starter', ['ionic', 'ionic-datepicker', 'starter.controllers', 'starter.services', 'angularMoment', 'ngCordova', 'chart.js'])
 
-    .run(function($ionicPlatform, $cordovaToast, $state, snService, TokenService, LocalStorageService) {
+    .run(function($ionicPlatform, $cordovaToast, $state, $rootScope, snService, TokenService, LocalStorageService) {
         $ionicPlatform.ready(function() {
             // Hide the accessory bar by default (remove this to show the accessory bar above the keyboard
             // for form inputs)

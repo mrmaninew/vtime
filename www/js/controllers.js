@@ -215,7 +215,7 @@ angular.module('starter.controllers', [])
         });
     })
     // Login View
-    .controller('loginCtrl', function($scope, $state, $cordovaToast, $ionicSideMenuDelegate, $stateParams, LoginService, snService, LocalStorageService) {
+    .controller('loginCtrl', function($scope, $state, $cordovaToast, $ionicSideMenuDelegate, $stateParams, $ionicSlideBoxDelegate, LoginService, snService, LocalStorageService) {
         $scope.loginData = {};
         // hide side menu
         $ionicSideMenuDelegate.canDragContent(false);

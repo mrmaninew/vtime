@@ -1,6 +1,29 @@
 /* Empty. Add your own CSS if you like */
 
 
+/* login */
+.volteo-color {
+    background-color: #f08080;
+    color: white;
+}
+.volteo-color > h1{
+    color: white;
+}
+.volteo-color > img {
+    height:100px;
+    max-width:100%;
+    margin: 0 auto;
+    display: block;
+}
+.volteo-p {
+    font-size: 17px;
+    padding-top: 5px;
+}
+
+#login-btn{
+    background-color: #CD5C5C;
+    color: white
+}
 /* home - Dashbboard */
 
 .dash-profile {
@@ -36,7 +59,7 @@
 }
 
 .dash-middle {
-   /* height: 20vh; */
+    /* height: 20vh; */
     border: 1px solid grey;
     padding-bottom: 0px;
     margin-bottom: 10px;
@@ -97,10 +120,10 @@
     border-radius: 50%;
 }
 
-.menu .has-header
-{
+.menu .has-header {
     top: 169px;
 }
+
 
 /* timecards.html */
 
