@@ -77,7 +77,7 @@ angular.module('starter.services', [])
                         // and get new access token and set it in the TokenService 
                         // Local Storage 
                         if (status == errorService.Unauthorized) {
-                            $state.go('app.login');
+                            $state.go('login');
                         } else {
                             // if some other errors, store the empty array in localstorage 
                             // for Projects 
@@ -109,7 +109,7 @@ angular.module('starter.services', [])
                     })
                     .error(function(error, status) {
                         if (status == errorService.Unauthorized) {
-                            $state.go('app.login');
+                            $state.go('login');
                         } else {
                             // if some other errors,store the empty array in localstorage 
                             // for Tasks
@@ -140,7 +140,7 @@ angular.module('starter.services', [])
                     })
                     .error(function(error, status) {
                         if (status == errorService.Unauthorized) {
-                            $state.go('app.login');
+                            $state.go('login');
                         } else {
                             // if some other errors, store the empty array in localstorage 
                             // for Stories
@@ -171,7 +171,7 @@ angular.module('starter.services', [])
                     .error(function(error, status) {
                         console.log(error.error.message, status);
                         if (status == errorService.Unauthorized) {
-                            $state.go('app.login');
+                            $state.go('login');
                         } else {
                             // if some other errors store the empty array in localstorage 
                             // for  Timecards
@@ -203,7 +203,7 @@ angular.module('starter.services', [])
                     .error(function(error, status) {
                         console.log(error.error.message, status);
                         if (status == errorService.Unauthorized) {
-                            $state.go('app.login');
+                            $state.go('login');
                         } else {
                             // if some other errors store the empty array in localstorage 
                             // for Approvals
@@ -235,7 +235,7 @@ angular.module('starter.services', [])
                     .error(function(error, status) {
                         onsole.log(error.error.message, status);
                         if (status == errorService.Unauthorized) {
-                            $state.go('app.login');
+                            $state.go('login');
                         } else {
                             defer.reject(error);
                         }
@@ -263,7 +263,7 @@ angular.module('starter.services', [])
                     .error(function(error, status) {
                         console.log(error.error.message, status);
                         if (status == errorService.Unauthorized) {
-                            $state.go('app.login');
+                            $state.go('login');
                         }
                     });
                 return defer.promise;
@@ -292,7 +292,7 @@ angular.module('starter.services', [])
                     })
                     .error(function(error, status) {
                         if (status == errorService.Unauthorized) {
-                            $state.go('app.login');
+                            $state.go('login');
                         } else {
                             defer.reject(error);
                         }
@@ -323,7 +323,7 @@ angular.module('starter.services', [])
                     })
                     .error(function(error, status) {
                         if (status == errorService.Unauthorized) {
-                            $state.go('app.login');
+                            $state.go('login');
                         } else {
                             defer.reject(error);
                         }
@@ -358,7 +358,7 @@ angular.module('starter.services', [])
                     })
                     .error(function(error, status) {
                         if (status == errorService.Unauthorized) {
-                            $state.go('app.login');
+                            $state.go('login');
                         } else {
                             defer.reject(error);
                         }
@@ -386,7 +386,7 @@ angular.module('starter.services', [])
                     })
                     .error(function(error, status) {
                         if (status == errorService.Unauthorized) {
-                            $state.go('app.login');
+                            $state.go('login');
                         } else {
                             defer.reject(error);
                         }
@@ -418,7 +418,7 @@ angular.module('starter.services', [])
                     })
                     .error(function(error, status) {
                         if (status == errorService.Unauthorized) {
-                            $state.go('app.login');
+                            $state.go('login');
                         } else {
                             defer.reject(error);
                         }
@@ -450,7 +450,7 @@ angular.module('starter.services', [])
                     })
                     .error(function(error, status) {
                         if (status == errorService.Unauthorized) {
-                            $state.go('app.login');
+                            $state.go('login');
                         } else {
                             defer.reject(error);
                         }
@@ -476,7 +476,7 @@ angular.module('starter.services', [])
             if (user !== null) {
                 return user;
             } else {
-                $state.go('app.login');
+                $state.go('login');
             }
         }
         // remove user

@@ -74,7 +74,7 @@ angular.module('starter.controllers', [])
                 processTimecards(tcsSun);
             } else {
                 var sundayDate = moment($scope.selDate).subtract($scope.selDay, 'days').format("YYYY-MM-DD"); // 2012-11-22
-                var tcs = LocalStorageService.getTimecardsByDateLocalForCharts(sundayDates);
+                var tcs = LocalStorageService.getTimecardsByDateLocalForCharts(sundayDate);
                 processTimecards(tcs);
             }
         }
@@ -215,8 +215,10 @@ angular.module('starter.controllers', [])
         });
     })
     // Login View
-    .controller('loginCtrl', function($scope, $state, $cordovaToast, $ionicSideMenuDelegate, $stateParams, $ionicSlideBoxDelegate, LoginService, snService, LocalStorageService) {
+    .controller('loginCtrl', function($scope, $state, $cordovaToast, $ionicSideMenuDelegate, $stateParams, $ionicSlideBoxDelegate, LoginService, snService, LocalStorageService, LogoutService) {
         $scope.loginData = {};
+        // clear all localStorage
+        LogoutService.clearAll();
         // hide side menu
         $ionicSideMenuDelegate.canDragContent(false);
         if ($stateParams.param1) {
@@ -320,6 +322,22 @@ angular.module('starter.controllers', [])
             $scope.selDayName = daysWeek.weekDays[$scope.selDay]; // sunday, monday
         }
         // get all days in week from sunday to saturday by selected or current date
+        // get all dates after specified or selected date excluding selected date
+        function getAfterDays(arr, after) {
+            for (var i = 1; i <= after; i++) {
+                arr.push((moment($scope.selDate).add(i, 'days'))._d);
+            }
+            return arr;
+        }
+        // get all dates before specified or selected date including selected date
+        function getBeforeDays(callback, before, after) {
+            var arr = [];
+            for (var i = 0; i <= before; i++) {
+                arr.push((moment($scope.selDate).subtract(i, 'days'))._d);
+            }
+            return callback(arr.reverse(), after);
+        }
+
         function getDaysInWeekBySelDate(before, after) {
             var week = [];
             var weekEnd = daysWeek.weekEnd;
@@ -330,22 +348,7 @@ angular.module('starter.controllers', [])
                 }
                 return week;
             } else {
-                var arr = [];
-                // get all dates after specified or selected date excluding selected date
-                function getAfterDays(arr) {
-                    for (var i = 1; i <= after; i++) {
-                        arr.push((moment($scope.selDate).add(i, 'days'))._d);
-                    }
-                    return arr;
-                }
-                // get all dates before specified or selected date including selected date
-                function getBeforeDays(callback) {
-                    for (var i = 0; i <= before; i++) {
-                        arr.push((moment($scope.selDate).subtract(i, 'days'))._d);
-                    }
-                    return callback(arr.reverse());
-                }
-                return getBeforeDays(getAfterDays);
+                return getBeforeDays(getAfterDays, before, after);
             }
         }
         $scope.refreshCards = function() {
@@ -936,7 +939,7 @@ angular.module('starter.controllers', [])
         $scope.$on('$ionicView.leave', function(e) {
             $scope.timecards = "";
         });
-            // functional methods for  project, Task, Story - Number 
+        // functional methods for  project, Task, Story - Number 
         $scope.getProjectNumberBySysID = function(sys_id) {
             return LocalStorageService.getProjectNumberBySysID(sys_id);
         };

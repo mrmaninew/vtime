@@ -12,6 +12,7 @@ angular.module('starter', ['ionic', 'ionic-datepicker', 'starter.controllers', '
                 // org.apache.cordova.statusbar required
                 StatusBar.styleDefault();
             }
+            //check the network connectivity, in not connected, inform user and then token information 
             // check the token value if its have some value go the home view else, redirect
             // to login page 
             if (TokenService.getToken() === null) {
