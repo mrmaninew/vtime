@@ -451,7 +451,7 @@ angular.module('starter.controllers', [])
         };
     })
     // create new Timecard 
-    .controller('cardCtrl', function($scope, $state, $filter, $stateParams, $cordovaToast, moment, daysWeek, snService, timeCardCategories, LocalStorageService, UserService) {
+    .controller('cardCtrl', function($scope, $state, $filter, $ionicLoading, $stateParams, $cordovaToast, moment, daysWeek, snService, timeCardCategories, LocalStorageService, UserService) {
         // varibles
         $scope.cards = [];
         $scope.projects = LocalStorageService.getProjectsLocal();
@@ -480,7 +480,8 @@ angular.module('starter.controllers', [])
                 var weekStartOn = (moment($scope.tc.passDate).subtract(dayNum, 'days'))._d;
                 return weekStartOn;
             };
-
+            // show loading icon 
+            $ionicLoading.show(); 
             data.task = $scope.tc.task;
             data.u_story = $scope.tc.story;
             data[_day] = $scope.tc.hours;
@@ -498,6 +499,8 @@ angular.module('starter.controllers', [])
                     console.log(result); // response after insert timecard
                     // internal toast message
                     var msg = "Created New Timecard";
+                    // hide loading icon 
+                    $ionicLoading.hide();
                     $state.go('app.timecardPanel', {}, {
                         reload: true
                     });
@@ -505,7 +508,6 @@ angular.module('starter.controllers', [])
                     console.log(error); // error
                 });
         };
-        $scope.submitTC = function() {};
         $scope.resetTC = function() {
             $scope.tc = {
                 'passDate': new Date($stateParams.param1),
@@ -520,7 +522,7 @@ angular.module('starter.controllers', [])
         };
     })
     // edit existing Timecard 
-    .controller('editCardCtrl', function($scope, $state, $stateParams, $ionicHistory, $cordovaToast, moment, daysWeek, snService, timeCardCategories, timeCardStates, LocalStorageService, UserService) {
+    .controller('editCardCtrl', function($scope, $state, $stateParams, $ionicLoading, $ionicHistory, $cordovaToast, moment, daysWeek, snService, timeCardCategories, timeCardStates, LocalStorageService, UserService) {
         // controller for edit Timecard
         // scoped variables 
         $scope.projects = LocalStorageService.getProjectsLocal();
@@ -563,6 +565,9 @@ angular.module('starter.controllers', [])
         $scope.updateTC = function() {
             var notes = "u_" + $scope.tc.day + "_work_notes";
             var timecard = {};
+            // show loading icon 
+            $ionicLoading.show();
+
             if ($scope.tc.u_project) timecard.u_project = $scope.tc.u_project;
             if ($scope.tc.task) timecard.task = $scope.tc.task;
             if ($scope.tc.story) timecard.u_story = $scope.tc.story;
@@ -579,6 +584,8 @@ angular.module('starter.controllers', [])
                     // $state.go('app.timecardPanel', {}, {
                     //     reload: true
                     // });
+                    // hide loading icon 
+                    $ionicLoading.hide();
                     $ionicHistory.goBack();
                 }, function(error) {
                     console.log(error);
@@ -644,9 +651,13 @@ angular.module('starter.controllers', [])
                     text: 'Yes',
                     type: 'button-positive',
                     onTap: function(e) {
+                        // show loading icon 
+                        $ionicLoading.show();
                         snService.submitTimecard(sys_id)
                             .then(function(data) {
                                 console.log(data);
+                                // hide loading icon 
+                                $ionicLoading.hide();
                                 var msg = "Timecard submitted"; // local toast notifications
                                 $state.go("app.statusPanel", {}, {
                                     reload: true
@@ -670,10 +681,14 @@ angular.module('starter.controllers', [])
                     text: 'Yes',
                     type: 'button-positive',
                     onTap: function(e) {
+                        // show loading icon 
+                        $ionicLoading.show();
                         snService.deleteTimecard(sys_id)
                             .then(function(result) {
                                 console.log(result);
                                 var msg = "Timecard deleted"; // local toast notifications
+                                // hide loading icon 
+                                $ionicLoading.hide();
                                 $state.go("app.statusPanel", {}, {
                                     reload: true
                                 });
@@ -747,7 +762,7 @@ angular.module('starter.controllers', [])
         };
     })
     // approvals Tab  
-    .controller('approvalsCtrl', function($scope, $state, $ionicPopup, $timeout, $cordovaToast, moment, snService, LocalStorageService) {
+    .controller('approvalsCtrl', function($scope, $state, $ionicPopup, $timeout, $ionicLoading, $cordovaToast, moment, snService, LocalStorageService) {
         $scope.$on('$ionicView.enter', function(e) {
             var set = LocalStorageService.getApprovalsLocal();
             $scope.approvals = [];
@@ -788,8 +803,12 @@ angular.module('starter.controllers', [])
                     text: 'Yes',
                     type: 'button-positive',
                     onTap: function(e) {
+                        // show loading icon 
+                        $ionicLoading.show();
                         snService.approveApprovals(sys_id)
                             .then(function(result) {
+                                // hide loading icon 
+                                $ionicLoading.hide();
                                 $state.go('app.approvalsPanel', {}, {
                                     reload: true
                                 });
@@ -812,8 +831,12 @@ angular.module('starter.controllers', [])
                     text: 'Yes',
                     type: 'button-positive',
                     onTap: function(e) {
+                        // show loading icon 
+                        $ionicLoading.show();
                         snService.rejectApprovals(sys_id)
                             .then(function(result) {
+                                // hide loading icon 
+                                $ionicLoading.hide();
                                 $state.go('app.approvalsPanel', {}, {
                                     reload: true
                                 });
@@ -997,8 +1020,10 @@ angular.module('starter.controllers', [])
                                             snService.getApprovals() // approvals 
                                                 .then(function(result) {
                                                     // console.log(result);
-                                                     $ionicLoading.hide(); // hide loading
-                                                     $state.go($state.current, {}, {reload: true}); // reload current state 
+                                                    $ionicLoading.hide(); // hide loading
+                                                    $state.go($state.current, {}, {
+                                                        reload: true
+                                                    }); // reload current state 
                                                 }, function(error) {
                                                     console.log(error);
                                                 });
