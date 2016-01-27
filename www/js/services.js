@@ -22,7 +22,7 @@ angular.module('starter.services', [])
         'Bad-Request': 400, // 400 "Bad Request" The request URI does not match the APIs in the system, or the operation failed for unknown reasons. Invalid headers can also cause this error.
         'Unauthorized': 401, // 401 "Unauthorized" The user is not authorized to use the API.
         'Forbidden': 403, // 403 "Forbidden" The requested operation is not permitted for the user. This error can also be caused by ACL failures, or business rule or data policy constraints.
-        'Not-found': 404, // 404 "Not found"  The requested resource was not found. This can be caused by an ACL constraint or if the resource does not exist.
+        'Notfound': 404, // 404 "Not found"  The requested resource was not found. This can be caused by an ACL constraint or if the resource does not exist.
         'method-not-allowed': 405 // 405 "Method not allowed" The HTTP action is not allowed for the requested REST API, or it is not supported by any API.       
     })
     // Token Service (Access, Password)
@@ -58,7 +58,7 @@ angular.module('starter.services', [])
                 var url = snCred.PRODURL + '/api/now/table/' + snCred.PrjTableName;
                 var token = "Bearer " + TokenService.getToken();
                 var defer = $q.defer();
-                    //$http.defaults.headers.common.Authorization = "Bearer" + TokenService.getToken();
+                //$http.defaults.headers.common.Authorization = "Bearer" + TokenService.getToken();
                 $http({
                         method: 'GET',
                         url: url,
@@ -81,8 +81,10 @@ angular.module('starter.services', [])
                         } else {
                             // if some other errors, store the empty array in localstorage 
                             // for Projects 
-                            if (LocalStorageService.setProjectsLocal([])) {
-                                defer.reject(error);
+                            if (status == errorService.Notfound) {
+                                if (LocalStorageService.setProjectsLocal([])) {
+                                    defer.resolve(error);
+                                }
                             }
                         }
 
@@ -113,8 +115,10 @@ angular.module('starter.services', [])
                         } else {
                             // if some other errors,store the empty array in localstorage 
                             // for Tasks
-                            if (LocalStorageService.setTasksLocal([])) {
-                                defer.reject(error);
+                            if (status == errorService.Notfound) {
+                                if (LocalStorageService.setTasksLocal([])) {
+                                    defer.resolve(error);
+                                }
                             }
                         }
 
@@ -122,7 +126,7 @@ angular.module('starter.services', [])
                 return defer.promise;
             },
             getStories: function() {
-                var query = "?sysparm_query=state!=3^ORstate!=4^ORstate!=20^assigned_to=" + UserService.getUser().sys_id;
+                var query = "?sysparm_query=state!=3^ORstate!=4^ORstate!=20^ORstate!=-6^assigned_to=" + UserService.getUser().sys_id;
                 var url = snCred.PRODURL + '/api/now/table/' + snCred.StoriesTableName + query;
                 var token = "Bearer " + TokenService.getToken();
                 var defer = $q.defer();
@@ -144,8 +148,10 @@ angular.module('starter.services', [])
                         } else {
                             // if some other errors, store the empty array in localstorage 
                             // for Stories
-                            if (LocalStorageService.setStoriesLocal([])) {
-                                defer.reject(error);
+                            if (status == errorService.Notfound) {
+                                if (LocalStorageService.setStoriesLocal([])) {
+                                    defer.resolve(error);
+                                }
                             }
                         }
                     });
@@ -175,8 +181,10 @@ angular.module('starter.services', [])
                         } else {
                             // if some other errors store the empty array in localstorage 
                             // for  Timecards
-                            if (LocalStorageService.setTimecardsLocal([])) {
-                                defer.reject(error);
+                            if (status == errorService.Notfound) {
+                                if (LocalStorageService.setTimecardsLocal([])) {
+                                    defer.resolve(error);
+                                }
                             }
                         }
 
@@ -184,7 +192,7 @@ angular.module('starter.services', [])
                 return defer.promise;
             },
             getApprovals: function() {
-                var query = "?sysparm_query=source_table=time_card^state!=approved^approver=" + UserService.getUser().sys_id;
+                var query = "?sysparm_query=source_table=time_card^state=requested^approver=" + UserService.getUser().sys_id;
                 var url = snCred.PRODURL + '/api/now/table/' + snCred.ApprovalsTable + query;
                 var token = "Bearer " + TokenService.getToken();
                 var defer = $q.defer();
@@ -207,8 +215,10 @@ angular.module('starter.services', [])
                         } else {
                             // if some other errors store the empty array in localstorage 
                             // for Approvals
-                            if (LocalStorageService.setApprovalsLocal([])) {
-                                defer.reject(error);
+                            if (status == errorService.Notfound) {
+                                if (LocalStorageService.setApprovalsLocal([])) {
+                                    defer.resolve(error);
+                                }
                             }
                         }
 
@@ -230,14 +240,16 @@ angular.module('starter.services', [])
                         }
                     })
                     .success(function(data, status) {
-                        defer.resolve(data.result);
+                        if (status == errorService.Success) {
+                            defer.resolve(data.result);
+                        }
                     })
                     .error(function(error, status) {
-                        onsole.log(error.error.message, status);
+                        console.log(error.error.message, status);
                         if (status == errorService.Unauthorized) {
                             $state.go('login');
                         } else {
-                            defer.reject(error);
+                            defer.resolve(error);
                         }
                     });
                 return defer.promise;
@@ -256,8 +268,10 @@ angular.module('starter.services', [])
                         }
                     })
                     .success(function(data, status) {
-                        if (UserService.setUser(data.result[0])) {
-                            defer.resolve(data.result);
+                        if (status == errorService.Success) {
+                            if (UserService.setUser(data.result[0])) {
+                                defer.resolve(data.result);
+                            }
                         }
                     })
                     .error(function(error, status) {
@@ -325,7 +339,7 @@ angular.module('starter.services', [])
                         if (status == errorService.Unauthorized) {
                             $state.go('login');
                         } else {
-                            defer.reject(error);
+                            defer.resolve(error);
                         }
                     });
                 return defer.promise;
@@ -360,7 +374,7 @@ angular.module('starter.services', [])
                         if (status == errorService.Unauthorized) {
                             $state.go('login');
                         } else {
-                            defer.reject(error);
+                            defer.resolve(error);
                         }
                     });
                 return defer.promise;
@@ -388,7 +402,7 @@ angular.module('starter.services', [])
                         if (status == errorService.Unauthorized) {
                             $state.go('login');
                         } else {
-                            defer.reject(error);
+                            defer.resolve(error);
                         }
                     });
                 return defer.promise;
@@ -410,17 +424,19 @@ angular.module('starter.services', [])
                         data: data
                     })
                     .success(function(data, status) {
-                        //update approvals
-                        if (LocalStorageService.deleteApprovalBySysID(sys_id)) {
-                            // response to promise  - callback
-                            defer.resolve(data.result);
+                        if (status == errorService.Success) {
+                            //update approvals
+                            if (LocalStorageService.deleteApprovalBySysID(sys_id)) {
+                                // response to promise  - callback
+                                defer.resolve(data.result);
+                            }
                         }
                     })
                     .error(function(error, status) {
                         if (status == errorService.Unauthorized) {
                             $state.go('login');
                         } else {
-                            defer.reject(error);
+                            defer.resolve(error);
                         }
                     });
                 return defer.promise;
@@ -442,17 +458,20 @@ angular.module('starter.services', [])
                         data: data
                     })
                     .success(function(data, status) {
-                        //update approvals
-                        if (LocalStorageService.deleteApprovalBySysID(sys_id)) {
-                            // response to promise  - callback
-                            defer.resolve(data.result);
+                        console.log(status);
+                        if (status == errorService.Success) {
+                            //update approvals
+                            if (LocalStorageService.deleteApprovalBySysID(sys_id)) {
+                                // response to promise  - callback
+                                defer.resolve(data.result);
+                            }
                         }
                     })
                     .error(function(error, status) {
                         if (status == errorService.Unauthorized) {
                             $state.go('login');
                         } else {
-                            defer.reject(error);
+                            defer.resolve(error);
                         }
                     });
                 return defer.promise;
@@ -529,7 +548,7 @@ angular.module('starter.services', [])
                         }); // end of Server API Calls 
                     return true;
                 } // end of loadAll() function 
-        };// end of return 
+        }; // end of return 
     })
     // Login Service
     .factory('LoginService', function($http, $timeout, $q, $location, $state, $httpParamSerializer, $httpParamSerializerJQLike, preLoadDataService, TokenService, errorService, snCred, snService) {

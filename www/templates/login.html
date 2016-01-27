@@ -25,7 +25,7 @@
                     <label class="item">
                         <!-- add more validations -->
                         <a id="login-btn" class="button icon-left ion-log-in button-block" ng-disabled="!loginData.username || !loginData.password" ng-disabled="loginStatus == 'Logging in' " type="submit" on-tap="doLogin()">
-                            <!--spinner--> 
+                            <!--spinner-->
                             <span ng-show="loginStatus == 'Logging in'">
                             <ion-spinner class="spinner-light" icon="dots"></ion-spinner>
                             </span> {{loginStatus}}
@@ -37,8 +37,10 @@
         <div class="row">
             <!-- footer icon badges -->
             <div class="col-100">
-        
             </div>
         </div>
     </ion-content>
+    <div class="bar bar-footer bar-light">
+        <div style="padding:5px;"><p>&copy; volteo.com,2016</p></div>
+    </div>
 </ion-view>

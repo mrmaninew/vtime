@@ -167,15 +167,15 @@ angular.module('starter', ['ionic', 'ionic-datepicker', 'starter.controllers', '
                 }
             })
             // side menu (Settings)
-            .state('app.settings', {
-                url: '/settings',
-                views: {
-                    'menuContent': {
-                        templateUrl: 'templates/settings.html',
-                        controller: 'settingsCtrl'
-                    }
-                }
-            })
+            // .state('app.settings', {
+            //     url: '/settings',
+            //     views: {
+            //         'menuContent': {
+            //             templateUrl: 'templates/settings.html',
+            //             controller: 'settingsCtrl'
+            //         }
+            //     }
+            // })
             // side menu (Accounts)
             .state('app.accounts', {
                 url: '/accounts',

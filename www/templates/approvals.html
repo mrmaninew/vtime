@@ -1,9 +1,4 @@
 <ion-view view-title="Approvals">
-    <ion-nav-buttons side="right">
-        <button class="button icon ion-refresh" ng-click="refreshApprovals()
-">
-        </button>
-    </ion-nav-buttons>
     <ion-content>
         <ion-list>
             <div ng-repeat="approval in approvals">
@@ -44,7 +39,7 @@
                     <button class="button button-block button-positive" ng-click="approve(approval.sys_id)">
                         Approve
                     </button>
-                    <button class="button button-block button-positive" ng-click="reject(approvals.sys_id)">Reject</button>
+                    <button class="button button-block button-positive" ng-click="reject(approval.sys_id)">Reject</button>
                 </ion-item>
             </div>
         </ion-list>

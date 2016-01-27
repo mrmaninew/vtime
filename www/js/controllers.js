@@ -155,7 +155,7 @@ angular.module('starter.controllers', [])
         $scope.labels = ['sun', 'mon', 'tue', 'wed', 'thu', 'fri', 'sat'];
         $scope.series = ['hrs'];
         $scope.data = [];
-        $scope.colors = ['#FD1F5E', '#1EF9A1', '#7FFD1F', '#68F000', '#7FFD1F', '#68F000'];
+        $scope.colors = ['#f08080'];
         // on bar chat click, get click date and do some coniditional ops and pass date as param to timecardpanel ctrl
         $scope.onClick = function(e) {
             var clickedDate = "";
@@ -966,7 +966,7 @@ angular.module('starter.controllers', [])
         };
     })
     // side menu (Synchronize)
-    .controller('syncCtrl', function($scope, $state, $cordovaToast, snService, LocalStorageService) {
+    .controller('syncCtrl', function($scope, $state, $cordovaToast, $ionicLoading, snService, LocalStorageService) {
         $scope.projects = LocalStorageService.getProjectsLengthLocal();
         $scope.tasks = LocalStorageService.getTasksLengthLocal();
         $scope.stories = LocalStorageService.getStoriesLengthLocal();
@@ -975,6 +975,12 @@ angular.module('starter.controllers', [])
         // synchronize functions
         $scope.syncNow = function() {
             console.log('syncNow');
+            $ionicLoading.show({
+                animation: 'fade-in',
+                showBackdrop: false,
+                maxWidth: 200,
+                showDelay: 500
+            });
             // get Projects, Tasks, Stories, Timecards, Approvals 
             snService.getProjects() // projects 
                 .then(function(result) {
@@ -991,6 +997,8 @@ angular.module('starter.controllers', [])
                                             snService.getApprovals() // approvals 
                                                 .then(function(result) {
                                                     // console.log(result);
+                                                     $ionicLoading.hide(); // hide loading
+                                                     $state.go($state.current, {}, {reload: true}); // reload current state 
                                                 }, function(error) {
                                                     console.log(error);
                                                 });
