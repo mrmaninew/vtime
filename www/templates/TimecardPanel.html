@@ -15,43 +15,42 @@
                                 <a class="item text-center">No Saved Time Cards on {{selDate|date:'dd-MM-yyyy'}}</a>
                             </div>
                             <ion-list>
-                                   <ion-item  class="item-avatar" ng-repeat="tc in timecards" ng-click="routeEditCard(tc.sys_id)">
-                                      <span class="day-display-sizing">{{tc.selDate|date:'dd'}}</span>
-                                      <h2>{{tc.selDate|date:'EEEE'}}</h2>
-                                      <p ng-if="tc.task"> Task: {{tc.task}}</p> 
-                                      <p ng-if="tc.story">Story: {{tc.story}}</p>
-                                      <span class="text-align-right">
+                                <ion-item class="item-avatar" ng-repeat="tc in timecards" ng-click="routeEditCard(tc.sys_id)">
+                                    <span class="day-display-sizing">{{tc.selDate|date:'dd'}}</span>
+                                    <h2>{{tc.selDate|date:'EEEE'}}</h2>
+                                    <p ng-if="tc.task"> Task: {{tc.task}}</p>
+                                    <p ng-if="tc.story">Story: {{tc.story}}</p>
+                                    <span class="text-align-right">
                                             {{tc.hours}} hrs
                                             &nbsp;
                                             <i class="icon ion-ios-arrow-forward"></i>
                                       </span>
-                                      <p>Project: {{tc.u_project}}</p>
-                                   </ion-item>
+                                    <p>Project: {{tc.u_project}}</p>
+                                </ion-item>
                             </ion-list>
                         </div>
                     </ion-content>
-                    <div class="bar bar-footer">
+                    <div class="bar bar-footer bar-energized">
                         <a class="button icon ion-plus-round" ng-click="routeCard()"></a>
                         <div class="title">Total: {{totalHrsDay}} hrs</div>
-                        <a class="button icon ion-refresh" ng-click="refreshCards()"></a>
                     </div>
                 </ion-view>
             </ion-tab>
             <ion-tab title="Weekly">
                 <ion-view>
-                   <!--add header here for the view and place title as "1/10 - 7/10"-->
+                    <!--add header here for the view and place title as "1/10 - 7/10"-->
                     <ion-content>
                         <ion-list>
                             <ion-item class="item-avatar" ng-repeat="day in selThisWeek" ng-click="setDateFromWeekly(day)">
-                                    <span class="day-display-sizing">{{day|date:'dd'}}</span>
-                                    <h2> {{ day | date:'EEEE'}}</h2> 
-                                    <span class="text-align-right" ng-init="totalWeek(getHoursDay(day));"> {{getHoursDay(day)}} hrs &nbsp;<i class="icon ion-ios-arrow-forward"></i> 
-                                    </span> 
-                                    <p>{{day|date:'MMM yyyy'}}</p>
+                                <span class="day-display-sizing">{{day|date:'dd'}}</span>
+                                <h2> {{ day | date:'EEEE'}}</h2>
+                                <span class="text-align-right" ng-init="totalWeek(getHoursDay(day));"> {{getHoursDay(day)}} hrs &nbsp;<i class="icon ion-ios-arrow-forward"></i> 
+                                    </span>
+                                <p>{{day|date:'MMM yyyy'}}</p>
                             </ion-item>
                         </ion-list>
                     </ion-content>
-                    <div class="bar bar-footer">
+                    <div class="bar bar-footer bar-energized">
                         <div class="title">Total: {{totalHrsWeekly}} hrs </div>
                     </div>
                 </ion-view>

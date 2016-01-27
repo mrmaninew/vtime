@@ -1,5 +1,8 @@
 /* Empty. Add your own CSS if you like */
-
+/** Overridding Ionic Defaults */
+.item-divider{
+    font-weight: 300;
+}
 
 /* login */
 .volteo-color {
@@ -24,6 +27,7 @@
     background-color: #CD5C5C;
     color: white
 }
+
 /* home - Dashbboard */
 
 .dash-profile {
@@ -53,6 +57,8 @@
     min-width: 100%;
 }
 
+
+
 .dash-top {
     background-color: #444;
     margin-bottom: 6px;
@@ -60,18 +66,25 @@
 
 .dash-middle {
     /* height: 20vh; */
-    border: 1px solid grey; 
+    /* border: 1px solid grey; */
     padding-bottom: 0px;
     margin-bottom: 10px;
 }
 
+
 .col-33-middle {
-    border-right: 3px solid #Cad4d6;
-    border-left: 3px solid #Cad4d6;
+    border-right: 0.5px solid #eaeaea;
+    border-left: 0.5px solid #eaeaea;
 }
+
 
 .text-panel-33 {
     padding-top: 10px;
+    font-weight: 300px;
+}
+
+.text-panel-33 > h1,h3{
+    font-weight: 300;
 }
 
 .dash-bottom {
@@ -89,11 +102,10 @@
     border: none 0px;
 }
 
-
 /* side menu */
 
 .bar.bar-profile {
-    background-color: #444;
+    background-color: #f08080;
     height: 170px;
 }
 
@@ -114,6 +126,7 @@
     color: #FFFFFF;
     margin-top: 10px !important;
     margin-bottom: 10px !important;
+    font-weight: 200;
 }
 
 .profile-picture {
@@ -196,6 +209,6 @@
     width: 100%;
     height: 100%;
     border-radius: 50%;
-    background-color: #508ef6;
-    color:white;
+    background-color: #f8c4c4;
+    color:black;
 }
