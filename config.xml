@@ -2,10 +2,10 @@
 <widget id="com.ionicframework.starter" version="0.0.1" xmlns="http://www.w3.org/ns/widgets" xmlns:cdv="http://cordova.apache.org/ns/1.0">
   <name>vTime</name>
   <description>
-        Servicenow Time Sheets  
-    </description>
-  <author email="manikanta@live.in" href="http://volteo.com/">
-      Manikanta G K 
+        volteo vtime mobile application, makes internal employees to manage timecards easy
+  </description>
+  <author email="chenna@volteo.com" href="http://volteo.com/">
+      Volteo LLC 
     </author>
   <content src="index.html"/>
   <access origin="*"/>
