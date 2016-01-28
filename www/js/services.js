@@ -191,6 +191,37 @@ angular.module('starter.services', [])
                     });
                 return defer.promise;
             },
+            getTimecardBySysID: function(sys_id) {
+                var query = "?sysparm_query=sys_id=" + sys_id;
+                var url = snCred.PRODURL + '/api/now/table/' + snCred.TimecardTable + query;
+                var token = "Bearer " + TokenService.getToken();
+                var defer = $q.defer();
+                $http({
+                        method: 'GET',
+                        url: url,
+                        headers: {
+                            'Authorization': token
+                        }
+                    })
+                    .success(function(data, status) {
+                         defer.resolve(data.result[0]);
+                        // if (status == errorService.Success) {
+                        //     return data.result[0];
+                        // }
+                    })
+                    .error(function(error, status) {
+                        console.log(error.error.message, status);
+                        if (status == errorService.Unauthorized) {
+                            $state.go('login');
+                        } else {
+                            if (status == errorService.Notfound) {
+                                defer.resolve({});
+                            }
+                        }
+
+                    });
+                return defer.promise;
+            },
             getApprovals: function() {
                 var query = "?sysparm_query=source_table=time_card^state=requested^approver=" + UserService.getUser().sys_id;
                 var url = snCred.PRODURL + '/api/now/table/' + snCred.ApprovalsTable + query;
@@ -820,7 +851,6 @@ angular.module('starter.services', [])
             } else {
                 return selTimecards;
             }
-
         }
 
         function getTimecardByID(id) {

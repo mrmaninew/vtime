@@ -166,7 +166,6 @@ angular.module('starter.controllers', [])
         // on bar chat click, get click date and do some coniditional ops and pass date as param to timecardpanel ctrl
         $scope.onClick = function(e) {
             var clickedDate = "";
-            //console.log(e[0].label);
             var cDay = e[0].label;
             var chartDayNum = $scope.labels.indexOf(cDay);
             // if condition met set selected date as clicked date
@@ -181,7 +180,6 @@ angular.module('starter.controllers', [])
             if (chartDayNum < $scope.selDay) {
                 clickedDate = moment($scope.selDate).subtract($scope.selDay - chartDayNum, 'days')._d;
             }
-            console.log(clickedDate);
             $state.go('app.timecardPanelDateView', {
                 'param1': clickedDate
             }, {
@@ -263,7 +261,7 @@ angular.module('starter.controllers', [])
             // else select current date as selected date 
             if ($stateParams.param1) {
                 //console.log('passed Date timeCardsPanelCtrl' + $stateParams.param1);
-                console.log('stateParams'+$stateParams.param1);
+                console.log('stateParams' + $stateParams.param1);
                 $scope.selDate = new Date($stateParams.param1);
             } else {
                 // selected date for Time cards
@@ -799,31 +797,43 @@ angular.module('starter.controllers', [])
     })
     // approvals Tab  
     .controller('approvalsCtrl', function($scope, $state, $ionicPopup, $timeout, $ionicLoading, $cordovaToast, moment, snService, LocalStorageService) {
-        $scope.$on('$ionicView.enter', function(e) {
-            var set = LocalStorageService.getApprovalsLocal();
-            $scope.approvals = [];
-            for (var i = 0; i < set.length; i++) {
-                var app = {};
-                var timecard = LocalStorageService.getTimecardByID(set[i].document_id.value);
-                app.sys_id = set[i].sys_id;
-                app.u_number = set[i].u_number;
-                app.sys_created_on = set[i].sys_created_on;
-                app.tc_submitted_by = timecard.user;
-                app.tc_total = timecard.total;
-                app.tc_state = timecard.state;
-                app.tc_project = timecard.u_project;
-                app.tc_task = timecard.task;
-                app.tc_story = timecard.u_story;
-                app.tc_sun = timecard.sunday;
-                app.tc_mon = timecard.monday;
-                app.tc_tue = timecard.tuesday;
-                app.tc_wed = timecard.wednesday;
-                app.tc_thu = timecard.thursday;
-                app.tc_fri = timecard.friday;
-                app.tc_sat = timecard.saturday;
-                $scope.approvals.push(app);
+        $ionicLoading.show();
+        var set = LocalStorageService.getApprovalsLocal();
+        $scope.approvals = [];
+        for (var i = 0; i < set.length; i++) {
+            var app = {};
+            var timecard = LocalStorageService.getTimecardByID(set[i].document_id.value);
+            if (Object.keys(timecard).length) {
+                $scope.approvals.push(processAndReturn(timecard));
+            } else {
+                snService.getTimecardBySysID(set[i].document_id.value)
+                    .then(function(data) {
+                        $scope.approvals.push(processAndReturn(data));
+                    });
             }
-        });
+        }
+        $ionicLoading.hide();
+        // process and return timecard sets 
+        function processAndReturn(time) {
+            var app = {};
+            app.sys_id = time.sys_id;
+            app.u_number = time.u_number;
+            app.sys_created_on = time.sys_created_on;
+            app.tc_submitted_by = time.user;
+            app.tc_total = time.total;
+            app.tc_state = time.state;
+            app.tc_project = time.u_project;
+            app.tc_task = time.task;
+            app.tc_story = time.u_story;
+            app.tc_sun = time.sunday;
+            app.tc_mon = time.monday;
+            app.tc_tue = time.tuesday;
+            app.tc_wed = time.wednesday;
+            app.tc_thu = time.thursday;
+            app.tc_fri = time.friday;
+            app.tc_sat = time.saturday;
+            return app;
+        }
         $scope.$on('$ionicView.leave', function(e) {
             $scope.approvals = [];
         });
