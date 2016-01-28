@@ -166,7 +166,9 @@ angular.module('starter.controllers', [])
         // on bar chat click, get click date and do some coniditional ops and pass date as param to timecardpanel ctrl
         $scope.onClick = function(e) {
             var clickedDate = "";
-            var chartDayNum = $scope.labels.indexOf(e[0].label);
+            //console.log(e[0].label);
+            var cDay = e[0].label;
+            var chartDayNum = $scope.labels.indexOf(cDay);
             // if condition met set selected date as clicked date
             if (chartDayNum == $scope.selDay) {
                 clickedDate = $scope.selDate;
@@ -179,6 +181,7 @@ angular.module('starter.controllers', [])
             if (chartDayNum < $scope.selDay) {
                 clickedDate = moment($scope.selDate).subtract($scope.selDay - chartDayNum, 'days')._d;
             }
+            console.log(clickedDate);
             $state.go('app.timecardPanelDateView', {
                 'param1': clickedDate
             }, {
@@ -245,6 +248,10 @@ angular.module('starter.controllers', [])
             $ionicSideMenuDelegate.canDragContent(true);
         });
     })
+    // no network controller
+    .controller('nonetworkCtrl', function($scope, $state, $cordovaNetwork) {
+        console.log('no network');
+    })
     // Time tab for Today (or) Selected , this week (depending on current and selected date) 
     .controller('timeCardsPanelCtrl', function($scope, $cordovaToast, $ionicPlatform, $ionicHistory, $state, $stateParams, $ionicTabsDelegate, $ionicModal, moment, daysWeek, LocalStorageService) {
         // on view enter
@@ -256,6 +263,7 @@ angular.module('starter.controllers', [])
             // else select current date as selected date 
             if ($stateParams.param1) {
                 //console.log('passed Date timeCardsPanelCtrl' + $stateParams.param1);
+                console.log('stateParams'+$stateParams.param1);
                 $scope.selDate = new Date($stateParams.param1);
             } else {
                 // selected date for Time cards
@@ -616,7 +624,7 @@ angular.module('starter.controllers', [])
         });
     })
     // Status Tab
-    .controller('statusCtrl', function($scope, $state, $ionicTabsDelegate, $ionicPopup, $cordovaToast, $timeout, moment, snService, LocalStorageService) {
+    .controller('statusCtrl', function($scope, $state, $ionicTabsDelegate, $ionicLoading, $ionicPopup, $cordovaToast, $timeout, moment, snService, LocalStorageService) {
         $scope.rejected = 0;
         $scope.pending = 0;
         $scope.submitted = 0;
@@ -1068,10 +1076,11 @@ angular.module('starter.controllers', [])
                                                         $state.go($state.current, {}, {
                                                             reload: true
                                                         }); // reload current state 
-                                                    }, function(error) {}, function(error) {
-                                                        // error
+                                                    }, function(error) {
+                                                        console.log(error);
+                                                    }, function(error) {
+                                                        console.log(error);
                                                     });
-                                                    console.log(error);
                                                 });
                                         }, function(error) {
                                             console.log(error);
@@ -1107,7 +1116,9 @@ angular.module('starter.controllers', [])
                     type: 'button-positive',
                     onTap: function(e) {
                         if (LogoutService.clearAll()) {
-                            $state.go('login',{},{reload:true});
+                            $state.go('login', {}, {
+                                reload: true
+                            });
                         }
                     }
                 }]

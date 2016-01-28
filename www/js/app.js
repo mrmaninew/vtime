@@ -1,6 +1,6 @@
 angular.module('starter', ['ionic', 'ionic-datepicker', 'starter.controllers', 'starter.services', 'angularMoment', 'ngCordova', 'chart.js'])
 
-    .run(function($ionicPlatform, $cordovaToast, $state, $rootScope, snService, TokenService, LocalStorageService) {
+.run(function($ionicPlatform, $cordovaNetwork, $cordovaToast, $state, $rootScope, snService, TokenService, LocalStorageService) {
         $ionicPlatform.ready(function() {
             // Hide the accessory bar by default (remove this to show the accessory bar above the keyboard
             // for form inputs)
@@ -15,26 +15,37 @@ angular.module('starter', ['ionic', 'ionic-datepicker', 'starter.controllers', '
             //check the network connectivity, in not connected, inform user and then token information 
             // check the token value if its have some value go the home view else, redirect
             // to login page 
+
             if (TokenService.getToken() === null) {
                 $state.go('login');
             } else {
                 console.log('already authenticated and got some token information');
             }
+
+        });
+        $ionicPlatform.on('resume', function() {
+            $state.go('app.home');
         });
     })
     .config(function($stateProvider, $urlRouterProvider) {
         $stateProvider
-            // Login 
+        // Login 
             .state('login', {
                 url: '/login',
                 templateUrl: 'templates/login.html',
                 controller: 'loginCtrl'
             })
             // error in the login 
-            .state('errorlogin',{
-                url:'/login/:param1',
-                templateUrl:'templates/login.html',
+            .state('errorlogin', {
+                url: '/login/:param1',
+                templateUrl: 'templates/login.html',
                 controller: 'loginCtrl'
+            })
+            // No Network 
+            .state('nonetwork', {
+                url: '/nonetwork',
+                templateUrl: 'templates/nonetwork.html',
+                controller: 'nonetworkCtrl'
             })
             // app state 
             .state('app', {
@@ -78,7 +89,6 @@ angular.module('starter', ['ionic', 'ionic-datepicker', 'starter.controllers', '
             // timecard panel view
             .state('app.timecardPanel', {
                 url: '/timecardPanel',
-                cache: false,
                 views: {
                     'menuContent': {
                         templateUrl: 'templates/timeCardPanel.html',
@@ -91,7 +101,7 @@ angular.module('starter', ['ionic', 'ionic-datepicker', 'starter.controllers', '
                 url: '/timecardPanel/:param1',
                 views: {
                     'menuContent': {
-                        templateUrl: 'templates/timecardPanel.html',
+                        templateUrl: 'templates/timeCardPanel.html',
                         controller: 'timeCardsPanelCtrl'
                     }
                 }
