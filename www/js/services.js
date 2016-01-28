@@ -4,9 +4,8 @@ angular.module('starter.services', [])
         'Client_id': 'ac0dd3408c1031006907010c2cc6ef6d',
         'Client_secret': '1yihwfk2xbl686v45s8a',
         'grant_type': ['password', 'access'],
-        // remove '/' at the end of the url like "https://.....now.com" without '/'
-        //'PRODURL': 'https://volteollcdemo1.service-now.com', // Servicenow Instance URL
-        'PRODURL': '/api', // Temp empty URL for development environment and this will changed when deploying PROD
+        'PRODURL': 'https://volteollcdemo1.service-now.com', // Servicenow Instance URL
+        //'PRODURL': '/api', // Temp empty URL for development environment and this will changed when deploying PROD
         'PrjTableName': 'pm_project', // Servicenow Project Table
         'TasksTableName': 'pm_project_task', // Servicenow Tasks Table
         'StoriesTableName': 'rm_story', // Servicenow Stories Table
@@ -47,6 +46,7 @@ angular.module('starter.services', [])
             },
             clearToken: function() {
                 localStorage.removeItem('token');
+                return true;
             }
         };
     })
@@ -501,6 +501,7 @@ angular.module('starter.services', [])
         // remove user
         function clearUser() {
             localStorage.removeItem('user');
+            return true;
         }
         return {
             setUser: setUser,
@@ -598,9 +599,14 @@ angular.module('starter.services', [])
     .factory('LogoutService', function($q, TokenService, UserService, LocalStorageService) {
         return {
             clearAll: function() {
-                TokenService.clearToken();
-                LocalStorageService.clearAllItems();
-                UserService.clearUser();
+                if (UserService.clearUser()) {
+                    if (TokenService.clearToken()) {
+                        if (LocalStorageService.clearAllItems) {
+                            return true;
+                        }
+
+                    }
+                }
             }
         };
     })
@@ -929,6 +935,7 @@ angular.module('starter.services', [])
             localStorage.removeItem('stories');
             localStorage.removeItem('timecards');
             localStorage.removeItem('approvals');
+            return true;
         }
 
         return {

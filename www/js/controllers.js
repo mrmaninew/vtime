@@ -156,12 +156,12 @@ angular.module('starter.controllers', [])
         $scope.series = ['hrs'];
         $scope.data = [];
         $scope.colors = [{
-          "fillColor": "rgba(224, 108, 112, 1)",
-          "strokeColor": "rgba(207,100,103,1)",
-          "pointColor": "rgba(220,220,220,1)",
-          "pointStrokeColor": "#fff",
-          "pointHighlightFill": "#fff",
-          "pointHighlightStroke": "rgba(151,187,205,0.8)"
+            "fillColor": "rgba(224, 108, 112, 1)",
+            "strokeColor": "rgba(207,100,103,1)",
+            "pointColor": "rgba(220,220,220,1)",
+            "pointStrokeColor": "#fff",
+            "pointHighlightFill": "#fff",
+            "pointHighlightStroke": "rgba(151,187,205,0.8)"
         }];
         // on bar chat click, get click date and do some coniditional ops and pass date as param to timecardpanel ctrl
         $scope.onClick = function(e) {
@@ -225,13 +225,11 @@ angular.module('starter.controllers', [])
     .controller('loginCtrl', function($scope, $state, $cordovaToast, $ionicSideMenuDelegate, $stateParams, $ionicSlideBoxDelegate, LoginService, snService, LocalStorageService, LogoutService) {
         console.log('clicked');
         $scope.loginData = {};
-        $scope.enable = true;
         // clear all localStorage
         LogoutService.clearAll();
         // hide side menu
         $ionicSideMenuDelegate.canDragContent(false);
         if ($stateParams.param1) {
-            console.log($stateParams.param1);
             $scope.loginStatus = "Re-login";
         } else {
             $scope.loginStatus = "login";
@@ -240,7 +238,6 @@ angular.module('starter.controllers', [])
         $scope.doLogin = function() {
             // call login service "LoginService"
             $scope.loginStatus = "Logging in";
-            $scope.disable = false;
             LoginService.doLogin($scope.loginData.username, $scope.loginData.password);
         };
         // on ionic view leave enable sidemenu drag content
@@ -380,7 +377,6 @@ angular.module('starter.controllers', [])
                 return processTimecardsForHours(tcs, dayName); // get hours for all timecards by date
             }
         };
-
         // get hours for each day in entire week
         function processTimecardsForHours(tcs, dayName) { // ([timecard.obj,timecard.obj], saturday)
             var hrs = 0;
@@ -412,9 +408,9 @@ angular.module('starter.controllers', [])
             todayLabel: 'Today',
             closeLabel: 'Close',
             setLabel: 'Set',
-            setButtonType: 'button-assertive',
-            todayButtonType: 'button-assertive',
-            closeButtonType: 'button-assertive',
+            setButtonType: 'button-positive',
+            todayButtonType: 'button-positive',
+            closeButtonType: 'button-positive',
             inputDate: new Date(),
             mondayFirst: false, // starting of the week is sunday  (0 {suday}-6{saturday})
             templateType: 'popup',
@@ -508,11 +504,16 @@ angular.module('starter.controllers', [])
                 .then(function(result) {
                     console.log(result); // response after insert timecard
                     // internal toast message
-                    var msg = "Created New Timecard";
+                    var msg = "Timecard Created";
                     // hide loading icon 
                     $ionicLoading.hide();
-                    $state.go('app.timecardPanel', {}, {
-                        reload: true
+                    // show toast notification and navigate 
+                    $cordovaToast.showLongTop(msg).then(function(success) {
+                        $state.go('app.timecardPanel', {}, {
+                            reload: true
+                        });
+                    }, function(error) {
+                        console.log(error);
                     });
                 }, function(error) {
                     console.log(error); // error
@@ -590,13 +591,18 @@ angular.module('starter.controllers', [])
             snService.updateTimecard($scope.tc.sys_id, timecard)
                 .then(function(result) {
                     console.log(result);
-                    var message = "Timecard Updated"; // local toast notification
+                    var msg = "Timecard Updated"; // local toast notification
                     // $state.go('app.timecardPanel', {}, {
                     //     reload: true
                     // });
                     // hide loading icon 
                     $ionicLoading.hide();
-                    $ionicHistory.goBack();
+                    // show internal toast notification
+                    $cordovaToast.showLongTop(msg).then(function(success) {
+                        $ionicHistory.goBack();
+                    }, function(error) {
+                        console.log(error);
+                    });
                 }, function(error) {
                     console.log(error);
                 });
@@ -665,12 +671,18 @@ angular.module('starter.controllers', [])
                         $ionicLoading.show();
                         snService.submitTimecard(sys_id)
                             .then(function(data) {
-                                console.log(data);
+                                //console.log(data);
+                                var msg = "Timecard Submitted"; // local toast notifications
+
                                 // hide loading icon 
                                 $ionicLoading.hide();
-                                var msg = "Timecard submitted"; // local toast notifications
-                                $state.go("app.statusPanel", {}, {
-                                    reload: true
+                                // show toast notification and navigate
+                                $cordovaToast.showLongTop(msg).then(function(success) {
+                                    $state.go("app.statusPanel", {}, {
+                                        reload: true
+                                    });
+                                }, function(error) {
+                                    console.log(error);
                                 });
                             }, function(error) {
                                 console.log(error);
@@ -699,9 +711,15 @@ angular.module('starter.controllers', [])
                                 var msg = "Timecard deleted"; // local toast notifications
                                 // hide loading icon 
                                 $ionicLoading.hide();
-                                $state.go("app.statusPanel", {}, {
-                                    reload: true
+                                // show toast notification and navigate 
+                                $cordovaToast.showLongTop(msg).then(function(success) {
+                                    $state.go("app.statusPanel", {}, {
+                                        reload: true
+                                    });
+                                }, function(error) {
+                                    console.log(error);
                                 });
+
                             }, function(error) {
                                 console.log(error);
                             });
@@ -817,10 +835,16 @@ angular.module('starter.controllers', [])
                         $ionicLoading.show();
                         snService.approveApprovals(sys_id)
                             .then(function(result) {
+                                var msg = "Timecard Approved";
                                 // hide loading icon 
                                 $ionicLoading.hide();
-                                $state.go('app.approvalsPanel', {}, {
-                                    reload: true
+                                // show toast notification and navigate 
+                                $cordovaToast.showLongTop(msg).then(function(success) {
+                                    $state.go('app.approvalsPanel', {}, {
+                                        reload: true
+                                    });
+                                }, function(error) {
+                                    console.log(error);
                                 });
                             }, function(error) {
                                 console.log(error);
@@ -845,10 +869,16 @@ angular.module('starter.controllers', [])
                         $ionicLoading.show();
                         snService.rejectApprovals(sys_id)
                             .then(function(result) {
+                                var msg = "Timecard Rejected";
                                 // hide loading icon 
                                 $ionicLoading.hide();
-                                $state.go('app.approvalsPanel', {}, {
-                                    reload: true
+                                // show toast notification and navigate 
+                                $cordovaToast.showLongTop(msg).then(function(success) {
+                                    $state.go('app.approvalsPanel', {}, {
+                                        reload: true
+                                    });
+                                }, function(error) {
+                                    console.log(error);
                                 });
                             }, function(error) {
                                 console.log(error);
@@ -1029,12 +1059,18 @@ angular.module('starter.controllers', [])
                                             //console.log(result);
                                             snService.getApprovals() // approvals 
                                                 .then(function(result) {
+                                                    var msg = "Sync Successful";
                                                     // console.log(result);
-                                                    $ionicLoading.hide(); // hide loading
-                                                    $state.go($state.current, {}, {
-                                                        reload: true
-                                                    }); // reload current state 
-                                                }, function(error) {
+                                                    // hide loading
+                                                    $ionicLoading.hide();
+                                                    // show toast nofications and navigate
+                                                    $cordovaToast.showShortTop(msg).then(function(success) {
+                                                        $state.go($state.current, {}, {
+                                                            reload: true
+                                                        }); // reload current state 
+                                                    }, function(error) {}, function(error) {
+                                                        // error
+                                                    });
                                                     console.log(error);
                                                 });
                                         }, function(error) {
@@ -1056,7 +1092,7 @@ angular.module('starter.controllers', [])
         $scope.instanceURL = "";
         $scope.saveURL = function() {};
     })
-    // side menu (Accounts)
+    // side menu (Accounts) and logout control
     .controller('accountsCtrl', function($scope, $state, $ionicPopup, LocalStorageService, snService, UserService, LogoutService) {
         $scope.user = UserService.getUser();
         $scope.logout = function() {
@@ -1070,8 +1106,9 @@ angular.module('starter.controllers', [])
                     text: 'Yes',
                     type: 'button-positive',
                     onTap: function(e) {
-                        LogoutService.clearAll();
-                        $state.go('login');
+                        if (LogoutService.clearAll()) {
+                            $state.go('login',{},{reload:true});
+                        }
                     }
                 }]
             });
