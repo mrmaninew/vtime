@@ -223,7 +223,9 @@ angular.module('starter.controllers', [])
     })
     // Login View
     .controller('loginCtrl', function($scope, $state, $cordovaToast, $ionicSideMenuDelegate, $stateParams, $ionicSlideBoxDelegate, LoginService, snService, LocalStorageService, LogoutService) {
+        console.log('clicked');
         $scope.loginData = {};
+        $scope.enable = true;
         // clear all localStorage
         LogoutService.clearAll();
         // hide side menu
@@ -238,6 +240,7 @@ angular.module('starter.controllers', [])
         $scope.doLogin = function() {
             // call login service "LoginService"
             $scope.loginStatus = "Logging in";
+            $scope.disable = false;
             LoginService.doLogin($scope.loginData.username, $scope.loginData.password);
         };
         // on ionic view leave enable sidemenu drag content
