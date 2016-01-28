@@ -155,7 +155,14 @@ angular.module('starter.controllers', [])
         $scope.labels = ['sun', 'mon', 'tue', 'wed', 'thu', 'fri', 'sat'];
         $scope.series = ['hrs'];
         $scope.data = [];
-        $scope.colors = ['#f08080'];
+        $scope.colors = [{
+          "fillColor": "rgba(224, 108, 112, 1)",
+          "strokeColor": "rgba(207,100,103,1)",
+          "pointColor": "rgba(220,220,220,1)",
+          "pointStrokeColor": "#fff",
+          "pointHighlightFill": "#fff",
+          "pointHighlightStroke": "rgba(151,187,205,0.8)"
+        }];
         // on bar chat click, get click date and do some coniditional ops and pass date as param to timecardpanel ctrl
         $scope.onClick = function(e) {
             var clickedDate = "";
@@ -481,7 +488,7 @@ angular.module('starter.controllers', [])
                 return weekStartOn;
             };
             // show loading icon 
-            $ionicLoading.show(); 
+            $ionicLoading.show();
             data.task = $scope.tc.task;
             data.u_story = $scope.tc.story;
             data[_day] = $scope.tc.hours;

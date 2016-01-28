@@ -104,9 +104,10 @@
 
 /* side menu */
 
-.bar.bar-profile {
+.bar {
     background-color: #f08080;
-    height: 170px;
+    /*height: 170;
+}*/
 }
 
 .bar .profile {
@@ -133,9 +134,9 @@
     border-radius: 50%;
 }
 
-.menu .has-header {
+/*.menu .has-header {
     top: 169px;
-}
+}*/
 
 
 /* timecards.html */
