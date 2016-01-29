@@ -9,9 +9,9 @@
                     <i class="icon text-align-right" ng-class="isGroupShown(approval) ? 'ion-ios-circle-outline' : 'ion-ios-circle-filled'"></i>
                 </ion-item>
                 <ion-item class="item-accordion" ng-show="isGroupShown(approval) ">
-                    <p>Project:&nbsp;{{getProjectNumberBySysID(approval.tc_project.value)}}</p>
-                    <p ng-if="approval.tc_task">Task:&nbsp;{{getTaskNumberBySysID(approval.tc_task.value)}}</p>
-                    <p ng-if="approval.tc_story">Story:&nbsp;{{getStoryNumberBySysID(approval.tc_story.value)}}</p>
+                    <p>Project:&nbsp;{{approval.tc_project}}</p>
+                    <p ng-if="approval.tc_task">Task:&nbsp;{{approval.tc_task}}</p>
+                    <p ng-if="approval.tc_story">Story:&nbsp;{{approval.tc_story}}</p>
                     <!-- <p ng-if="approval.tc_submitted_by">Submitted By:&nbsp;{{getUsernameByUserID(approval.tc_submitted_by.value)}}</p> -->
                     <p>Hours:&nbsp;{{approval.tc_total}}</p>
                     <p>State:&nbsp;{{approval.tc_state}}</p>

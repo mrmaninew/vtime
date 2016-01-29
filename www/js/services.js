@@ -4,8 +4,8 @@ angular.module('starter.services', [])
         'Client_id': 'ac0dd3408c1031006907010c2cc6ef6d',
         'Client_secret': '1yihwfk2xbl686v45s8a',
         'grant_type': ['password', 'access'],
-        'PRODURL': 'https://volteollcdemo1.service-now.com', // Servicenow Instance URL
-        //'PRODURL': '/api', // Temp empty URL for development environment and this will changed when deploying PROD
+        //'PRODURL': 'https://volteollcdemo1.service-now.com', // Servicenow Instance URL
+        'PRODURL': '/api', // Temp empty URL for development environment and this will changed when deploying PROD
         'PrjTableName': 'pm_project', // Servicenow Project Table
         'TasksTableName': 'pm_project_task', // Servicenow Tasks Table
         'StoriesTableName': 'rm_story', // Servicenow Stories Table
@@ -91,6 +91,41 @@ angular.module('starter.services', [])
                     });
                 return defer.promise;
             },
+            getProjectNameBySysID: function(sys_id) {
+                var query = "?sysparm_query=sys_id=" + sys_id;
+                var url = snCred.PRODURL + '/api/now/table/' + snCred.PrjTableName + query;
+                var token = "Bearer " + TokenService.getToken();
+                var defer = $q.defer();
+                $http({
+                        method: 'GET',
+                        url: url,
+                        headers: {
+                            'Authorization': token
+                        }
+                    })
+                    .success(function(data, status) {
+                        if (status == errorService.Success) {
+                            defer.resolve(data.result[0].short_description);
+                        }
+                    })
+                    .error(function(error, status) {
+                        console.log(error.error.message, status);
+                        // if error message equals to "AuthMessage" redirect to login
+                        // and get new access token and set it in the TokenService 
+                        // Local Storage 
+                        if (status == errorService.Unauthorized) {
+                            $state.go('login');
+                        } else {
+                            // if some other errors, store the empty array in localstorage 
+                            // for Projects 
+                            if (status == errorService.Notfound) {
+                                defer.resolve("");
+                            }
+                        }
+
+                    });
+                    return defer.promise;
+            },
             getTasks: function() {
                 // get all tasks assigned_to = user (and) state = open or pending or work in progress
                 var query = "?sysparm_query=state=2^ORstate=1^ORstate=-5^assigned_to=" + UserService.getUser().sys_id;
@@ -119,6 +154,40 @@ angular.module('starter.services', [])
                                 if (LocalStorageService.setTasksLocal([])) {
                                     defer.resolve(error);
                                 }
+                            }
+                        }
+
+                    });
+                return defer.promise;
+            },
+            getTaskNameBySysID: function(sys_id) {
+                var query = "?sysparm_query=sys_id+" + sys_id;
+                var url = snCred.PRODURL + '/api/now/table/' + snCred.TasksTableName + query;
+                var token = "Bearer " + TokenService.getToken();
+                var defer = $q.defer();
+                $http({
+                        method: 'GET',
+                        url: url,
+                        headers: {
+                            'Authorization': token
+                        }
+                    })
+                    .success(function(data, status) {
+                        if (status == errorService.Success) {
+                            defer.resolve(data.result[0].short_description);
+                        }
+                    })
+                    .error(function(error, status) {
+                        // if error message equals to "AuthMessage" redirect to login
+                        // and get new access token and set it in the TokenService 
+                        // Local Storage 
+                        if (status == errorService.Unauthorized) {
+                            $state.go('login');
+                        } else {
+                            // if some other errors, store the empty array in localstorage 
+                            // for Projects 
+                            if (status == errorService.Notfound) {
+                                defer.resolve("");
                             }
                         }
 
@@ -157,6 +226,41 @@ angular.module('starter.services', [])
                     });
                 return defer.promise;
             },
+            getStoryNameBySysID: function(sys_id) {
+                var query = "?sysparm_query=sys_id=" + sys_id;
+                var url = snCred.PRODURL + '/api/now/table/' + snCred.StoriesTableName + query;
+                var token = "Bearer " + TokenService.getToken();
+                var defer = $q.defer();
+                $http({
+                        method: 'GET',
+                        url: url,
+                        headers: {
+                            'Authorization': token
+                        }
+                    })
+                    .success(function(data, status) {
+                        if (status == errorService.Success) {
+                            defer.resolve(data.result[0].short_description);
+                        }
+                    })
+                    .error(function(error, status) {
+                        console.log(error.error.message, status);
+                        // if error message equals to "AuthMessage" redirect to login
+                        // and get new access token and set it in the TokenService 
+                        // Local Storage 
+                        if (status == errorService.Unauthorized) {
+                            $state.go('login');
+                        } else {
+                            // if some other errors, store the empty array in localstorage 
+                            // for Projects 
+                            if (status == errorService.Notfound) {
+                                defer.resolve("");
+                            }
+                        }
+
+                    });
+                return defer.promise;
+            },
             getTimecards: function() {
                 var query = "?sysparm_query=user=" + UserService.getUser().sys_id;
                 var url = snCred.PRODURL + '/api/now/table/' + snCred.TimecardTable + query;
@@ -191,8 +295,8 @@ angular.module('starter.services', [])
                     });
                 return defer.promise;
             },
-            getTimecardBySysID: function(sys_id) {
-                var query = "?sysparm_query=sys_id=" + sys_id;
+            getTimecardBySysID: function(set) {
+                var query = "?sysparm_query=sys_id=" + set.document_id.value;
                 var url = snCred.PRODURL + '/api/now/table/' + snCred.TimecardTable + query;
                 var token = "Bearer " + TokenService.getToken();
                 var defer = $q.defer();
@@ -204,7 +308,10 @@ angular.module('starter.services', [])
                         }
                     })
                     .success(function(data, status) {
-                         defer.resolve(data.result[0]);
+                        var result = data.result[0];
+                        result.approval_id = set.sys_id;
+                        result.approval_number = set.u_number;
+                        defer.resolve(result);
                         // if (status == errorService.Success) {
                         //     return data.result[0];
                         // }
@@ -729,6 +836,21 @@ angular.module('starter.services', [])
             }
         }
 
+        function getTaskNameBySysID(id) {
+            var taskName = "";
+            var tasks = getTasksLocal();
+            if (tasks !== null) {
+                for (var i = 0; i < tasks.length; i++) {
+                    if (tasks[i].sys_id === id) {
+                        taskName = tasks[i].short_description;
+                    }
+                }
+                return taskName;
+            } else {
+                return taskName;
+            }
+        }
+
         function getTasksLengthLocal() {
             var tasks = getTasksLocal();
             if (tasks !== null) {
@@ -760,6 +882,17 @@ angular.module('starter.services', [])
                 }
             }
             return storyNumber;
+        }
+
+        function getStoryNameBySysID(id) {
+            var storyName = "";
+            var stories = getStoriesLocal();
+            for (var i = 0; i < stories.length; i++) {
+                if (stories[i].sys_id === id) {
+                    storyName = stories[i].short_description;
+                }
+            }
+            return storyName;
         }
 
         function getStoriesLengthLocal() {
@@ -979,11 +1112,13 @@ angular.module('starter.services', [])
             setTasksLocal: setTasksLocal,
             getTasksLocal: getTasksLocal,
             getTaskNumberBySysID: getTaskNumberBySysID,
+            getTaskNameBySysID: getTaskNameBySysID,
             getTasksLengthLocal: getTasksLengthLocal,
             // Stories
             setStoriesLocal: setStoriesLocal,
             getStoriesLocal: getStoriesLocal,
             getStoryNumberBySysID: getStoryNumberBySysID,
+            getStoryNameBySysID: getStoryNameBySysID,
             getStoriesLengthLocal: getStoriesLengthLocal,
             // Timecards
             addNewTimecardLocal: addNewTimecardLocal,

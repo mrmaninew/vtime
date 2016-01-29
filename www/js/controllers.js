@@ -797,43 +797,93 @@ angular.module('starter.controllers', [])
     })
     // approvals Tab  
     .controller('approvalsCtrl', function($scope, $state, $ionicPopup, $timeout, $ionicLoading, $cordovaToast, moment, snService, LocalStorageService) {
-        $ionicLoading.show();
-        var set = LocalStorageService.getApprovalsLocal();
-        $scope.approvals = [];
-        for (var i = 0; i < set.length; i++) {
-            var app = {};
-            var timecard = LocalStorageService.getTimecardByID(set[i].document_id.value);
-            if (Object.keys(timecard).length) {
-                $scope.approvals.push(processAndReturn(timecard));
-            } else {
-                snService.getTimecardBySysID(set[i].document_id.value)
-                    .then(function(data) {
-                        $scope.approvals.push(processAndReturn(data));
-                    });
+
+        $scope.$on('$ionicView.enter', function(e) {
+            var set = LocalStorageService.getApprovalsLocal();
+            $scope.approvals = [];
+            $ionicLoading.show();
+            for (var i = 0; i < set.length; i++) {
+                var app = {};
+                var timecard = LocalStorageService.getTimecardByID(set[i].document_id.value);
+                if (Object.keys(timecard).length) {
+                    $scope.approvals.push(processAndReturn(timecard, set[i]));
+                } else {
+                    snService.getTimecardBySysID(set[i])
+                        .then(function(data) {
+                            $scope.approvals.push(processAndReturn(data));
+                            $ionicLoading.hide();
+                        });
+                }
             }
-        }
-        $ionicLoading.hide();
-        // process and return timecard sets 
-        function processAndReturn(time) {
-            var app = {};
-            app.sys_id = time.sys_id;
-            app.u_number = time.u_number;
-            app.sys_created_on = time.sys_created_on;
-            app.tc_submitted_by = time.user;
-            app.tc_total = time.total;
-            app.tc_state = time.state;
-            app.tc_project = time.u_project;
-            app.tc_task = time.task;
-            app.tc_story = time.u_story;
-            app.tc_sun = time.sunday;
-            app.tc_mon = time.monday;
-            app.tc_tue = time.tuesday;
-            app.tc_wed = time.wednesday;
-            app.tc_thu = time.thursday;
-            app.tc_fri = time.friday;
-            app.tc_sat = time.saturday;
-            return app;
-        }
+            // process and return timecard sets 
+            function processAndReturn(time, set) {
+                var app = {};
+
+                if (time.approval_id && time.approval_number) {
+                    app.sys_id = time.approval_id;
+                    app.u_number = time.approval_number;
+                } else {
+                    app.sys_id = set.sys_id;
+                    app.u_number = set.u_number;
+                }
+                app.sys_created_on = time.sys_created_on;
+                app.tc_submitted_by = time.user;
+                app.tc_total = time.total;
+                app.tc_state = time.state;
+                if (time.u_project.value) {
+                    var projectName = LocalStorageService.getProjectNameBySysID(time.u_project.value);
+                    if (projectName !== null && projectName.length > 0) {
+                        app.tc_project = projectName;
+                    } else {
+                        snService.getProjectNameBySysID(time.u_project.value)
+                            .then(function(data){
+                                app.tc_project = data;
+                            });
+                    }
+                }
+                if (time.task) {
+                    var taskName = LocalStorageService.getTaskNameBySysID(time.task.value);
+                    if (taskName !== null && taskName.length > 0) {
+                        app.tc_task = taskName;
+                    } else {
+                        snService.getTaskNameBySysID(time.task.value)
+                            .then(function(data) {
+                                app.tc_task = data;
+                            });
+                    }
+                }
+                if (time.u_story) {
+                    var storyNumber = LocalStorageService.getStoryNameBySysID(time.u_story);
+                    if (storyNumber !== null && storyNumber.length > 0) {
+                        app.tc_story = storyNumber;
+                    } else {
+                        //console.log(time.u_story);
+                        snService.getStoryNameBySysID(time.u_story.value)
+                            .then(function(data) {
+                                if (data) {
+                                    app.tc_story = data;
+                                }
+                            });
+                    }
+                }
+                app.tc_sun = time.sunday;
+                app.tc_sun_notes = time.u_sunday_work_notes;
+                app.tc_mon = time.monday;
+                app.tc_mon_notes = time.u_monday_work_notes;
+                app.tc_tue = time.tuesday;
+                app.tc_tue_notes = time.u_tuesday_work_notes;
+                app.tc_wed = time.wednesday;
+                app.tc_wed_notes = time.u_wednesday_work_notes;
+                app.tc_thu = time.thursday;
+                app.tc_thu_notes = time.u_thursday_work_notes;
+                app.tc_fri = time.friday;
+                app.tc_fri_notes = time.u_friday_work_notes;
+                app.tc_sat = time.saturday;
+                app.tc_sat_notes = time.u_saturday_work_notes;
+                return app;
+            }
+        });
+
         $scope.$on('$ionicView.leave', function(e) {
             $scope.approvals = [];
         });
@@ -904,18 +954,6 @@ angular.module('starter.controllers', [])
                     }
                 }]
             });
-        };
-        // refresh approvals view - UI 
-        $scope.refreshApprovals = function() {};
-        // functional Methods (Projects, Tasks, Stories)
-        $scope.getProjectNumberBySysID = function(sys_id) {
-            return LocalStorageService.getProjectNumberBySysID(sys_id);
-        };
-        $scope.getTaskNumberBySysID = function(sys_id) {
-            return LocalStorageService.getTaskNumberBySysID(sys_id);
-        };
-        $scope.getStoryNumberBySysID = function(sys_id) {
-            return LocalStorageService.getStoryNumberBySysID(sys_id);
         };
 
         // if given group is the selected group, deselect it, else select the given group
