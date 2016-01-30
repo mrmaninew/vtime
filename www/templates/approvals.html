@@ -1,4 +1,8 @@
 <ion-view view-title="Approvals">
+    <ion-nav-buttons side="right">
+        <button class="button icon ion-android-expand" ng-show="showExpand" ng-click="showTimecardDetails()">
+        </button>
+    </ion-nav-buttons>
     <ion-content>
         <ion-list>
             <div ng-repeat="approval in approvals">
@@ -12,28 +16,19 @@
                     <p>Project:&nbsp;{{approval.tc_project}}</p>
                     <p ng-if="approval.tc_task">Task:&nbsp;{{approval.tc_task}}</p>
                     <p ng-if="approval.tc_story">Story:&nbsp;{{approval.tc_story}}</p>
-                    <!-- <p ng-if="approval.tc_submitted_by">Submitted By:&nbsp;{{getUsernameByUserID(approval.tc_submitted_by.value)}}</p> -->
-                    <p>Hours:&nbsp;{{approval.tc_total}}</p>
+                    <p>Total Hours:&nbsp;{{approval.tc_total}}</p>
                     <p>State:&nbsp;{{approval.tc_state}}</p>
                     <p>Create on:&nbsp;{{approval.sys_created_on}}</p>
-                    <div>
+                    <div ng-show="showDetailsToggle">
                         <div class="row header">
-                            <div class="col text-center cols">sun</div>
-                            <div class="col text-center cols">mon</div>
-                            <div class="col text-center cols">tue</div>
-                            <div class="col text-center cols">wed</div>
-                            <div class="col text-center cols">thu</div>
-                            <div class="col text-center cols">fri</div>
-                            <div class="col text-center cols">sat</div>
+                            <div class="col">Day</div>
+                            <div class="col">Hours</div>
+                            <div class="col">Notes</div>
                         </div>
                         <div class="row">
-                            <div class="col text-center cols">{{approval.tc_sun}}</div>
-                            <div class="col text-center cols">{{approval.tc_mon}}</div>
-                            <div class="col text-center cols">{{approval.tc_tue}}</div>
-                            <div class="col text-center cols">{{approval.tc_wed}}</div>
-                            <div class="col text-center cols">{{approval.tc_thu}}</div>
-                            <div class="col text-center cols">{{approval.tc_fri}}</div>
-                            <div class="col text-center cols">{{approval.tc_sat}}</div>
+                            <div class="col">demo</div>
+                            <div class="col">demo</div>
+                            <div class="col">demo</div>
                         </div>
                     </div>
                     <button class="button button-block button-positive" ng-click="approve(approval.sys_id)">

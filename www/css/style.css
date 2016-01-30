@@ -178,21 +178,20 @@
 /* Status bar - Pending,Approved,Submitted,Rejected*/
 
 .header .col {
-    background-color: lightgrey;
+  border-top: solid 1px grey;
+  background-color:lightgrey;
 }
 
-.cols {
-    border: solid 1px grey;
-    border-bottom-style: none;
-    border-right-style: none;
+.col:first-child {
+  border-left: solid 1px grey;
 }
 
-.cols:last-child {
-    border-right: solid 1px grey;
+.col:last-child {
+  border-right: solid 1px grey;
 }
 
-.row:last-child .cols {
-    border-bottom: solid 1px grey;
+.row:last-child .col {
+  border-bottom: solid 1px grey;
 }
 
 

@@ -882,12 +882,7 @@ angular.module('starter.controllers', [])
                 app.tc_sat_notes = time.u_saturday_work_notes;
                 return app;
             }
-        });
-
-        $scope.$on('$ionicView.leave', function(e) {
-            $scope.approvals = [];
-        });
-        // approve timecard from approvals 
+            // approve timecard from approvals 
         $scope.approve = function(sys_id) {
             $ionicPopup.confirm({
                 title: 'Confirm Approve',
@@ -956,17 +951,31 @@ angular.module('starter.controllers', [])
             });
         };
 
+        //show hidden timcard details 
+       $scope.showDetailsToggle = false;
+       $scope.showTimecardDetails = function(){
+         $scope.showDetailsToggle = !$scope.showDetailsToggle;
+       }
+
         // if given group is the selected group, deselect it, else select the given group
         $scope.toggleGroup = function(approval) {
             if ($scope.isGroupShown(approval)) {
                 $scope.shownGroup = null;
+                $scope.showExpand = false;
             } else {
                 $scope.shownGroup = approval;
+                $scope.showExpand = true;
             }
         };
         $scope.isGroupShown = function(approval) {
             return $scope.shownGroup === approval;
         };
+        });
+
+        $scope.$on('$ionicView.leave', function(e) {
+            $scope.approvals = [];
+        });
+
     })
     // side menu (Projects)
     .controller('projectsCtrl', function($scope, $state, snService, LocalStorageService) {
