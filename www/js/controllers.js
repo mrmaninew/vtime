@@ -797,7 +797,6 @@ angular.module('starter.controllers', [])
     })
     // approvals Tab  
     .controller('approvalsCtrl', function($scope, $state, $ionicPopup, $timeout, $ionicLoading, $cordovaToast, moment, snService, LocalStorageService) {
-
         $scope.$on('$ionicView.enter', function(e) {
             var set = LocalStorageService.getApprovalsLocal();
             $scope.approvals = [];
@@ -836,7 +835,7 @@ angular.module('starter.controllers', [])
                         app.tc_project = projectName;
                     } else {
                         snService.getProjectNameBySysID(time.u_project.value)
-                            .then(function(data){
+                            .then(function(data) {
                                 app.tc_project = data;
                             });
                     }
@@ -883,99 +882,98 @@ angular.module('starter.controllers', [])
                 return app;
             }
             // approve timecard from approvals 
-        $scope.approve = function(sys_id) {
-            $ionicPopup.confirm({
-                title: 'Confirm Approve',
-                template: 'Do you want to Approve Timecard',
-                scope: $scope,
-                buttons: [{
-                    text: 'Cancel'
-                }, {
-                    text: 'Yes',
-                    type: 'button-positive',
-                    onTap: function(e) {
-                        // show loading icon 
-                        $ionicLoading.show();
-                        snService.approveApprovals(sys_id)
-                            .then(function(result) {
-                                var msg = "Timecard Approved";
-                                // hide loading icon 
-                                $ionicLoading.hide();
-                                // show toast notification and navigate 
-                                $cordovaToast.showLongTop(msg).then(function(success) {
-                                    $state.go('app.approvalsPanel', {}, {
-                                        reload: true
+            $scope.approve = function(sys_id) {
+                $ionicPopup.confirm({
+                    title: 'Confirm Approve',
+                    template: 'Do you want to Approve Timecard',
+                    scope: $scope,
+                    buttons: [{
+                        text: 'Cancel'
+                    }, {
+                        text: 'Yes',
+                        type: 'button-positive',
+                        onTap: function(e) {
+                            // show loading icon 
+                            $ionicLoading.show();
+                            snService.approveApprovals(sys_id)
+                                .then(function(result) {
+                                    var msg = "Timecard Approved";
+                                    // hide loading icon 
+                                    $ionicLoading.hide();
+                                    // show toast notification and navigate 
+                                    $cordovaToast.showLongTop(msg).then(function(success) {
+                                        $state.go('app.approvalsPanel', {}, {
+                                            reload: true
+                                        });
+                                    }, function(error) {
+                                        console.log(error);
                                     });
                                 }, function(error) {
                                     console.log(error);
                                 });
-                            }, function(error) {
-                                console.log(error);
-                            });
-                    }
-                }]
-            });
-        };
-        // reject timecard from approvals
-        $scope.reject = function(sys_id) {
-            $ionicPopup.confirm({
-                title: 'Confirm Reject',
-                template: 'Do you want to Reject Timecard',
-                scope: $scope,
-                buttons: [{
-                    text: 'Cancel'
-                }, {
-                    text: 'Yes',
-                    type: 'button-positive',
-                    onTap: function(e) {
-                        // show loading icon 
-                        $ionicLoading.show();
-                        snService.rejectApprovals(sys_id)
-                            .then(function(result) {
-                                var msg = "Timecard Rejected";
-                                // hide loading icon 
-                                $ionicLoading.hide();
-                                // show toast notification and navigate 
-                                $cordovaToast.showLongTop(msg).then(function(success) {
-                                    $state.go('app.approvalsPanel', {}, {
-                                        reload: true
+                        }
+                    }]
+                });
+            };
+            // reject timecard from approvals
+            $scope.reject = function(sys_id) {
+                $ionicPopup.confirm({
+                    title: 'Confirm Reject',
+                    template: 'Do you want to Reject Timecard',
+                    scope: $scope,
+                    buttons: [{
+                        text: 'Cancel'
+                    }, {
+                        text: 'Yes',
+                        type: 'button-positive',
+                        onTap: function(e) {
+                            // show loading icon 
+                            $ionicLoading.show();
+                            snService.rejectApprovals(sys_id)
+                                .then(function(result) {
+                                    var msg = "Timecard Rejected";
+                                    // hide loading icon 
+                                    $ionicLoading.hide();
+                                    // show toast notification and navigate 
+                                    $cordovaToast.showLongTop(msg).then(function(success) {
+                                        $state.go('app.approvalsPanel', {}, {
+                                            reload: true
+                                        });
+                                    }, function(error) {
+                                        console.log(error);
                                     });
                                 }, function(error) {
                                     console.log(error);
                                 });
-                            }, function(error) {
-                                console.log(error);
-                            });
-                    }
-                }]
-            });
-        };
+                        }
+                    }]
+                });
+            };
 
-        //show hidden timcard details 
-       $scope.showDetailsToggle = false;
-       $scope.showTimecardDetails = function(){
-         $scope.showDetailsToggle = !$scope.showDetailsToggle;
-       }
-
-        // if given group is the selected group, deselect it, else select the given group
-        $scope.toggleGroup = function(approval) {
-            if ($scope.isGroupShown(approval)) {
-                $scope.shownGroup = null;
-                $scope.showExpand = false;
-            } else {
-                $scope.shownGroup = approval;
-                $scope.showExpand = true;
+            //show hidden timcard details 
+            $scope.showDetailsToggle = false;
+            $scope.showTimecardDetails = function() {
+                $scope.showDetailsToggle = !$scope.showDetailsToggle;
             }
-        };
-        $scope.isGroupShown = function(approval) {
-            return $scope.shownGroup === approval;
-        };
+
+            // if given group is the selected group, deselect it, else select the given group
+            $scope.toggleGroup = function(approval) {
+                if ($scope.isGroupShown(approval)) {
+                    $scope.shownGroup = null;
+                    $scope.showExpand = false;
+                } else {
+                    $scope.shownGroup = approval;
+                    $scope.showExpand = true;
+                }
+            };
+            $scope.isGroupShown = function(approval) {
+                return $scope.shownGroup === approval;
+            };
         });
 
         $scope.$on('$ionicView.leave', function(e) {
             $scope.approvals = [];
         });
-
     })
     // side menu (Projects)
     .controller('projectsCtrl', function($scope, $state, snService, LocalStorageService) {
@@ -1180,5 +1178,16 @@ angular.module('starter.controllers', [])
                     }
                 }]
             });
+        };
+    })
+    // Timecard Directive
+    .directive('timecard', function() {
+        return {
+            templateUrl: 'templates/timecardDirective.html',
+            link: function(scope, element, attrs) {
+                attrs.$observe('details', function(details) {
+                    scope.details = JSON.parse(details);
+                });
+            }
         };
     });
