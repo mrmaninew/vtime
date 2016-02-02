@@ -19,27 +19,8 @@
                                     <p>Total Hours:&nbsp;{{timecard.total}}</p>
                                     <p>Category:&nbsp;{{timecard.category}}</p>
                                     <p>Billable:&nbsp;{{timecard.u_billable}}</p>
-                                    <p>Week starts on:&nbsp;{{timecard.week_starts_on}}</p>
-                                    <div>
-                                        <div class="row header">
-                                            <div class="col text-center cols">sun</div>
-                                            <div class="col text-center cols">mon</div>
-                                            <div class="col text-center cols">tue</div>
-                                            <div class="col text-center cols">wed</div>
-                                            <div class="col text-center cols">thu</div>
-                                            <div class="col text-center cols">fri</div>
-                                            <div class="col text-center cols">sat</div>
-                                        </div>
-                                        <div class="row">
-                                            <div class="col text-center cols">{{timecard.sunday}}</div>
-                                            <div class="col text-center cols">{{timecard.monday}}</div>
-                                            <div class="col text-center cols">{{timecard.tuesday}}</div>
-                                            <div class="col text-center cols">{{timecard.wednesday}}</div>
-                                            <div class="col text-center cols">{{timecard.thursday}}</div>
-                                            <div class="col text-center cols">{{timecard.friday}}</div>
-                                            <div class="col text-center cols">{{timecard.saturday}}</div>
-                                        </div>
-                                    </div>
+                                    <p>Week starts on:&nbsp;{{timecard.week_starts_on}} <i class="icon ion-more text-align-right" ng-click="showTimecardDetails()">&nbsp; more details</i></p>
+                                    <timecard></timecard>
                                     <button class="button button-block button-positive" ng-click="submitTimecard(timecard.sys_id)">
                                         Submit Timecard
                                     </button>

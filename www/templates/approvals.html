@@ -14,8 +14,10 @@
                     <p ng-if="approval.tc_story">Story:&nbsp;{{approval.tc_story}}</p>
                     <p>Total Hours:&nbsp;{{approval.tc_total}}</p>
                     <p>State:&nbsp;{{approval.tc_state}}</p>
-                    <p>Create on:&nbsp;{{approval.sys_created_on}} <i class="icon ion-more text-align-right" ng-click="showTimecardDetails()">&nbsp; more details</i></p>
-                    <div timecard details="{{approval}}"></div>
+                    <p>Category:&nbsp;{{approval.category}}</p>
+                    <p>Billable:&nbsp;{{approval.u_billable}}</p>
+                    <p>Week Starts on:&nbsp;{{approval.week_starts_on}} <i class="icon ion-more text-align-right" ng-click="showTimecardDetails()">&nbsp; more details</i></p>
+                    <timecard details="{{approval}}"></timecard>
                     <button class="button button-block button-positive" ng-click="approve(approval.sys_id)">
                         Approve
                     </button>

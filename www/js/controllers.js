@@ -646,6 +646,12 @@ angular.module('starter.controllers', [])
                 }
             }
             preProcess();
+
+            //show hidden timcard details 
+            $scope.showDetailsToggle = false;
+            $scope.showTimecardDetails = function() {
+                $scope.showDetailsToggle = !$scope.showDetailsToggle;
+            };
         });
         // on-view leave
         $scope.$on('$ionicView.leave', function(e) {
@@ -865,20 +871,29 @@ angular.module('starter.controllers', [])
                             });
                     }
                 }
-                app.tc_sun = time.sunday;
-                app.tc_sun_notes = time.u_sunday_work_notes;
-                app.tc_mon = time.monday;
-                app.tc_mon_notes = time.u_monday_work_notes;
-                app.tc_tue = time.tuesday;
-                app.tc_tue_notes = time.u_tuesday_work_notes;
-                app.tc_wed = time.wednesday;
-                app.tc_wed_notes = time.u_wednesday_work_notes;
-                app.tc_thu = time.thursday;
-                app.tc_thu_notes = time.u_thursday_work_notes;
-                app.tc_fri = time.friday;
-                app.tc_fri_notes = time.u_friday_work_notes;
-                app.tc_sat = time.saturday;
-                app.tc_sat_notes = time.u_saturday_work_notes;
+                if (time.week_starts_on) {
+                    app.week_starts_on = time.week_starts_on;
+                }
+                if (time.category) {
+                    app.category = time.category;
+                }
+                if (time.u_billable) {
+                    app.u_billable = time.u_billable;
+                }
+                app.sunday = time.sunday;
+                app.u_sunday_work_notes = time.u_sunday_work_notes;
+                app.monday = time.monday;
+                app.u_monday_work_notes = time.u_monday_work_notes;
+                app.tuesday = time.tuesday;
+                app.u_tuesday_work_notes = time.u_tuesday_work_notes;
+                app.wednesday = time.wednesday;
+                app.u_wednesday_work_notes = time.u_wednesday_work_notes;
+                app.thursday = time.thursday;
+                app.u_thursday_work_notes = time.u_thursday_work_notes;
+                app.friday = time.friday;
+                app.u_friday_work_notes = time.u_friday_work_notes;
+                app.saturday = time.saturday;
+                app.u_saturday_work_notes = time.u_saturday_work_notes;
                 return app;
             }
             // approve timecard from approvals 
@@ -954,7 +969,7 @@ angular.module('starter.controllers', [])
             $scope.showDetailsToggle = false;
             $scope.showTimecardDetails = function() {
                 $scope.showDetailsToggle = !$scope.showDetailsToggle;
-            }
+            };
 
             // if given group is the selected group, deselect it, else select the given group
             $scope.toggleGroup = function(approval) {
@@ -1066,6 +1081,11 @@ angular.module('starter.controllers', [])
             $scope.timecards = "";
         });
         // functional methods for  project, Task, Story - Number 
+        //show hidden timcard details 
+        $scope.showDetailsToggle = false;
+        $scope.showTimecardDetails = function() {
+            $scope.showDetailsToggle = !$scope.showDetailsToggle;
+        };
         $scope.getProjectNumberBySysID = function(sys_id) {
             return LocalStorageService.getProjectNumberBySysID(sys_id);
         };
@@ -1186,7 +1206,7 @@ angular.module('starter.controllers', [])
             templateUrl: 'templates/timecardDirective.html',
             link: function(scope, element, attrs) {
                 attrs.$observe('details', function(details) {
-                    scope.details = JSON.parse(details);
+                    scope.timecard = JSON.parse(details);
                 });
             }
         };
