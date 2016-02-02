@@ -580,12 +580,13 @@ angular.module('starter.services', [])
                 return defer.promise;
             },
             // reject timecard in approvals 
-            rejectApprovals: function(sys_id) {
+            rejectApprovals: function(sys_id,comments) {
                 var url = snCred.PRODURL + '/api/now/table/' + snCred.ApprovalsTable + '/' + sys_id;
                 var token = "Bearer " + TokenService.getToken();
                 var defer = $q.defer();
                 var data = {
-                    'state': 'rejected'
+                    'state': 'rejected',
+                    'comments':comments
                 };
                 $http({
                         method: 'PUT',

@@ -803,6 +803,7 @@ angular.module('starter.controllers', [])
     })
     // approvals Tab  
     .controller('approvalsCtrl', function($scope, $state, $ionicPopup, $timeout, $ionicLoading, $cordovaToast, moment, snService, LocalStorageService) {
+        // on state enter
         $scope.$on('$ionicView.enter', function(e) {
             var set = LocalStorageService.getApprovalsLocal();
             $scope.approvals = [];
@@ -815,15 +816,20 @@ angular.module('starter.controllers', [])
                 } else {
                     snService.getTimecardBySysID(set[i])
                         .then(function(data) {
-                            $scope.approvals.push(processAndReturn(data));
-                            $ionicLoading.hide();
+                            if (data) {
+                                $scope.approvals.push(processAndReturn(data));
+                                $ionicLoading.hide();
+                            }
+                            else{
+                                $ionicLoading.hide();
+                            }
                         });
                 }
             }
+            
             // process and return timecard sets 
             function processAndReturn(time, set) {
                 var app = {};
-
                 if (time.approval_id && time.approval_number) {
                     app.sys_id = time.approval_id;
                     app.u_number = time.approval_number;
@@ -932,45 +938,56 @@ angular.module('starter.controllers', [])
             };
             // reject timecard from approvals
             $scope.reject = function(sys_id) {
-                $ionicPopup.confirm({
-                    title: 'Confirm Reject',
-                    template: 'Do you want to Reject Timecard',
+                $scope.data = {};
+                // An elaborate, custom popup
+                var myPopup = $ionicPopup.show({
+                    template: '<textarea rows="5" cols="3" ng-model="data.comments">',
+                    title: 'Confirm Rejection',
+                    subTitle: 'Please specify comments for current timecard',
                     scope: $scope,
                     buttons: [{
                         text: 'Cancel'
                     }, {
-                        text: 'Yes',
+                        text: '<b>Save</b>',
                         type: 'button-positive',
                         onTap: function(e) {
-                            // show loading icon 
-                            $ionicLoading.show();
-                            snService.rejectApprovals(sys_id)
-                                .then(function(result) {
-                                    var msg = "Timecard Rejected";
-                                    // hide loading icon 
-                                    $ionicLoading.hide();
-                                    // show toast notification and navigate 
-                                    $cordovaToast.showLongTop(msg).then(function(success) {
-                                        $state.go('app.approvalsPanel', {}, {
-                                            reload: true
-                                        });
-                                    }, function(error) {
-                                        console.log(error);
-                                    });
-                                }, function(error) {
-                                    console.log(error);
-                                });
+                            if (!$scope.data.comments) {
+                                //don't allow the user to close unless he enters wifi password
+                                e.preventDefault();
+                            } else {
+                                return $scope.data.comments;
+                            }
                         }
                     }]
                 });
-            };
 
+                myPopup.then(function(comments) {
+                    console.log(comments);
+                    // show loading icon 
+                    $ionicLoading.show();
+                    snService.rejectApprovals(sys_id, comments)
+                        .then(function(result) {
+                            var msg = "Timecard Rejected";
+                            // hide loading icon 
+                            $ionicLoading.hide();
+                            // show toast notification and navigate 
+                            $cordovaToast.showLongTop(msg).then(function(success) {
+                                $state.go('app.approvalsPanel', {}, {
+                                    reload: true
+                                });
+                            }, function(error) {
+                                console.log(error);
+                            });
+                        }, function(error) {
+                            console.log(error);
+                        });
+                });
+            };
             //show hidden timcard details 
             $scope.showDetailsToggle = false;
             $scope.showTimecardDetails = function() {
                 $scope.showDetailsToggle = !$scope.showDetailsToggle;
             };
-
             // if given group is the selected group, deselect it, else select the given group
             $scope.toggleGroup = function(approval) {
                 if ($scope.isGroupShown(approval)) {
@@ -985,7 +1002,7 @@ angular.module('starter.controllers', [])
                 return $scope.shownGroup === approval;
             };
         });
-
+        // on state leave
         $scope.$on('$ionicView.leave', function(e) {
             $scope.approvals = [];
         });
