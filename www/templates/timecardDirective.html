@@ -1,0 +1,43 @@
+
+<div ng-show="showDetailsToggle" class="timecardDetails">
+    <div class="row header">
+        <div class="col col-20">Day</div>
+        <div class="col col-20">Hours</div>
+        <div class="col col-60">Notes</div>
+    </div>
+    <div class="row">
+        <div class="col col-20">sun</div>
+        <div class="col col-20">{{timecard.sunday}}</div>
+        <div class="col col-60">{{timecard.u_sunday_work_notes}}</div>
+    </div>
+    <div class="row">
+        <div class="col">mon</div>
+        <div class="col col-20">{{timecard.monday}}</div>
+        <div class="col col-60">{{timecard.u_monday_work_notes}}</div>
+    </div>
+    <div class="row">
+        <div class="col">tue</div>
+        <div class="col col-20">{{timecard.tuesday}}</div>
+        <div class="col col-60">{{timecard.u_tuesday_work_notes}}</div>
+    </div>
+    <div class="row">
+        <div class="col">wed</div>
+        <div class="col col-20">{{timecard.wednesday}}</div>
+        <div class="col col-60">{{timecard.u_wednesday_work_notes}}</div>
+    </div>
+    <div class="row">
+        <div class="col">thu</div>
+        <div class="col col-20">{{timecard.thursday}}</div>
+        <div class="col col-60">{{timecard.u_thursday_work_notes}}</div>
+    </div>
+    <div class="row">
+        <div class="col">fri</div>
+        <div class="col col-20">{{timecard.friday}}</div>
+        <div class="col col-60">{{timecard.u_friday_work_notes}}</div>
+    </div>
+    <div class="row">
+        <div class="col">sat</div>
+        <div class="col col-20">{{timecard.saturday}}</div>
+        <div class="col col-60">{{timecard.u_saturday_work_notes}}</div>
+    </div>
+</div>

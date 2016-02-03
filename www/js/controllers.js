@@ -135,14 +135,21 @@ angular.module('starter.controllers', [])
             }
             $scope.data.push([sunday, monday, tuesday, wednesday, thursday, friday, saturday]);
         }
-        // total hours for current month
-        function getTotalHrsMonth() {
-            var tc = LocalStorageService.getTimecardsByMonthYearLocal($scope.selDate);
-            for (var i = 0; i < tc.length; i++) {
-                if (tc[i].total) {
-                    $scope.totalHrsMonthly += Number(tc[i].total);
+
+        // get all sundays in a month
+        function sundays(year, month) {
+            var day, counter, date;
+            day = 1;
+            counter = 0;
+            date = new Date(year, month, day);
+            while (date.getMonth() === month) {
+                if (date.getDay() === 0) { // Sun=0, Mon=1, Tue=2, etc.
+                    counter += 1;
                 }
+                day += 1;
+                date = new Date(year, month, day);
             }
+            return counter;
         }
         $scope.routeEditCard = function(sys_id) {
             //ref="#/app/editCard/:{{tc.sys_id}}/:{{selDate}}"
@@ -187,6 +194,7 @@ angular.module('starter.controllers', [])
             });
         };
         // state management 
+        // on view loaded
         $scope.$on('$ionicView.loaded', function() {
             $scope.hideSpinner = true;
             snService.getTimecards()
@@ -200,7 +208,6 @@ angular.module('starter.controllers', [])
                             $scope.data = [];
                             // init functions 
                             getTotalHrsDayWeek(); // get total hours for current day, week
-                            getTotalHrsMonth(); // get total hours for current month
                             console.log('loaded and done');
                             $scope.hideSpinner = false; // hide the spinner after data refreshed for timecards and approvals 
                         }, function(error) {
@@ -210,11 +217,12 @@ angular.module('starter.controllers', [])
                     console.log(error);
                 });
         });
+        // on view enter
         $scope.$on('$ionicView.enter', function() {
             $scope.data = [];
             getTotalHrsDayWeek(); // get total hours for current day, week
-            getTotalHrsMonth(); // get total hours for current month
         });
+        // one view leave
         $scope.$on('$ionicView.leave', function() {
             $scope.totalHrsDay = 0;
             $scope.totalHrsWeekly = 0;
@@ -819,14 +827,13 @@ angular.module('starter.controllers', [])
                             if (data) {
                                 $scope.approvals.push(processAndReturn(data));
                                 $ionicLoading.hide();
-                            }
-                            else{
+                            } else {
                                 $ionicLoading.hide();
                             }
                         });
                 }
             }
-            
+
             // process and return timecard sets 
             function processAndReturn(time, set) {
                 var app = {};
