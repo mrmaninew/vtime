@@ -471,7 +471,7 @@ angular.module('starter.controllers', [])
         };
     })
     // create new Timecard 
-    .controller('cardCtrl', function($scope, $state, $filter, $ionicLoading, $stateParams, $cordovaToast, moment, daysWeek, snService, timeCardCategories, LocalStorageService, UserService) {
+    .controller('cardCtrl', function($scope, $state, $filter, $ionicPopup, $ionicLoading, $stateParams, $cordovaToast, moment, daysWeek, snService, timeCardCategories, LocalStorageService, UserService) {
         // varibles
         $scope.cards = [];
         $scope.projects = LocalStorageService.getProjectsLocal();
@@ -502,36 +502,78 @@ angular.module('starter.controllers', [])
             };
             // show loading icon 
             $ionicLoading.show();
-            data.task = $scope.tc.task;
-            data.u_story = $scope.tc.story;
-            data[_day] = $scope.tc.hours;
-            data[_dayNotesKey] = $scope.tc.comments;
-            data.u_project = $scope.tc.u_project;
-            data.u_billable = $scope.tc.u_billable;
-            data.category = $scope.tc.category;
-            data.user = UserService.getUser().sys_id;
-            data.sys_created_by = UserService.getUser().user_id;
+            data.task = $scope.tc.task; // task
+            data.u_story = $scope.tc.story; // story 
+            data[_day] = $scope.tc.hours; // hours  (day ex: sunday)
+            data[_dayNotesKey] = $scope.tc.comments; // day notes
+            data.u_project = $scope.tc.u_project; // project
+            data.u_billable = $scope.tc.u_billable; // billable
+            data.category = $scope.tc.category; // category
+            data.user = UserService.getUser().sys_id; // user sys_id
+            data.sys_created_by = UserService.getUser().user_id; // created by sys_id
+            var weekon = moment(generateWeekStartsOn()).format('YYYY-MM-DD');
 
-            // console.log(data);
-            //insert  new Timecard into Servicenow
-            snService.insertTimecard(data)
+            //  verify timecard first 
+            snService.verifyTimecard(data, weekon)
                 .then(function(result) {
-                    console.log(result); // response after insert timecard
-                    // internal toast message
-                    var msg = "Timecard Created";
-                    // hide loading icon 
-                    $ionicLoading.hide();
-                    // show toast notification and navigate 
-                    $cordovaToast.showLongTop(msg).then(function(success) {
-                        $state.go('app.timecardPanel', {}, {
-                            reload: true
+                    if (result) {
+                        $ionicLoading.hide();
+                        $ionicPopup.confirm({
+                            title: 'Confirm Insert',
+                            template: 'You already created a timecard for this particular day with current timecard parameters, sure you want to create new timecard ?',
+                            scope: $scope,
+                            buttons: [{
+                                text: 'Cancel'
+                            }, {
+                                text: 'Yes',
+                                type: 'button-positive',
+                                onTap: function(e) {
+                                    $ionicLoading.show();
+                                    insertTimecard(data);
+                                }
+                            }]
+                        });
+                    } else{
+                        $ionicLoading.hide();
+                        $ionicPopup.confirm({
+                            title: 'Confirm Insert',
+                            template: 'sure you want to create new timecard ?',
+                            scope: $scope,
+                            buttons: [{
+                                text: 'Cancel'
+                            }, {
+                                text: 'Yes',
+                                type: 'button-positive',
+                                onTap: function(e) {
+                                    $ionicLoading.show();
+                                    insertTimecard(data);
+                                }
+                            }]
+                        });
+                    }
+                }, function(error) {
+                    console.log(error);
+                });
+            //insert  new Timecard into Servicenow
+            function insertTimecard(data) {
+                snService.insertTimecard(data)
+                    .then(function(result) {
+                        // internal toast message
+                        var msg = "Timecard Created";
+                        // hide loading icon 
+                        $ionicLoading.hide();
+                        // show toast notification and navigate 
+                        $cordovaToast.showLongTop(msg).then(function(success) {
+                            $state.go('app.timecardPanel', {}, {
+                                reload: true
+                            });
+                        }, function(error) {
+                            console.log(error);
                         });
                     }, function(error) {
-                        console.log(error);
+                        console.log(error); // error
                     });
-                }, function(error) {
-                    console.log(error); // error
-                });
+            }
         };
         $scope.resetTC = function() {
             $scope.tc = {

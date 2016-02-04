@@ -124,7 +124,7 @@ angular.module('starter.services', [])
                         }
 
                     });
-                    return defer.promise;
+                return defer.promise;
             },
             getTasks: function() {
                 // get all tasks assigned_to = user (and) state = open or pending or work in progress
@@ -482,6 +482,53 @@ angular.module('starter.services', [])
                     });
                 return defer.promise;
             },
+            //  verify timecard if all ready exists for same day 
+            verifyTimecard: function(tc,week) {
+               // var query = "?sysparm_query=user="+tc.user+"^u_billable="+tc.u_billable+"^u_project="+tc.u_project+"^task="+tc.task+"^category="+tc.category+"^state=pending^week_starts_onON"+week+"@javascript:gs.dateGenerate('"+week+"','start')@javascript:gs.dateGenerate('"+week+"','end')";
+               var query = "?sysparm_query=user="+tc.user+"^state=pending";
+               if(tc.u_billable){
+                   query += "^u_billable="+tc.u_billable;
+               }
+               if(tc.u_project){
+                  query += "^u_project="+tc.u_project;
+               }
+               if(tc.task){
+                  query += "^task="+tc.task; 
+               }
+               if(tc.u_story){
+                  query += "^u_story="+tc.u_story;
+               }
+               if(tc.category){
+                  query += "^category="+tc.category;
+               }
+                query += "^week_starts_onON"+week+"@javascript:gs.dateGenerate('"+week+"','start')@javascript:gs.dateGenerate('"+week+"','end')";
+                var url = snCred.PRODURL + '/api/now/table/' + snCred.TimecardTable + query;
+                var token = "Bearer " + TokenService.getToken();
+                var defer = $q.defer();
+                $http({
+                    method: 'GET',
+                    url: url,
+                    headers: {
+                        'Authorization': token
+                    }
+                })
+                .success(function(data, status) {
+                    if (status == errorService.Success) {
+                         // response to promise - callback
+                         defer.resolve(data.result);
+                    }
+                })
+                .error(function(error, status) {
+                    if (status == errorService.Unauthorized) {
+                        $state.go('login');
+                    } else if (status == errorService.Notfound){
+                        defer.resolve("");
+                    } else{
+                        defer.resolve(error);
+                    }
+                });
+                return defer.promise;
+            },
             // only edit state value and use sys_id as param 
             submitTimecard: function(sys_id) {
                 var url = snCred.PRODURL + '/api/now/table/' + snCred.TimecardTable + '/' + sys_id;
@@ -580,13 +627,13 @@ angular.module('starter.services', [])
                 return defer.promise;
             },
             // reject timecard in approvals 
-            rejectApprovals: function(sys_id,comments) {
+            rejectApprovals: function(sys_id, comments) {
                 var url = snCred.PRODURL + '/api/now/table/' + snCred.ApprovalsTable + '/' + sys_id;
                 var token = "Bearer " + TokenService.getToken();
                 var defer = $q.defer();
                 var data = {
                     'state': 'rejected',
-                    'comments':comments
+                    'comments': comments
                 };
                 $http({
                         method: 'PUT',
