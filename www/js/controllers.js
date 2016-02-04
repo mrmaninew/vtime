@@ -863,6 +863,7 @@ angular.module('starter.controllers', [])
                 var timecard = LocalStorageService.getTimecardByID(set[i].document_id.value);
                 if (Object.keys(timecard).length) {
                     $scope.approvals.push(processAndReturn(timecard, set[i]));
+                    $ionicLoading.hide();
                 } else {
                     snService.getTimecardBySysID(set[i])
                         .then(function(data) {
@@ -967,9 +968,9 @@ angular.module('starter.controllers', [])
                             $ionicLoading.show();
                             snService.approveApprovals(sys_id)
                                 .then(function(result) {
-                                    var msg = "Timecard Approved";
                                     // hide loading icon 
                                     $ionicLoading.hide();
+                                    var msg = "Timecard Approved";
                                     // show toast notification and navigate 
                                     $cordovaToast.showLongTop(msg).then(function(success) {
                                         $state.go('app.approvalsPanel', {}, {
