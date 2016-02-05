@@ -533,7 +533,7 @@ angular.module('starter.controllers', [])
                                 }
                             }]
                         });
-                    } else{
+                    } else {
                         $ionicLoading.hide();
                         $ionicPopup.confirm({
                             title: 'Confirm Insert',
@@ -697,10 +697,23 @@ angular.module('starter.controllers', [])
             }
             preProcess();
 
-            //show hidden timcard details 
+            //show hidden timecard details 
             $scope.showDetailsToggle = false;
             $scope.showTimecardDetails = function() {
                 $scope.showDetailsToggle = !$scope.showDetailsToggle;
+            };
+            //
+            $scope.pendingTab = function() {
+                $scope.showDetailsToggle = false;
+            };
+            $scope.submittedTab = function() {
+                $scope.showDetailsToggle = false;
+            };
+            $scope.approvedTab = function() {
+                $scope.showDetailsToggle = false;
+            };
+            $scope.rejectedTab = function() {
+                $scope.showDetailsToggle = false;
             };
         });
         // on-view leave

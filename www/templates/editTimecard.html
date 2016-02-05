@@ -12,30 +12,27 @@
                 <div class="input-label">
                     <h3>Project</h3>
                 </div>
-                <select ng-model="tc.u_project">
-                    <option ng-repeat="project in projects" value="{{project.sys_id}}">
+                <select ng-model="tc.u_project" ng-options="project.sys_id as project.short_description for project in projects">
+                    <!-- <option ng-repeat="project in projects" value="{{project.sys_id}}">
                         {{project.short_description}}
-                    </option>
+                    </option> -->
                 </select>
             </label>
             <label class="item item-input item-select">
                 <div class="input-label">
                     <h3>Story</h3>
                 </div>
-                <select ng-model="tc.story">
-                    <option ng-repeat="story in stories" value="{{story.sys_id}}">
+                <select ng-model="tc.story" ng-options="story.sys_id as story.number for story in stories">
+                    <!-- <option ng-repeat="story in stories" value="{{story.sys_id}}">
                         {{story.number}}
-                    </option>
+                    </option> -->
                 </select>
             </label>
             <label class="item item-input item-select">
                 <div class="input-label">
                     <h3>Task</h3>
                 </div>
-                <select ng-model="tc.task">
-                    <option ng-repeat="task in tasks" value="{{task.sys_id}}">
-                        {{task.number}}
-                    </option>
+                <select ng-model="tc.task" ng-options="task.sys_id as task.number for task in tasks">
                 </select>
             </label>
             <label class="item item-input item-select">

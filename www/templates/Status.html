@@ -1,7 +1,7 @@
 <ion-view view-title="Status">
     <ion-pane>
         <ion-tabs class="tabs-striped tabs-top tabs-background-positive tabs-color-light">
-            <ion-tab title="Pending">
+            <ion-tab title="Pending" on-select="pendingTab()">
                 <ion-view>
                     <ion-content>
                         <ion-list>
@@ -36,7 +36,7 @@
                     </ion-content>
                 </ion-view>
             </ion-tab>
-            <ion-tab title="Submitted ">
+            <ion-tab title="Submitted" on-select="submittedTab()">
                 <ion-view>
                     <ion-content>
                         <ion-list>
@@ -68,7 +68,7 @@
                     </ion-content>
                 </ion-view>
             </ion-tab>
-            <ion-tab title="Approved ">
+            <ion-tab title="Approved" on-select="approvedTab()">
                 <ion-view>
                     <ion-content>
                         <ion-list>
@@ -100,7 +100,7 @@
                     </ion-content>
                 </ion-view>
             </ion-tab>
-            <ion-tab title="Rejected">
+            <ion-tab title="Rejected" on-select="rejectedTab()">
                 <ion-view>
                     <ion-content>
                         <ion-list>

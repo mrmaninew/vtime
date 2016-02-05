@@ -15,13 +15,11 @@ angular.module('starter', ['ionic', 'ionic-datepicker', 'starter.controllers', '
             //check the network connectivity, in not connected, inform user and then token information 
             // check the token value if its have some value go the home view else, redirect
             // to login page 
-
             if (TokenService.getToken() === null) {
                 $state.go('login');
             } else {
                 console.log('already authenticated and got some token information');
             }
-
         });
         $ionicPlatform.on('resume', function() {
             $state.go('app.home');
