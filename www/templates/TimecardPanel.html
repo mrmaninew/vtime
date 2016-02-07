@@ -5,15 +5,15 @@
             </button>
         </ionic-datepicker>
     </ion-nav-buttons>
-    <ion-pane>
+    <ion-pane on-swipe-right="onSwipeRight()" on-swipe-left="onSwipeLeft()">
         <ion-tabs class="tabs-striped tabs-top tabs-background-positive tabs-color-light">
             <ion-tab title="Day">
                 <ion-view>
                     <ion-content>
                         <div>
-                            <div class="list" ng-if="timecards.length == 0">
+                            <ion-list class="padding" ng-if="timecards.length == 0">
                                 <a class="item text-center">No Saved Time Cards on {{selDate|date:'dd-MM-yyyy'}}</a>
-                            </div>
+                            </ion-list>
                             <ion-list>
                                 <ion-item class="item-avatar" ng-repeat="tc in timecards" ng-click="routeEditCard(tc.sys_id)">
                                     <span class="day-display-sizing">{{tc.selDate|date:'dd'}}</span>

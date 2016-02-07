@@ -163,9 +163,9 @@ angular.module('starter.controllers', [])
         $scope.series = ['hrs'];
         $scope.data = [];
         $scope.colors = [{
-            "fillColor": "rgba(224, 108, 112, 1)",
-            "strokeColor": "rgba(207,100,103,1)",
-            "pointColor": "rgba(220,220,220,1)",
+            "fillColor": "rgb(37,220,219)",
+            "strokeColor": "rgb(37,220,219)",
+            "pointColor": "rgb(37,220,219)",
             "pointStrokeColor": "#fff",
             "pointHighlightFill": "#fff",
             "pointHighlightStroke": "rgba(151,187,205,0.8)"
@@ -259,7 +259,7 @@ angular.module('starter.controllers', [])
         console.log('no network');
     })
     // Time tab for Today (or) Selected , this week (depending on current and selected date) 
-    .controller('timeCardsPanelCtrl', function($scope, $cordovaToast, $ionicPlatform, $ionicHistory, $state, $stateParams, $ionicTabsDelegate, $ionicModal, moment, daysWeek, LocalStorageService) {
+    .controller('timeCardsPanelCtrl', function($scope, $cordovaToast, $ionicPlatform, $ionicHistory, $state, $stateParams, $ionicGesture, $ionicTabsDelegate, $ionicModal, moment, daysWeek, LocalStorageService) {
         // on view enter
         $scope.$on('$ionicView.enter', function(e) {
             // footer item-right varibles 
@@ -268,8 +268,6 @@ angular.module('starter.controllers', [])
             // passDate if any params set the current date as passed date from chart click
             // else select current date as selected date 
             if ($stateParams.param1) {
-                //console.log('passed Date timeCardsPanelCtrl' + $stateParams.param1);
-                console.log('stateParams' + $stateParams.param1);
                 $scope.selDate = new Date($stateParams.param1);
             } else {
                 // selected date for Time cards
@@ -372,10 +370,6 @@ angular.module('starter.controllers', [])
                 return getBeforeDays(getAfterDays, before, after);
             }
         }
-        $scope.refreshCards = function() {
-            getTimecardsDate();
-        };
-
         // Weekly Tab
         // get hours for timecard day 
         $scope.getHoursDay = function(day) {
@@ -404,6 +398,25 @@ angular.module('starter.controllers', [])
         // set $scope.totalHrsWeekly 
         $scope.totalWeek = function(hrs) {
             $scope.totalHrsWeekly += hrs;
+        };
+         // Gesture functions 
+        $scope.onSwipeRight = function(){
+            $scope.selDate = moment($scope.selDate).subtract(1,'days')._d;
+            $scope.selDay = $scope.selDate.getDay();
+            $scope.selDayName = daysWeek.weekDays[$scope.selDay];
+            // as selected date changes call onDay Changed function to change date array
+            onDayChanged();
+            getTimecardsDate();
+            $ionicTabsDelegate.select(0);
+        };
+        $scope.onSwipeLeft = function(){
+            $scope.selDate = moment($scope.selDate).add(1,'days')._d;
+            $scope.selDay = $scope.selDate.getDay();
+            $scope.selDayName = daysWeek.weekDays[$scope.selDay];
+            // as selected date changes call onDay Changed function to change date array
+            onDayChanged();
+            getTimecardsDate();
+            $ionicTabsDelegate.select(0);
         };
         // set date for current view and navigate to "Day" tab
         $scope.setDateFromWeekly = function(day) {
@@ -624,7 +637,6 @@ angular.module('starter.controllers', [])
                 set.sys_id = sys_id;
             }
             $scope.tc = set;
-            //console.log($scope.tc);
         }
         $scope.changeBillable = function() {
             $scope.tc.u_billable = !$scope.tc.u_billable;
@@ -643,14 +655,9 @@ angular.module('starter.controllers', [])
             timecard.u_billable = $scope.tc.u_billable;
             if ($scope.tc.comments) timecard[notes] = $scope.tc.comments;
             if ($scope.tc.hours) timecard[$scope.tc.day] = $scope.tc.hours;
-            //console.log(timecard, $scope.tc.sys_id);
             snService.updateTimecard($scope.tc.sys_id, timecard)
                 .then(function(result) {
-                    console.log(result);
                     var msg = "Timecard Updated"; // local toast notification
-                    // $state.go('app.timecardPanel', {}, {
-                    //     reload: true
-                    // });
                     // hide loading icon 
                     $ionicLoading.hide();
                     // show internal toast notification
@@ -746,9 +753,7 @@ angular.module('starter.controllers', [])
                         $ionicLoading.show();
                         snService.submitTimecard(sys_id)
                             .then(function(data) {
-                                //console.log(data);
                                 var msg = "Timecard Submitted"; // local toast notifications
-
                                 // hide loading icon 
                                 $ionicLoading.hide();
                                 // show toast notification and navigate
@@ -806,7 +811,6 @@ angular.module('starter.controllers', [])
         $scope.refreshTimecards = function() {
             snService.getTimecards()
                 .then(function(result) {
-                    //console.log(result);
                     LocalStorageService.setTimecardsLocal(result);
                     $scope.timecards = LocalStorageService.getTimecardsLocal();
                 }, function(error) {
@@ -870,25 +874,30 @@ angular.module('starter.controllers', [])
         $scope.$on('$ionicView.enter', function(e) {
             var set = LocalStorageService.getApprovalsLocal();
             $scope.approvals = [];
-            $ionicLoading.show();
-            for (var i = 0; i < set.length; i++) {
-                var app = {};
-                var timecard = LocalStorageService.getTimecardByID(set[i].document_id.value);
-                if (Object.keys(timecard).length) {
-                    $scope.approvals.push(processAndReturn(timecard, set[i]));
-                    $ionicLoading.hide();
-                } else {
-                    snService.getTimecardBySysID(set[i])
-                        .then(function(data) {
-                            if (data) {
-                                $scope.approvals.push(processAndReturn(data));
-                                $ionicLoading.hide();
-                            } else {
-                                $ionicLoading.hide();
-                            }
-                        });
+            if (set.length > 0) {
+                $ionicLoading.show();
+                for (var i = 0; i < set.length; i++) {
+                    var app = {};
+                    var timecard = LocalStorageService.getTimecardByID(set[i].document_id.value);
+                    if (Object.keys(timecard).length) {
+                        $scope.approvals.push(processAndReturn(timecard, set[i]));
+                        $ionicLoading.hide();
+                    } else {
+                        snService.getTimecardBySysID(set[i])
+                            .then(function(data) {
+                                if (data) {
+                                    $scope.approvals.push(processAndReturn(data));
+                                    $ionicLoading.hide();
+                                } else {
+                                    $ionicLoading.hide();
+                                }
+                            });
+                    }
                 }
+            } else {
+                $ionicLoading.hide();
             }
+
 
             // process and return timecard sets 
             function processAndReturn(time, set) {
@@ -931,7 +940,6 @@ angular.module('starter.controllers', [])
                     if (storyNumber !== null && storyNumber.length > 0) {
                         app.tc_story = storyNumber;
                     } else {
-                        //console.log(time.u_story);
                         snService.getStoryNameBySysID(time.u_story.value)
                             .then(function(data) {
                                 if (data) {
@@ -1025,7 +1033,6 @@ angular.module('starter.controllers', [])
                 });
 
                 myPopup.then(function(comments) {
-                    console.log(comments);
                     // show loading icon 
                     $ionicLoading.show();
                     snService.rejectApprovals(sys_id, comments)
@@ -1200,7 +1207,6 @@ angular.module('starter.controllers', [])
         $scope.approvals = LocalStorageService.getApprovalsLengthLocal();
         // synchronize functions
         $scope.syncNow = function() {
-            console.log('syncNow');
             $ionicLoading.show({
                 animation: 'fade-in',
                 showBackdrop: false,

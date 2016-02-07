@@ -329,97 +329,6 @@ angular.module('starter.services', [])
                     });
                 return defer.promise;
             },
-            getApprovals: function() {
-                var query = "?sysparm_query=source_table=time_card^state=requested^approver=" + UserService.getUser().sys_id;
-                var url = snCred.PRODURL + '/api/now/table/' + snCred.ApprovalsTable + query;
-                var token = "Bearer " + TokenService.getToken();
-                var defer = $q.defer();
-                $http({
-                        method: 'GET',
-                        url: url,
-                        headers: {
-                            'Authorization': token
-                        }
-                    })
-                    .success(function(data, status) {
-                        if (LocalStorageService.setApprovalsLocal(data.result)) {
-                            defer.resolve(data.result);
-                        }
-                    })
-                    .error(function(error, status) {
-                        console.log(error.error.message, status);
-                        if (status == errorService.Unauthorized) {
-                            $state.go('login');
-                        } else {
-                            // if some other errors store the empty array in localstorage 
-                            // for Approvals
-                            if (status == errorService.Notfound) {
-                                if (LocalStorageService.setApprovalsLocal([])) {
-                                    defer.resolve(error);
-                                }
-                            }
-                        }
-
-                    });
-                return defer.promise;
-            },
-            // get username by sys_id passed by
-            getUsernameBySysID: function(sys_id) {
-                //console.log(sys_id);
-                var query = "?sysparm_query=sys_id=" + sys_id;
-                var url = snCred.PRODURL + '/api/now/table/' + snCred.UserTable + query;
-                var token = "Bearer " + TokenService.getToken();
-                var defer = $q.defer();
-                $http({
-                        method: 'GET',
-                        url: url,
-                        headers: {
-                            'Authorization': token
-                        }
-                    })
-                    .success(function(data, status) {
-                        if (status == errorService.Success) {
-                            defer.resolve(data.result);
-                        }
-                    })
-                    .error(function(error, status) {
-                        console.log(error.error.message, status);
-                        if (status == errorService.Unauthorized) {
-                            $state.go('login');
-                        } else {
-                            defer.resolve(error);
-                        }
-                    });
-                return defer.promise;
-            },
-            // get user details like user_id, email, sys_id
-            getUserDetailsByUsername: function(username, tokens) {
-                var query = "?sysparm_query=user_name=" + username;
-                var url = snCred.PRODURL + '/api/now/table/' + snCred.UserTable + query;
-                var token = "Bearer " + tokens;
-                var defer = $q.defer();
-                $http({
-                        method: 'GET',
-                        url: url,
-                        headers: {
-                            'Authorization': token
-                        }
-                    })
-                    .success(function(data, status) {
-                        if (status == errorService.Success) {
-                            if (UserService.setUser(data.result[0])) {
-                                defer.resolve(data.result);
-                            }
-                        }
-                    })
-                    .error(function(error, status) {
-                        console.log(error.error.message, status);
-                        if (status == errorService.Unauthorized) {
-                            $state.go('login');
-                        }
-                    });
-                return defer.promise;
-            },
             //set (insert, update) functions 
             insertTimecard: function(timecard) {
                 var url = snCred.PRODURL + '/api/now/table/' + snCred.TimecardTable;
@@ -589,6 +498,97 @@ angular.module('starter.services', [])
                         } else {
                             defer.resolve(error);
                         }
+                    });
+                return defer.promise;
+            },
+            // get username by sys_id passed by
+            getUsernameBySysID: function(sys_id) {
+                //console.log(sys_id);
+                var query = "?sysparm_query=sys_id=" + sys_id;
+                var url = snCred.PRODURL + '/api/now/table/' + snCred.UserTable + query;
+                var token = "Bearer " + TokenService.getToken();
+                var defer = $q.defer();
+                $http({
+                        method: 'GET',
+                        url: url,
+                        headers: {
+                            'Authorization': token
+                        }
+                    })
+                    .success(function(data, status) {
+                        if (status == errorService.Success) {
+                            defer.resolve(data.result);
+                        }
+                    })
+                    .error(function(error, status) {
+                        console.log(error.error.message, status);
+                        if (status == errorService.Unauthorized) {
+                            $state.go('login');
+                        } else {
+                            defer.resolve(error);
+                        }
+                    });
+                return defer.promise;
+            },
+            // get user details like user_id, email, sys_id
+            getUserDetailsByUsername: function(username, tokens) {
+                var query = "?sysparm_query=user_name=" + username;
+                var url = snCred.PRODURL + '/api/now/table/' + snCred.UserTable + query;
+                var token = "Bearer " + tokens;
+                var defer = $q.defer();
+                $http({
+                        method: 'GET',
+                        url: url,
+                        headers: {
+                            'Authorization': token
+                        }
+                    })
+                    .success(function(data, status) {
+                        if (status == errorService.Success) {
+                            if (UserService.setUser(data.result[0])) {
+                                defer.resolve(data.result);
+                            }
+                        }
+                    })
+                    .error(function(error, status) {
+                        console.log(error.error.message, status);
+                        if (status == errorService.Unauthorized) {
+                            $state.go('login');
+                        }
+                    });
+                return defer.promise;
+            },
+            getApprovals: function() {
+                var query = "?sysparm_query=source_table=time_card^state=requested^approver=" + UserService.getUser().sys_id;
+                var url = snCred.PRODURL + '/api/now/table/' + snCred.ApprovalsTable + query;
+                var token = "Bearer " + TokenService.getToken();
+                var defer = $q.defer();
+                $http({
+                        method: 'GET',
+                        url: url,
+                        headers: {
+                            'Authorization': token
+                        }
+                    })
+                    .success(function(data, status) {
+                        if (LocalStorageService.setApprovalsLocal(data.result)) {
+                            defer.resolve(data.result);
+                        }
+                    })
+                    .error(function(error, status) {
+                        console.log(error.error.message, status);
+                        if (status == errorService.Unauthorized) {
+                            $state.go('login');
+                        } else {
+                            // if some other errors store the empty array in localstorage 
+                            // for Approvals
+                            if (status == errorService.Notfound) {
+                                if (LocalStorageService.setApprovalsLocal([])) {
+                                    defer.resolve(error);
+                                }
+                            }
+                        }
+
                     });
                 return defer.promise;
             },
