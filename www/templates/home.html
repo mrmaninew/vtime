@@ -1,13 +1,13 @@
 <ion-view view-title="vTime">
     <ion-nav-buttons side="right">
-        <ion-spinner  class="spinner-light" icon="ripple" ng-show="hideSpinner"></ion-spinner>
+        <ion-spinner class="spinner-light" icon="ripple" ng-show="hideSpinner"></ion-spinner>
     </ion-nav-buttons>
     <ion-content>
         <!-- Top -->
         <div class="row col-100">
             <div class="card" style="height:100%;width:100%;margin:2px;">
                 <div class="item item-divider">
-                  Current Week   
+                    Current Week
                 </div>
                 <div class="item item-text-wrap">
                     <canvas id="bar" class="chart chart-bar" chart-data="data" chart-labels="labels" chart-series="series" chart-colours="colors" click="onClick">
@@ -56,11 +56,17 @@
             </ion-item>
         </ion-list>
     </ion-content>
-    <ion-footer-bar class="bar bar-energized">
-        <div class="button-bar">
-            <a class="button button-energized icon-left ion-ios-timer-outline " href="#/app/timecardPanel">Time</a>
-            <a class="button button-energized icon-left ion-ios-analytics-outline" href="#/app/statusPanel">Status</a>
-            <a class="button button-energized icon-left ion-android-checkmark-circle" href="#/app/approvalsPanel">Approve</a>
-        </div>
-    </ion-footer-bar>
+    
+
+    <div class="tabs tabs-icon-top tabs-positive">
+        <a class="tab-item" href="#/app/timecardPanel">
+            <i class="icon ion-ios-timer-outline"></i> Time
+        </a>
+        <a class="tab-item" href="#/app/statusPanel">
+            <i class="icon icon-left ion-ios-analytics-outline"></i> Status
+        </a>
+        <a class="tab-item" href="#/app/approvalsPanel">
+            <i class="icon ion-android-checkmark-circle"></i> Approve
+        </a>
+    </div>
 </ion-view>

@@ -399,9 +399,9 @@ angular.module('starter.controllers', [])
         $scope.totalWeek = function(hrs) {
             $scope.totalHrsWeekly += hrs;
         };
-         // Gesture functions 
-        $scope.onSwipeRight = function(){
-            $scope.selDate = moment($scope.selDate).subtract(1,'days')._d;
+        // Gesture functions 
+        $scope.onSwipeRight = function() {
+            $scope.selDate = moment($scope.selDate).subtract(1, 'days')._d;
             $scope.selDay = $scope.selDate.getDay();
             $scope.selDayName = daysWeek.weekDays[$scope.selDay];
             // as selected date changes call onDay Changed function to change date array
@@ -409,8 +409,8 @@ angular.module('starter.controllers', [])
             getTimecardsDate();
             $ionicTabsDelegate.select(0);
         };
-        $scope.onSwipeLeft = function(){
-            $scope.selDate = moment($scope.selDate).add(1,'days')._d;
+        $scope.onSwipeLeft = function() {
+            $scope.selDate = moment($scope.selDate).add(1, 'days')._d;
             $scope.selDay = $scope.selDate.getDay();
             $scope.selDayName = daysWeek.weekDays[$scope.selDay];
             // as selected date changes call onDay Changed function to change date array
@@ -465,7 +465,7 @@ angular.module('starter.controllers', [])
                 // as selected date changes call DayChanged function to change date array
                 onDayChanged();
                 getTimecardsDate();
-                $ionicTabsDelegate.select(0);
+                //$ionicTabsDelegate.select(0);
             }
         };
         // route to new Timecard View (create new timecard)
@@ -547,22 +547,7 @@ angular.module('starter.controllers', [])
                             }]
                         });
                     } else {
-                        $ionicLoading.hide();
-                        $ionicPopup.confirm({
-                            title: 'Confirm Insert',
-                            template: 'sure you want to create new timecard ?',
-                            scope: $scope,
-                            buttons: [{
-                                text: 'Cancel'
-                            }, {
-                                text: 'Yes',
-                                type: 'button-positive',
-                                onTap: function(e) {
-                                    $ionicLoading.show();
-                                    insertTimecard(data);
-                                }
-                            }]
-                        });
+                        insertTimecard(data);
                     }
                 }, function(error) {
                     console.log(error);
@@ -821,6 +806,7 @@ angular.module('starter.controllers', [])
         // toggle group for pending toggle code 
         // if given group is the selected group, deselect it, else select the given group
         $scope.toggleGroupPen = function(timecard) {
+            $scope.showDetailsToggle = false;
             if ($scope.isGroupShownPen(timecard)) {
                 $scope.shownGroupPen = null;
             } else {
@@ -834,6 +820,7 @@ angular.module('starter.controllers', [])
         // toggle group for Submitted toggle code
         // if given group is the selected group, deselect it, else select the given group
         $scope.toggleGroupSub = function(timecard) {
+            $scope.showDetailsToggle = false;
             if ($scope.isGroupShownSub(timecard)) {
                 $scope.shownGroupSub = null;
             } else {
@@ -846,6 +833,7 @@ angular.module('starter.controllers', [])
         // toggle group for Approved
         // if given group is the selected group, deselect it, else select the given group
         $scope.toggleGroupApp = function(timecard) {
+            $scope.showDetailsToggle = false;
             if ($scope.isGroupShownApp(timecard)) {
                 $scope.shownGroupApp = null;
             } else {
@@ -858,6 +846,7 @@ angular.module('starter.controllers', [])
         // toggle group for Rejected
         // if given group is the selected group, deselect it, else select the given group
         $scope.toggleGroupRej = function(timecard) {
+            $scope.showDetailsToggle = false;
             if ($scope.isGroupShownRej(timecard)) {
                 $scope.shownGroupRej = null;
             } else {
@@ -1184,6 +1173,7 @@ angular.module('starter.controllers', [])
         };
         // if given group is the selected group, deselect it, else select the given group
         $scope.toggleGroup = function(timecard) {
+            $scope.showDetailsToggle = false;
             if ($scope.isGroupShown(timecard)) {
                 $scope.shownGroup = null;
             } else {
