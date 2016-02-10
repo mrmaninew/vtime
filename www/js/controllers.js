@@ -197,6 +197,7 @@ angular.module('starter.controllers', [])
         // on view loaded
         $scope.$on('$ionicView.loaded', function() {
             $scope.hideSpinner = true;
+            snService.getTimecardMonthlyHours();
             snService.getTimecards()
                 .then(function(data) {
                     snService.getApprovals()

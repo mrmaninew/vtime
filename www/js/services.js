@@ -4,8 +4,8 @@ angular.module('starter.services', [])
         'Client_id': 'ac0dd3408c1031006907010c2cc6ef6d',
         'Client_secret': '1yihwfk2xbl686v45s8a',
         'grant_type': ['password', 'access'],
-        'PRODURL': 'https://volteollcdemo1.service-now.com', // Servicenow Instance URL
-        //'PRODURL': '/api', // Temp empty URL for development environment and this will changed when deploying PROD
+        //'PRODURL': 'https://volteollcdemo1.service-now.com', // Servicenow Instance URL
+        'PRODURL': '/api', // Temp empty URL for development environment and this will changed when deploying PROD
         'PrjTableName': 'pm_project', // Servicenow Project Table
         'TasksTableName': 'pm_project_task', // Servicenow Tasks Table
         'StoriesTableName': 'rm_story', // Servicenow Stories Table
@@ -392,50 +392,50 @@ angular.module('starter.services', [])
                 return defer.promise;
             },
             //  verify timecard if all ready exists for same day 
-            verifyTimecard: function(tc,week) {
-               // var query = "?sysparm_query=user="+tc.user+"^u_billable="+tc.u_billable+"^u_project="+tc.u_project+"^task="+tc.task+"^category="+tc.category+"^state=pending^week_starts_onON"+week+"@javascript:gs.dateGenerate('"+week+"','start')@javascript:gs.dateGenerate('"+week+"','end')";
-               var query = "?sysparm_query=user="+tc.user+"^state=pending";
-               if(tc.u_billable){
-                   query += "^u_billable="+tc.u_billable;
-               }
-               if(tc.u_project){
-                  query += "^u_project="+tc.u_project;
-               }
-               if(tc.task){
-                  query += "^task="+tc.task; 
-               }
-               if(tc.u_story){
-                  query += "^u_story="+tc.u_story;
-               }
-               if(tc.category){
-                  query += "^category="+tc.category;
-               }
-                query += "^week_starts_onON"+week+"@javascript:gs.dateGenerate('"+week+"','start')@javascript:gs.dateGenerate('"+week+"','end')";
+            verifyTimecard: function(tc, week) {
+                // var query = "?sysparm_query=user="+tc.user+"^u_billable="+tc.u_billable+"^u_project="+tc.u_project+"^task="+tc.task+"^category="+tc.category+"^state=pending^week_starts_onON"+week+"@javascript:gs.dateGenerate('"+week+"','start')@javascript:gs.dateGenerate('"+week+"','end')";
+                var query = "?sysparm_query=user=" + tc.user + "^state=pending";
+                if (tc.u_billable) {
+                    query += "^u_billable=" + tc.u_billable;
+                }
+                if (tc.u_project) {
+                    query += "^u_project=" + tc.u_project;
+                }
+                if (tc.task) {
+                    query += "^task=" + tc.task;
+                }
+                if (tc.u_story) {
+                    query += "^u_story=" + tc.u_story;
+                }
+                if (tc.category) {
+                    query += "^category=" + tc.category;
+                }
+                query += "^week_starts_onON" + week + "@javascript:gs.dateGenerate('" + week + "','start')@javascript:gs.dateGenerate('" + week + "','end')";
                 var url = snCred.PRODURL + '/api/now/table/' + snCred.TimecardTable + query;
                 var token = "Bearer " + TokenService.getToken();
                 var defer = $q.defer();
                 $http({
-                    method: 'GET',
-                    url: url,
-                    headers: {
-                        'Authorization': token
-                    }
-                })
-                .success(function(data, status) {
-                    if (status == errorService.Success) {
-                         // response to promise - callback
-                         defer.resolve(data.result);
-                    }
-                })
-                .error(function(error, status) {
-                    if (status == errorService.Unauthorized) {
-                        $state.go('login');
-                    } else if (status == errorService.Notfound){
-                        defer.resolve("");
-                    } else{
-                        defer.resolve(error);
-                    }
-                });
+                        method: 'GET',
+                        url: url,
+                        headers: {
+                            'Authorization': token
+                        }
+                    })
+                    .success(function(data, status) {
+                        if (status == errorService.Success) {
+                            // response to promise - callback
+                            defer.resolve(data.result);
+                        }
+                    })
+                    .error(function(error, status) {
+                        if (status == errorService.Unauthorized) {
+                            $state.go('login');
+                        } else if (status == errorService.Notfound) {
+                            defer.resolve("");
+                        } else {
+                            defer.resolve(error);
+                        }
+                    });
                 return defer.promise;
             },
             // only edit state value and use sys_id as param 
@@ -661,7 +661,43 @@ angular.module('starter.services', [])
                         }
                     });
                 return defer.promise;
-            }
+            },
+            // get Hours, weekly and monthly 
+            getTimecardMonthlyHours: function() {
+                // sysparm_count = true (returns no of records, after query)
+                var query = "?sysparm_sum_fields=total&sysparm_query=" +
+                    "week_starts_onONThis month@javascript:gs.beginningOfThisMonth()@javascript:gs.endOfThisMonth()" +
+                    "^user=" + UserService.getUser().sys_id;
+                var url = snCred.PRODURL + '/api/now/stats/' + snCred.TimecardTable + query;
+                var token = "Bearer " + TokenService.getToken();
+                var defer = $q.defer();
+                $http({
+                        method: 'GET',
+                        url: url,
+                        headers: {
+                            'Authorization': token
+                        }
+                    })
+                    .success(function(data, status) {
+                        if (status == errorService.Success) {
+                            // response to promise - callback
+                            console.log(status, data);
+                            defer.resolve(data.result);
+                        }
+                    })
+                    .error(function(error, status) {
+                        console.log(error);
+                        if (status == errorService.Unauthorized) {
+                            $state.go('login');
+                        } else if (status == errorService.Notfound) {
+                            defer.resolve("");
+                        } else {
+                            defer.resolve(error);
+                        }
+                    });
+                return defer.promise;
+            },
+            getTimecardWeeklyHours: function() {}
         };
     })
     // User Service (session, storage)
