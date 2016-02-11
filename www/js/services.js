@@ -663,11 +663,14 @@ angular.module('starter.services', [])
                 return defer.promise;
             },
             // get Hours, weekly and monthly 
-            getTimecardMonthlyHours: function() {
+            getTimecardMonthlyHours: function(monStartDate,monEndDate) {
                 // sysparm_count = true (returns no of records, after query)
+                // var query = "?sysparm_sum_fields=total&sysparm_query=" +
+                //     "week_starts_onONThis month@javascript:gs.beginningOfThisMonth()@javascript:gs.endOfThisMonth()" +
+                //     "^user=" + UserService.getUser().sys_id;
                 var query = "?sysparm_sum_fields=total&sysparm_query=" +
-                    "week_starts_onONThis month@javascript:gs.beginningOfThisMonth()@javascript:gs.endOfThisMonth()" +
-                    "^user=" + UserService.getUser().sys_id;
+                      "^week_starts_onBETWEENjavascript:gs.dateGenerate('"+monStartDate+"','start')@javascript:gs.dateGenerate('"+monEndDate+"','end')" +
+                      "^user=" + UserService.getUser().sys_id;
                 var url = snCred.PRODURL + '/api/now/stats/' + snCred.TimecardTable + query;
                 var token = "Bearer " + TokenService.getToken();
                 var defer = $q.defer();

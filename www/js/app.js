@@ -54,7 +54,6 @@ angular.module('starter', ['ionic', 'ionic-datepicker', 'starter.controllers', '
             // home view
             .state('app.home', {
                 url: '/home',
-                cache: false,
                 views: {
                     'menuContent': {
                         templateUrl: 'templates/home.html',

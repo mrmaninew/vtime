@@ -192,49 +192,36 @@ angular.module('starter.controllers', [])
                 reload: true
             });
         };
-        // on before enter 
-        $scope.$on('$ionicView.beforeEnter', function() {
-            // snService.getTimecardMonthlyHours()
-            //     .then(function(data) {
-            //         if (data.stats.sum.total > 0) {
-            //             $scope.totalHrsMonthly = Number(data.stats.sum.total);
-            //         } else {
-            //             $scope.totalHrsMonthly = 0;
-            //         }
-            //         $scope.hideSpinner = false;
-            //     }, function(err) {
-            //         $scope.hideSpinner = false;
-            //         console.log(error);
-            //     })
-            // get first day of the month if sunday leave it, else add certain days to get sunday 
-            // get last day in month, if sunday leave it, else subtract certain days to get saturday 
-            var firstDay = new Date($scope.selDate.getFullYear(), $scope.selDate.getMonth(), 1);
-            if(firstDay.getDay() === 0){
-                var sundayDate = firstDay;
-            } else {
-                var sundayDate = moment(firstDay).subtract(firstDay.getDay(), 'days').format("YYYY-MM-DD"); // 2012-11-22
-                console.log(sundayDate);
-            }
-            var lastDay = new Date(2016,2,0);
-            //var lastDay = new Date(2016,03,30);
-            if(lastDay.getDay() == 0 ){  //lastDay.getDay() == 6){
-               lastSundayDate = moment(lastDay).subtract(1,'days').format("YYYY-MM-DD");
-               console.log(new Date(lastSundayDate));
-            } 
-            else if (lastDay.getDay() == 6){
-                console.log(lastDay);
-            }
-            else{
-                var lastSundayDate = moment(lastDay).subtract(lastDay.getDay()+1,'days').format("YYYY-MM-DD");
-                console.log(new Date(lastSundayDate));
-            }
-
-        });
         // on view enter
         $scope.$on('$ionicView.enter', function() {
             $scope.data = [];
             $scope.hideSpinner = true;
-            getTotalHrsDayWeek(); // get total hours for current day, week
+            // get first day of the month if sunday leave it, else add certain days to get sunday 
+            var firstDay = new Date($scope.selDate.getFullYear(), $scope.selDate.getMonth(), 1);
+            if (firstDay.getDay() === 0) {
+                firstDay = moment(firstDay).format("YYYY-MM-DD");
+            } else {
+                firstDay = moment(firstDay).subtract(firstDay.getDay(), 'days').format("YYYY-MM-DD"); // 2012-11-22
+            }
+             // get last day in month, if sunday leave it, else subtract certain days to get saturday
+            var lastDay = new Date($scope.selDate.getFullYear(), $scope.selDate.getMonth() + 1, 0);
+            if (lastDay.getDay() === 0) { //lastDay.getDay() == 6){
+                lastDay = moment(lastDay).subtract(1, 'days').format("YYYY-MM-DD");
+            } else if (lastDay.getDay() === 6) {
+                lastDay = moment(lastDay).format("YYYY-MM-DD");
+            } else {
+                lastDay = moment(lastDay).subtract(lastDay.getDay() + 1, 'days').format("YYYY-MM-DD");
+            }
+            // get total hours for monthly
+            snService.getTimecardMonthlyHours(firstDay, lastDay)
+                .then(function(data) {
+                    $scope.totalHrsMonthly = (data.stats.sum.total > 0 ? Number(data.stats.sum.total) : 0 );
+                    $scope.hideSpinner = false;
+                }, function(error) {
+                    console.log(error);
+                })
+
+             getTotalHrsDayWeek(); // get total hours for current day, week    
         });
         // one view leave
         $scope.$on('$ionicView.leave', function() {
