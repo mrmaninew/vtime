@@ -681,12 +681,10 @@ angular.module('starter.services', [])
                     .success(function(data, status) {
                         if (status == errorService.Success) {
                             // response to promise - callback
-                            console.log(status, data);
                             defer.resolve(data.result);
                         }
                     })
                     .error(function(error, status) {
-                        console.log(error);
                         if (status == errorService.Unauthorized) {
                             $state.go('login');
                         } else if (status == errorService.Notfound) {
@@ -696,8 +694,7 @@ angular.module('starter.services', [])
                         }
                     });
                 return defer.promise;
-            },
-            getTimecardWeeklyHours: function() {}
+            }
         };
     })
     // User Service (session, storage)
