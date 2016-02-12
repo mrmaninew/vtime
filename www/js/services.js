@@ -4,8 +4,8 @@ angular.module('starter.services', [])
         'Client_id': 'ac0dd3408c1031006907010c2cc6ef6d',
         'Client_secret': '1yihwfk2xbl686v45s8a',
         'grant_type': ['password', 'access'],
-        'PRODURL': 'https://volteollcdemo1.service-now.com', // Servicenow Instance URL
-        //'PRODURL': '/api', // Temp empty URL for development environment and this will changed when deploying PROD
+        //'PRODURL': 'https://volteollcdemo1.service-now.com', // Servicenow Instance URL
+        'PRODURL': '/api', // Temp empty URL for development environment and this will changed when deploying PROD
         'PrjTableName': 'pm_project', // Servicenow Project Table
         'TasksTableName': 'pm_project_task', // Servicenow Tasks Table
         'StoriesTableName': 'rm_story', // Servicenow Stories Table
@@ -663,14 +663,10 @@ angular.module('starter.services', [])
                 return defer.promise;
             },
             // get Hours, weekly and monthly 
-            getTimecardMonthlyHours: function(monStartDate,monEndDate) {
-                // sysparm_count = true (returns no of records, after query)
-                // var query = "?sysparm_sum_fields=total&sysparm_query=" +
-                //     "week_starts_onONThis month@javascript:gs.beginningOfThisMonth()@javascript:gs.endOfThisMonth()" +
-                //     "^user=" + UserService.getUser().sys_id;
+            getTimecardMonthlyHours: function(monStartDate, monEndDate) {
                 var query = "?sysparm_sum_fields=total&sysparm_query=" +
-                      "^week_starts_onBETWEENjavascript:gs.dateGenerate('"+monStartDate+"','start')@javascript:gs.dateGenerate('"+monEndDate+"','end')" +
-                      "^user=" + UserService.getUser().sys_id;
+                    "^week_starts_onBETWEENjavascript:gs.dateGenerate('" + monStartDate + "','start')@javascript:gs.dateGenerate('" + monEndDate + "','end')" +
+                    "^user=" + UserService.getUser().sys_id;
                 var url = snCred.PRODURL + '/api/now/stats/' + snCred.TimecardTable + query;
                 var token = "Bearer " + TokenService.getToken();
                 var defer = $q.defer();
@@ -734,44 +730,41 @@ angular.module('starter.services', [])
     .factory('preLoadDataService', function($http, $q, $state, snService) {
         return {
             loadAll: function() {
-
-                    snService.getProjects() // get Projects
-                        .then(function(result) {
-                            //console.log(result);
-                            snService.getTasks() // get Tasks
-                                .then(function(result) {
-                                    //console.log(result);
-                                    snService.getStories() // get Stories
-                                        .then(function(result) {
-                                            //console.log(result);
-                                            snService.getTimecards() // get Timecards
-                                                .then(function(result) {
-                                                    //console.log(result);
-                                                    snService.getApprovals() // get Approvals and final function to call 
-                                                        .then(function(result) {
-                                                            //console.log(result);
-                                                            $state.go('app.home', {}, {
-                                                                reload: true
-                                                            });
-                                                        }, function(error) {
-                                                            //console.log(error);
-                                                            LocalStorageService.setApprovalsLocal([]);
-                                                        });
-                                                }, function(error) {
-                                                    console.log(error);
-                                                });
-                                        }, function(error) {
-                                            console.log(error);
-                                        });
-                                }, function(error) {
-                                    console.log(error);
-                                });
-                        }, function(error) {
-                            console.log(error);
-                        }); // end of Server API Calls 
-                    return true;
-                } // end of loadAll() function 
-        }; // end of return 
+                var defer = $q.defer();
+                snService.getProjects() // get Projects
+                    .then(function(result) {
+                        //console.log(result);
+                        snService.getTasks() // get Tasks
+                            .then(function(result) {
+                                //console.log(result);
+                                snService.getStories() // get Stories
+                                    .then(function(result) {
+                                        //console.log(result);
+                                        snService.getTimecards() // get Timecards
+                                            .then(function(result) {
+                                                //console.log(result);
+                                                snService.getApprovals() // get Approvals and final function to call 
+                                                    .then(function(result) {
+                                                        defer.resolve('true');
+                                                    }, function(error) {
+                                                        //console.log(error);
+                                                        LocalStorageService.setApprovalsLocal([]);
+                                                    });
+                                            }, function(error) {
+                                                console.log(error);
+                                            });
+                                    }, function(error) {
+                                        console.log(error);
+                                    });
+                            }, function(error) {
+                                console.log(error);
+                            });
+                    }, function(error) {
+                        console.log(error);
+                    });
+                return defer.promise;
+            }
+        };
     })
     // Login Service
     .factory('LoginService', function($http, $timeout, $q, $location, $state, $httpParamSerializer, $httpParamSerializerJQLike, preLoadDataService, TokenService, errorService, snCred, snService) {
@@ -779,6 +772,7 @@ angular.module('starter.services', [])
         // Request Method = POST
         return {
             doLogin: function(username, password) {
+                var defer = $q.defer();
                 // Body data (grant_type=password,client_id,client_secret,username,password)
                 var data = "grant_type=password&client_id=" +
                     encodeURIComponent(snCred.Client_id) +
@@ -799,22 +793,21 @@ angular.module('starter.services', [])
                         if (TokenService.setToken(response.access_token)) {
                             snService.getUserDetailsByUsername(username, response.access_token)
                                 .then(function(response) {
-                                    preLoadDataService.loadAll();
+                                    preLoadDataService.loadAll()
+                                        .then(function(data) {
+                                            defer.resolve('success');
+                                        });
                                 }, function(error) {
                                     console.log(error);
                                 });
                         }
                     }
                 }).error(function(response, status) {
-                    console.log(response, status);
                     if (status == errorService.Unauthorized) {
-                        $state.go('errorlogin', {
-                            'param1': 'Unauthorized'
-                        }, {
-                            reload: true
-                        });
+                        defer.resolve('nosuccess');
                     }
                 });
+                return defer.promise;
             }
         };
     })
@@ -1177,12 +1170,18 @@ angular.module('starter.services', [])
         }
         // remove all items in localstorage (projects, tasks, stories, timecards, approvals)
         function clearAllItems() {
-            localStorage.removeItem('projects');
-            localStorage.removeItem('tasks');
-            localStorage.removeItem('stories');
-            localStorage.removeItem('timecards');
-            localStorage.removeItem('approvals');
-            return true;
+            if (localStorage.removeItem('projects')) {
+                if(localStorage.removeItem('tasks')){
+                    if(localStorage.removeItem('stories')){
+                        if(localStorage.removeItem('timecards')){
+                            if(localStorage.removeItem('approvals')){
+                                return true;
+                            }
+                        }    
+                   }
+                }
+            }
+
         }
 
         return {

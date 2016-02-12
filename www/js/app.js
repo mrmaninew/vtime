@@ -32,12 +32,6 @@ angular.module('starter', ['ionic', 'ionic-datepicker', 'starter.controllers', '
                 templateUrl: 'templates/login.html',
                 controller: 'loginCtrl'
             })
-            // error in the login 
-            .state('errorlogin', {
-                url: '/login/:param1',
-                templateUrl: 'templates/login.html',
-                controller: 'loginCtrl'
-            })
             // No Network 
             .state('nonetwork', {
                 url: '/nonetwork',

@@ -135,21 +135,7 @@ angular.module('starter.controllers', [])
             }
             $scope.data.push([sunday, monday, tuesday, wednesday, thursday, friday, saturday]);
         }
-        // get all sundays in a month
-        function sundays(year, month) {
-            var day, counter, date;
-            day = 1;
-            counter = 0;
-            date = new Date(year, month, day);
-            while (date.getMonth() === month) {
-                if (date.getDay() === 0) { // Sun=0, Mon=1, Tue=2, etc.
-                    counter += 1;
-                }
-                day += 1;
-                date = new Date(year, month, day);
-            }
-            return counter;
-        }
+        // edit timecard 
         $scope.routeEditCard = function(sys_id) {
             //ref="#/app/editCard/:{{tc.sys_id}}/:{{selDate}}"
             $state.go('app.editCard', {
@@ -203,7 +189,7 @@ angular.module('starter.controllers', [])
             } else {
                 firstDay = moment(firstDay).subtract(firstDay.getDay(), 'days').format("YYYY-MM-DD"); // 2012-11-22
             }
-             // get last day in month, if sunday leave it, else subtract certain days to get saturday
+            // get last day in month, if sunday leave it, else subtract certain days to get saturday
             var lastDay = new Date($scope.selDate.getFullYear(), $scope.selDate.getMonth() + 1, 0);
             if (lastDay.getDay() === 0) { //lastDay.getDay() == 6){
                 lastDay = moment(lastDay).subtract(1, 'days').format("YYYY-MM-DD");
@@ -215,13 +201,13 @@ angular.module('starter.controllers', [])
             // get total hours for monthly
             snService.getTimecardMonthlyHours(firstDay, lastDay)
                 .then(function(data) {
-                    $scope.totalHrsMonthly = (data.stats.sum.total > 0 ? Number(data.stats.sum.total) : 0 );
+                    $scope.totalHrsMonthly = (data.stats.sum.total > 0 ? Number(data.stats.sum.total) : 0);
                     $scope.hideSpinner = false;
                 }, function(error) {
                     console.log(error);
-                })
-
-             getTotalHrsDayWeek(); // get total hours for current day, week    
+                });
+            // get total hours for current day, week    
+            getTotalHrsDayWeek();
         });
         // one view leave
         $scope.$on('$ionicView.leave', function() {
@@ -232,23 +218,29 @@ angular.module('starter.controllers', [])
     })
     // Login View
     .controller('loginCtrl', function($scope, $state, $cordovaToast, $ionicSideMenuDelegate, $stateParams, $ionicSlideBoxDelegate, LoginService, snService, LocalStorageService, LogoutService) {
-        console.log('clicked');
         $scope.loginData = {};
         // clear all localStorage
-        LogoutService.clearAll();
-        // hide side menu
-        $ionicSideMenuDelegate.canDragContent(false);
-        if ($stateParams.param1) {
-            $scope.loginStatus = "Re-login";
-        } else {
-            $scope.loginStatus = "login";
+        if (LogoutService.clearAll()) {
+            // hide side menu
+            $ionicSideMenuDelegate.canDragContent(false);
+            // login function 
+            $scope.doLogin = function() {
+                // call login service "LoginService"
+                $scope.loginStatus = "Logging in";
+                LoginService.doLogin($scope.loginData.username, $scope.loginData.password)
+                    .then(function success(data) {
+                        if (data === 'success') {
+                            $state.go('app.home');
+                        } else {
+                            $scope.loginStatus = "Login";
+                            $scope.loginData = {};
+                            $cordovaToast.showLongTop("login Failed, verify your credentials");
+                        }
+                    }, function error(error) {
+                        console.log(error);
+                    });
+            };
         }
-        // login function 
-        $scope.doLogin = function() {
-            // call login service "LoginService"
-            $scope.loginStatus = "Logging in";
-            LoginService.doLogin($scope.loginData.username, $scope.loginData.password);
-        };
         // on ionic view leave enable sidemenu drag content
         $scope.$on('$ionicView.leave', function() {
             $ionicSideMenuDelegate.canDragContent(true);
