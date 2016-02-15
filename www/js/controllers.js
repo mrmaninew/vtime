@@ -234,7 +234,7 @@ angular.module('starter.controllers', [])
                         } else {
                             $scope.loginStatus = "Login";
                             $scope.loginData = {};
-                            $cordovaToast.showLongTop("login Failed, verify your credentials");
+                            $cordovaToast.showLongTop("login failed, verify your credentials");
                         }
                     }, function error(error) {
                         console.log(error);
@@ -865,7 +865,7 @@ angular.module('starter.controllers', [])
                         $ionicLoading.hide();
                     } else {
                         snService.getTimecardBySysID(set[i])
-                            .then(function(data) {
+                            .then(function (data) {
                                 if (data) {
                                     $scope.approvals.push(processAndReturn(data));
                                     $ionicLoading.hide();
@@ -1250,7 +1250,7 @@ angular.module('starter.controllers', [])
         $scope.logout = function() {
             $ionicPopup.confirm({
                 title: 'Confirm Logout',
-                template: 'Sure you want to logout',
+                template: 'Sure you want to logout ?',
                 scope: $scope,
                 buttons: [{
                     text: 'Cancel'
