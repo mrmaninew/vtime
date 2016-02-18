@@ -27,7 +27,6 @@ angular.module('starter.services', [])
     // Token Service (Access, Password)
     // in phase 2, we try to utilize $httpInterceptor for default adding token to all req
     .factory('TokenService', function(LocalStorageService) {
-        //var _token = "tSjbPwRdhQMR75XcFJ52617pEBj1DNWomsvDKb6VZBsAdw--mNJUroqz8a3DBYE7Bb8GhM6CO7KPTFvHgLcMEQ";
         return {
             getToken: function() {
                 return localStorage.getItem('token');
