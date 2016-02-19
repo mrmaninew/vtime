@@ -155,6 +155,10 @@ angular.module('starter.controllers', [])
             "pointHighlightFill": "#fff",
             "pointHighlightStroke": "rgba(151,187,205,0.8)"
         }];
+        $scope.options = {
+            responsive:true,
+            scaleShowGridLines: false
+        }
         // on bar chat click, get click date and do some coniditional ops and pass date as param to timecardpanel ctrl
         $scope.onClick = function(e) {
             var clickedDate = "";

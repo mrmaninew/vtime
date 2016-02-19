@@ -1,5 +1,5 @@
 angular.module('starter', ['ionic', 'ionic-datepicker', 'starter.controllers', 'starter.services', 'angularMoment', 'ngCordova', 'chart.js'])
-    .run(function($ionicPlatform, $cordovaNetwork, $cordovaToast, $state, $rootScope, snService, TokenService, LocalStorageService) {
+    .run(function($ionicPlatform, $cordovaNetwork, $cordovaToast, $state, $rootScope, $cordovaStatusbar, snService, TokenService, LocalStorageService) {
         $ionicPlatform.ready(function() {
             // Hide the accessory bar by default (remove this to show the accessory bar above the keyboard
             // for form inputs)
@@ -18,6 +18,7 @@ angular.module('starter', ['ionic', 'ionic-datepicker', 'starter.controllers', '
                 $state.go('login');
             } else {
                 console.log('already authenticated and got some token information');
+                $state.go('app.home');
             }
         });
         $ionicPlatform.on('resume', function() {

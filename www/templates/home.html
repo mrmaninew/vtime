@@ -5,15 +5,10 @@
     <ion-content>
         <!-- Top -->
         <div class="row col-100">
-            <div class="card" style="height:100%;width:100%;margin:2px;">
-                <div class="item item-divider">
-                    Current Week
-                </div>
-                <div class="item item-text-wrap">
-                    <canvas id="bar" class="chart chart-bar" chart-data="data" chart-labels="labels" chart-series="series" chart-colours="colors" click="onClick">
+                <div class="item item-text-wrap" style="height:100%;width:100%;margin:2px;border:0px;">
+                    <canvas id="bar" class="chart chart-bar" chart-data="data" chart-labels="labels" chart-series="series" chart-colours="colors" click="onClick" chart-options="options">
                     </canvas>
                 </div>
-            </div>
         </div>
         <!--middle-->
         <div class="row dash-middle">
