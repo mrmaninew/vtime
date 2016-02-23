@@ -54,7 +54,7 @@ angular.module('starter.controllers', [])
         });
     })
     // Home view 
-    .controller('HomeCtrl', function($scope, $state, $ionicLoading, $ionicPopup, $cordovaNetwork, moment, ConnectivityMonitor, MessageService, snService, LocalStorageService, daysWeek) {
+    .controller('HomeCtrl', function($scope, $state, $ionicLoading, $ionicPopup, $cordovaNetwork, moment, connectivityMonitorService,snService, LocalStorageService, daysWeek) {
         // calculate number hours for day, weekly, monthly
         $scope.totalHrsDay = 0;
         $scope.totalHrsWeekly = 0;

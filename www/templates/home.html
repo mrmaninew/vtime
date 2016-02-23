@@ -2,35 +2,36 @@
     <ion-nav-buttons side="right">
         <ion-spinner class="spinner-light" icon="ripple" ng-show="hideSpinner"></ion-spinner>
     </ion-nav-buttons>
-    <ion-content overflow-scroll="true">
+    <ion-content overflow-scroll="true" style="background-color: #f6f4f4">
         <!-- Top -->
+        
         <div class="row col-100">
-                <div class="item item-text-wrap" style="height:100%;width:100%;margin:2px;border:0px;">
-                    <canvas id="bar" class="chart chart-bar" chart-data="data" chart-labels="labels" chart-series="series" chart-colours="colors" click="onClick" chart-options="options">
-                    </canvas>
-                </div>
+            <div class="item item-text-wrap" style="height:100%;width:100%;margin:2px;border:0px;padding-bottom: 10px;"><span style="font-size:12px; color:#be373b; margin-top:10px; padding-left:10px;">CURRENT WEEK</span>
+                <canvas id="bar" class="chart chart-bar" chart-data="data" chart-labels="labels" chart-series="series" chart-colours="colors" click="onClick" chart-options="options">
+                </canvas>
+            </div>
         </div>
         <!--middle-->
         <div class="row dash-middle">
             <!--day-->
-            <div class="col col-33">
+            <div class="col col-33" id="day">
                 <div class="text-panel-33">
-                    <h1 class="text-center">{{totalHrsDay}} <sup>hrs</sup></h1>
-                    <h3 class="text-center">Today</h3>
+                    <h1 class="text-center text-white">{{totalHrsDay}} <sup>hrs</sup></h1>
+                    <h3 class="text-center text-white" style="font-size:15px">Today</h3>
                 </div>
             </div>
             <!--week-->
-            <div class="col col-33 col-33-middle">
+            <div class="col col-33 col-33-middle" id="week">
                 <div class="text-panel-33">
-                    <h1 class="text-center">{{totalHrsWeekly}} <sup>hrs</sup></h1>
-                    <h3 class="text-center">Week</h3>
+                    <h1 class="text-center text-white">{{totalHrsWeekly}} <sup>hrs</sup></h1>
+                    <h3 class="text-center text-white" style="font-size:15px">Week</h3>
                 </div>
             </div>
             <!--month-->
-            <div class="col col-33 col-33-middle">
+            <div class="col col-33 col-33-middle" id="month">
                 <div class="text-panel-33">
-                    <h1 class="text-center">{{totalHrsMonthly}} <sup>hrs</sup></h1>
-                    <h3 class="text-center">Month</h3>
+                    <h1 class="text-center text-white">{{totalHrsMonthly}} <sup>hrs</sup></h1>
+                    <h3 class="text-center text-white" style="font-size:15px">Month</h3>
                 </div>
             </div>
         </div>

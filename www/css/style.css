@@ -58,7 +58,6 @@
 }
 
 
-
 .dash-top {
     background-color: #444;
     margin-bottom: 6px;
@@ -87,6 +86,22 @@
 
 .dash-bottom {
     height: 40vh;
+}
+
+.text-white {
+   color: white;
+}
+
+#day {
+   background-color: #c44e51 ;
+}
+
+#week {
+   background-color: #b03a3d ;
+}
+
+#month {
+   background-color: #a22a2e ;
 }
 
 

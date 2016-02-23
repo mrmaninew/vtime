@@ -1,5 +1,5 @@
 angular.module('starter', ['ionic', 'ionic-datepicker', 'starter.controllers', 'starter.services', 'angularMoment', 'ngCordova', 'chart.js'])
-    .run(function($ionicPlatform, $cordovaNetwork, $cordovaToast, $state, $rootScope, $cordovaStatusbar, snService, ConnectivityMonitor,MessageService, $ionicPopup, TokenService, LocalStorageService) {
+    .run(function($ionicPlatform, $cordovaNetwork, $cordovaToast, $state, $rootScope, $cordovaStatusbar, snService, connectivityMonitorService, $ionicPopup, TokenService, LocalStorageService) {
         $ionicPlatform.ready(function() {
             // Hide the accessory bar by default (remove this to show the accessory bar above the keyboard
             // for form inputs)
@@ -12,7 +12,7 @@ angular.module('starter', ['ionic', 'ionic-datepicker', 'starter.controllers', '
                 StatusBar.styleDefault();
             }
             // check network connectivity
-            if (!ConnectivityMonitor.isOnline()) {
+            if (!connectivityMonitorService.isOnline()) {
                 $ionicPopup.confirm({
                         title: "No Internet Connection",
                         content: "App running in offline mode"
