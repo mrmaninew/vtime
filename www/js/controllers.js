@@ -54,7 +54,7 @@ angular.module('starter.controllers', [])
         });
     })
     // Home view 
-    .controller('HomeCtrl', function($scope, $state, $ionicLoading, moment, snService, LocalStorageService, daysWeek) {
+    .controller('HomeCtrl', function($scope, $state, $ionicLoading, $ionicPopup, $cordovaNetwork, moment, ConnectivityMonitor, MessageService, snService, LocalStorageService, daysWeek) {
         // calculate number hours for day, weekly, monthly
         $scope.totalHrsDay = 0;
         $scope.totalHrsWeekly = 0;
@@ -66,6 +66,9 @@ angular.module('starter.controllers', [])
         $scope.selDateMonth = $scope.selDate.getMonth(); // 0-january, 11- December
         $scope.todayTCS = []; // current day timecards (Today - List)
         $scope.hideSpinner = false;
+
+
+
         // get total hours for current day and week
         function getTotalHrsDayWeek() {
             if ($scope.selDay === 0) {
@@ -156,10 +159,10 @@ angular.module('starter.controllers', [])
             "pointHighlightStroke": "rgba(151,187,205,0.8)"
         }];
         $scope.options = {
-            responsive:true,
-            scaleShowGridLines: false
-        }
-        // on bar chat click, get click date and do some coniditional ops and pass date as param to timecardpanel ctrl
+                responsive: true,
+                scaleShowGridLines: false
+            }
+            // on bar chat click, get click date and do some coniditional ops and pass date as param to timecardpanel ctrl
         $scope.onClick = function(e) {
             var clickedDate = "";
             var cDay = e[0].label;
@@ -205,10 +208,15 @@ angular.module('starter.controllers', [])
             // get total hours for monthly
             snService.getTimecardMonthlyHours(firstDay, lastDay)
                 .then(function(data) {
-                    $scope.totalHrsMonthly = (data.stats.sum.total > 0 ? Number(data.stats.sum.total) : 0);
-                    $scope.hideSpinner = false;
+                    if (data) {
+                        $scope.totalHrsMonthly = (data.stats.sum.total > 0 ? Number(data.stats.sum.total) : 0);
+                        $scope.hideSpinner = false;
+                    } else {
+                        $scope.hideSpinner = false;
+                    }
                 }, function(error) {
                     console.log(error);
+                    $scope.hideSpinner = false;
                 });
             // get total hours for current day, week    
             getTotalHrsDayWeek();
@@ -869,7 +877,7 @@ angular.module('starter.controllers', [])
                         $ionicLoading.hide();
                     } else {
                         snService.getTimecardBySysID(set[i])
-                            .then(function (data) {
+                            .then(function(data) {
                                 if (data) {
                                     $scope.approvals.push(processAndReturn(data));
                                     $ionicLoading.hide();

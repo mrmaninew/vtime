@@ -1,5 +1,5 @@
 angular.module('starter', ['ionic', 'ionic-datepicker', 'starter.controllers', 'starter.services', 'angularMoment', 'ngCordova', 'chart.js'])
-    .run(function($ionicPlatform, $cordovaNetwork, $cordovaToast, $state, $rootScope, $cordovaStatusbar, snService, TokenService, LocalStorageService) {
+    .run(function($ionicPlatform, $cordovaNetwork, $cordovaToast, $state, $rootScope, $cordovaStatusbar, snService, ConnectivityMonitor,MessageService, $ionicPopup, TokenService, LocalStorageService) {
         $ionicPlatform.ready(function() {
             // Hide the accessory bar by default (remove this to show the accessory bar above the keyboard
             // for form inputs)
@@ -11,13 +11,21 @@ angular.module('starter', ['ionic', 'ionic-datepicker', 'starter.controllers', '
                 // org.apache.cordova.statusbar required
                 StatusBar.styleDefault();
             }
-            //check the network connectivity, in not connected, inform user 
+            // check network connectivity
+            if (!ConnectivityMonitor.isOnline()) {
+                $ionicPopup.confirm({
+                        title: "No Internet Connection",
+                        content: "App running in offline mode"
+                    })
+                    .then(function(result) {
+                        console.log("running offline");
+                    });
+            }
             // Then token information, check the token value if its have some value go the home view else, redirect
             // to login page 
             if (TokenService.getToken() === null) {
                 $state.go('login');
             } else {
-                console.log('already authenticated and got some token information');
                 $state.go('app.home');
             }
         });

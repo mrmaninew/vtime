@@ -688,7 +688,7 @@ angular.module('starter.services', [])
                         } else if (status == errorService.Notfound) {
                             defer.resolve("");
                         } else {
-                            defer.resolve(error);
+                            defer.reject(error);
                         }
                     });
                 return defer.promise;
@@ -1170,14 +1170,14 @@ angular.module('starter.services', [])
         // remove all items in localstorage (projects, tasks, stories, timecards, approvals)
         function clearAllItems() {
             if (localStorage.removeItem('projects')) {
-                if(localStorage.removeItem('tasks')){
-                    if(localStorage.removeItem('stories')){
-                        if(localStorage.removeItem('timecards')){
-                            if(localStorage.removeItem('approvals')){
+                if (localStorage.removeItem('tasks')) {
+                    if (localStorage.removeItem('stories')) {
+                        if (localStorage.removeItem('timecards')) {
+                            if (localStorage.removeItem('approvals')) {
                                 return true;
                             }
-                        }    
-                   }
+                        }
+                    }
                 }
             }
 
@@ -1223,4 +1223,59 @@ angular.module('starter.services', [])
             // clear all items (Projects, Tasks, Stories, Timecards, Approvals)
             clearAllItems: clearAllItems
         };
-    });
+    })
+    // Network Service
+    .factory('ConnectivityMonitor', function($rootScope, $cordovaNetwork) {
+        return {
+            isOnline: function() {
+                if (ionic.Platform.isWebView()) {
+                    return $cordovaNetwork.isOnline();
+                } else {
+                    return navigator.onLine;
+                }
+            },
+            isOffline: function() {
+                if (ionic.Platform.isWebView()) {
+                    return !$cordovaNetwork.isOnline();
+                } else {
+                    return !navigator.onLine;
+                }
+            },
+            startWatching: function() {
+                if (ionic.Platform.isWebView()) {
+
+                    $rootScope.$on('$cordovaNetwork:online', function(event, networkState) {
+                        console.log("went online");
+                    });
+
+                    $rootScope.$on('$cordovaNetwork:offline', function(event, networkState) {
+                        console.log("went offline");
+                    });
+
+                } else {
+                    window.addEventListener("online", function(e) {
+                        console.log("went online");
+                    }, false);
+
+                    window.addEventListener("offline", function(e) {
+                        console.log("went offline");
+                    }, false);
+                }
+            }
+        }
+    })
+    .factory('MessageService', function() {
+        return {
+            getNoNetworkMessage: function() {
+                $ionicPopup.confirm({
+                        title: "No connectivity",
+                        content: "App running in offline mode"
+                    })
+                    .then(function(result) {
+                        // if (!result) {
+                        //     ionic.Platform.exitApp();
+                        // }
+                    });
+            }
+        }
+    })
