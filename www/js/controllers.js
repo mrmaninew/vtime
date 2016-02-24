@@ -54,7 +54,7 @@ angular.module('starter.controllers', [])
         });
     })
     // Home view 
-    .controller('HomeCtrl', function($scope, $state, $ionicLoading, $ionicPopup, $cordovaNetwork, moment, connectivityMonitorService,snService, LocalStorageService, daysWeek) {
+    .controller('HomeCtrl', function($scope, $state, $ionicLoading, $ionicPopup, $cordovaNetwork, moment, connectivityMonitorService, snService, LocalStorageService, daysWeek) {
         // calculate number hours for day, weekly, monthly
         $scope.totalHrsDay = 0;
         $scope.totalHrsWeekly = 0;
@@ -159,10 +159,10 @@ angular.module('starter.controllers', [])
             "pointHighlightStroke": "rgba(151,187,205,0.8)"
         }];
         $scope.options = {
-                responsive: true,
-                scaleShowGridLines: false
-            }
-            // on bar chat click, get click date and do some coniditional ops and pass date as param to timecardpanel ctrl
+            responsive: true,
+            scaleShowGridLines: false
+        };
+        // on bar chat click, get click date and do some coniditional ops and pass date as param to timecardpanel ctrl
         $scope.onClick = function(e) {
             var clickedDate = "";
             var cDay = e[0].label;
@@ -494,12 +494,14 @@ angular.module('starter.controllers', [])
         $scope.projects = LocalStorageService.getProjectsLocal();
         $scope.tasks = LocalStorageService.getTasksLocal();
         $scope.stories = LocalStorageService.getStoriesLocal();
+        $scope.customers = LocalStorageService.getCustomersLocal();
         $scope.category = timeCardCategories;
         // timecard model
         $scope.tc = {
             'passDate': new Date($stateParams.param1),
             'task': '',
             'u_project': '',
+            'u_customer': '',
             'category': '',
             'hours': '',
             'u_billable': '',
@@ -523,6 +525,7 @@ angular.module('starter.controllers', [])
             data.u_story = $scope.tc.story; // story 
             data[_day] = $scope.tc.hours; // hours  (day ex: sunday)
             data[_dayNotesKey] = $scope.tc.comments; // day notes
+            data.u_customer = $scope.tc.u_customer; // customer 
             data.u_project = $scope.tc.u_project; // project
             data.u_billable = $scope.tc.u_billable; // billable
             data.category = $scope.tc.category; // category
@@ -582,6 +585,7 @@ angular.module('starter.controllers', [])
                 'passDate': new Date($stateParams.param1),
                 'task': '',
                 'u_project': '',
+                'u_customer': '',
                 'category': '',
                 'hours': '',
                 'u_billable': '',
@@ -597,6 +601,7 @@ angular.module('starter.controllers', [])
         $scope.projects = LocalStorageService.getProjectsLocal();
         $scope.tasks = LocalStorageService.getTasksLocal();
         $scope.stories = LocalStorageService.getStoriesLocal();
+        $scope.customers = LocalStorageService.getCustomersLocal();
         $scope.category = timeCardCategories;
         $scope.states = timeCardStates;
         // current timecard model 
@@ -614,6 +619,7 @@ angular.module('starter.controllers', [])
             if (tc) {
                 set.passDate = new Date(paramDate);
                 if (tc[daysWeek.weekDays[set.passDate.getDay()]]) set.hours = tc[daysWeek.weekDays[set.passDate.getDay()]];
+                if (tc.u_customer) set.u_customer = tc.u_customer.value;
                 if (tc.u_project) set.u_project = tc.u_project.value;
                 if (tc.task) set.task = tc.task.value;
                 if (tc.u_story) set.story = tc.u_story.value;
@@ -635,7 +641,7 @@ angular.module('starter.controllers', [])
             var timecard = {};
             // show loading icon 
             $ionicLoading.show();
-
+            if ($scope.tc.u_customer) timecard.u_customer = $scope.tc.u_customer;
             if ($scope.tc.u_project) timecard.u_project = $scope.tc.u_project;
             if ($scope.tc.task) timecard.task = $scope.tc.task;
             if ($scope.tc.story) timecard.u_story = $scope.tc.story;

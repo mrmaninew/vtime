@@ -9,6 +9,13 @@
                 <input type="text" placeholder="Hours" ng-model="tc.hours">
             </label>
             <label class="item item-input item-select">
+                <span class="input-label">
+                    <h3>Customer</h3>
+                </span>
+                <select ng-model="tc.u_customer" ng-options="customer.sys_id as customer.name for customer in customers">
+                </select>
+            </label>
+            <label class="item item-input item-select">
                 <div class="input-label">
                     <h3>Project</h3>
                 </div>

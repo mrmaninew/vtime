@@ -11,6 +11,7 @@ angular.module('starter.services', [])
         'StoriesTableName': 'rm_story', // Servicenow Stories Table
         'TimecardTable': 'time_card', // Servicenow Timecard Table
         'ApprovalsTable': 'sysapproval_approver', // Servicenow Approvals Table
+        'CustomersTable': 'x_volt2_psa_customer',
         'UserTable': 'sys_user' // Servicenow User Table (sys_user)
     })
     // status and error code for http response checks 
@@ -71,7 +72,6 @@ angular.module('starter.services', [])
                         }
                     })
                     .error(function(error, status) {
-                        console.log(error.error.message, status);
                         // if error message equals to "AuthMessage" redirect to login
                         // and get new access token and set it in the TokenService 
                         // Local Storage 
@@ -257,6 +257,39 @@ angular.module('starter.services', [])
                             }
                         }
 
+                    });
+                return defer.promise;
+            },
+            getCustomers: function() {
+                var query = "";
+                var url = snCred.PRODURL + '/api/now/table/' + snCred.CustomersTable;
+                var token = "Bearer " + TokenService.getToken();
+                var defer = $q.defer();
+                $http({
+                        method: 'GET',
+                        url: url,
+                        headers: {
+                            'Authorization': token
+                        }
+                    })
+                    .success(function(data, status) {
+                        if (LocalStorageService.setCustomersLocal(data.result)) {
+                            console.log(data.result);
+                            defer.resolve(data.result);
+                        }
+                    })
+                    .error(function(error, status) {
+                        if (status == errorService.Unauthorized) {
+                            $state.go('login');
+                        } else {
+                            // if some other errors, store the empty array in localstorage 
+                            // for Stories
+                            if (status == errorService.Notfound) {
+                                if (LocalStorageService.setStoriesLocal([])) {
+                                    defer.resolve(error);
+                                }
+                            }
+                        }
                     });
                 return defer.promise;
             },
@@ -744,7 +777,12 @@ angular.module('starter.services', [])
                                                 //console.log(result);
                                                 snService.getApprovals() // get Approvals and final function to call 
                                                     .then(function(result) {
-                                                        defer.resolve('true');
+                                                        snService.getCustomers()
+                                                            .then(function(result) {
+                                                                defer.resolve('true');
+                                                            }, function(error) {
+                                                                console.log(error);
+                                                            });
                                                     }, function(error) {
                                                         //console.log(error);
                                                         LocalStorageService.setApprovalsLocal([]);
@@ -877,6 +915,24 @@ angular.module('starter.services', [])
                 }
             }
             return projectName;
+        }
+        // customer
+        function setCustomersLocal(result) {
+            if (result) {
+                localStorage.setItem('customers', JSON.stringify(result));
+            } else {
+                localStorage.setItem('customers', []);
+            }
+            return true;
+        }
+
+        function getCustomersLocal() {
+            var customers = JSON.parse(localStorage.getItem('customers'));
+            if (customers !== null) {
+                return customers;
+            } else {
+                return [];
+            }
         }
         // Tasks
         function setTasksLocal(result) {
@@ -1190,6 +1246,9 @@ angular.module('starter.services', [])
             getProjectNumberBySysID: getProjectNumberBySysID,
             getProjectNameBySysID: getProjectNameBySysID,
             getProjectsLengthLocal: getProjectsLengthLocal,
+            // customers
+            setCustomersLocal: setCustomersLocal,
+            getCustomersLocal: getCustomersLocal,
             // Tasks
             setTasksLocal: setTasksLocal,
             getTasksLocal: getTasksLocal,
@@ -1262,7 +1321,7 @@ angular.module('starter.services', [])
                     }, false);
                 }
             }
-        }
+        };
     })
     .factory('MessageService', function() {
         return {
@@ -1277,5 +1336,5 @@ angular.module('starter.services', [])
                         // }
                     });
             }
-        }
-    })
+        };
+    });
