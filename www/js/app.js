@@ -14,8 +14,8 @@ angular.module('starter', ['ionic', 'ionic-datepicker', 'starter.controllers', '
             // check network connectivity
             if (!connectivityMonitorService.isOnline()) {
                 $ionicPopup.confirm({
-                        title: "No Internet Connection",
-                        content: "App running in offline mode"
+                        title: "Limited Internet connectivity",
+                        content: "try again"
                     })
                     .then(function(result) {
                         console.log("running offline");
