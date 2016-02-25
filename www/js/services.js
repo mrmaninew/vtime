@@ -272,7 +272,7 @@ angular.module('starter.services', [])
                     })
                     .success(function(data, status) {
                         if (LocalStorageService.setCustomersLocal(data.result)) {
-                            console.log(data.result);
+                            //console.log(data.result);
                             defer.resolve(data.result);
                         }
                     })
