@@ -108,7 +108,6 @@ angular.module('starter.services', [])
                         }
                     })
                     .error(function(error, status) {
-                        console.log(error.error.message, status);
                         // if error message equals to "AuthMessage" redirect to login
                         // and get new access token and set it in the TokenService 
                         // Local Storage 
@@ -243,7 +242,6 @@ angular.module('starter.services', [])
                         }
                     })
                     .error(function(error, status) {
-                        console.log(error.error.message, status);
                         // if error message equals to "AuthMessage" redirect to login
                         // and get new access token and set it in the TokenService 
                         // Local Storage 
@@ -311,7 +309,6 @@ angular.module('starter.services', [])
                         }
                     })
                     .error(function(error, status) {
-                        console.log(error.error.message, status);
                         if (status == errorService.Unauthorized) {
                             $state.go('login');
                         } else {
@@ -344,12 +341,8 @@ angular.module('starter.services', [])
                         result.approval_id = set.sys_id;
                         result.approval_number = set.u_number;
                         defer.resolve(result);
-                        // if (status == errorService.Success) {
-                        //     return data.result[0];
-                        // }
                     })
                     .error(function(error, status) {
-                        console.log(error.error.message, status);
                         if (status == errorService.Unauthorized) {
                             $state.go('login');
                         } else {
@@ -405,7 +398,6 @@ angular.module('starter.services', [])
                         data: JSON.stringify(timecard)
                     })
                     .success(function(data, status) {
-                        console.log(status);
                         if (status == errorService.Success) {
                             // update local timecard storage
                             if (LocalStorageService.setTimecardLocalByID(data.result.sys_id, data.result)) { // sys_id, [object]
@@ -553,7 +545,6 @@ angular.module('starter.services', [])
                         }
                     })
                     .error(function(error, status) {
-                        console.log(error.error.message, status);
                         if (status == errorService.Unauthorized) {
                             $state.go('login');
                         } else {
@@ -583,7 +574,6 @@ angular.module('starter.services', [])
                         }
                     })
                     .error(function(error, status) {
-                        console.log(error.error.message, status);
                         if (status == errorService.Unauthorized) {
                             $state.go('login');
                         }
@@ -608,7 +598,6 @@ angular.module('starter.services', [])
                         }
                     })
                     .error(function(error, status) {
-                        console.log(error.error.message, status);
                         if (status == errorService.Unauthorized) {
                             $state.go('login');
                         } else {
@@ -676,7 +665,6 @@ angular.module('starter.services', [])
                         data: data
                     })
                     .success(function(data, status) {
-                        console.log(status);
                         if (status == errorService.Success) {
                             //update approvals
                             if (LocalStorageService.deleteApprovalBySysID(sys_id)) {
@@ -932,6 +920,21 @@ angular.module('starter.services', [])
                 return customers;
             } else {
                 return [];
+            }
+        }
+
+        function getCustomerNameBySysID(sys_id){
+            var customer_name = "";
+            var customers = getCustomersLocal();
+            if(customers !== null){
+                for(var i=0;i<customers.length;i++){
+                    if(customers[i].sys_id === sys_id){
+                        customer_name = customers[i].name;
+                    }
+                }
+                return customer_name;
+            } else {
+                return customer_name;
             }
         }
         // Tasks
@@ -1249,6 +1252,7 @@ angular.module('starter.services', [])
             // customers
             setCustomersLocal: setCustomersLocal,
             getCustomersLocal: getCustomersLocal,
+            getCustomerNameBySysID: getCustomerNameBySysID,
             // Tasks
             setTasksLocal: setTasksLocal,
             getTasksLocal: getTasksLocal,

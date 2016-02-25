@@ -10,6 +10,7 @@
                 </ion-item>
                 <ion-item class="item-accordion" ng-show="isGroupShown(timecard)">
                     <p>Project:&nbsp;{{getProjectNumberBySysID(timecard.u_project.value)}}</p>
+                    <p>Customer:&nbsp;{{getCustomerNameBySysID(timecard.u_customer.value)}}</p>
                     <p ng-if="timecard.task">Task:&nbsp;{{getTaskNumberBySysID(timecard.task.value)}}</p>
                     <p ng-if="timecard.u_story">Story:&nbsp;{{getStoryNumberBySysID(timecard.u_story.value)}}</p>
                     <p>Total Hours:&nbsp;{{timecard.total}}</p>

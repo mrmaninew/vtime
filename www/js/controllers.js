@@ -732,6 +732,9 @@ angular.module('starter.controllers', [])
         $scope.getStoryNumberBySysID = function(sys_id) {
             return LocalStorageService.getStoryNumberBySysID(sys_id);
         };
+        $scope.getCustomerNameBySysID = function(sys_id){
+            return LocalStorageService.getCustomerNameBySysID(sys_id);
+        };
         // submit timecard and refresh timecard local storage and current view
         $scope.submitTimecard = function(sys_id) {
             $ionicPopup.confirm({
@@ -1180,6 +1183,9 @@ angular.module('starter.controllers', [])
         };
         $scope.getTaskNumberBySysID = function(sys_id) {
             return LocalStorageService.getTaskNumberBySysID(sys_id);
+        };
+        $scope.getCustomerNameBySysID = function(sys_id){
+            return LocalStorageService.getCustomerNameBySysID(sys_id);
         };
         // if given group is the selected group, deselect it, else select the given group
         $scope.toggleGroup = function(timecard) {
