@@ -34,7 +34,7 @@
 }
 
 input[placeholder], [placeholder], *[placeholder] {
-    color: white;
+    color: #000;
 }
 
 
