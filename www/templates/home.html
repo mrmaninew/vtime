@@ -2,57 +2,62 @@
     <ion-nav-buttons side="right">
         <ion-spinner class="spinner-light" icon="ripple" ng-show="hideSpinner"></ion-spinner>
     </ion-nav-buttons>
-    <ion-content overflow-scroll="true" style="background-color: #f6f4f4">
+    <ion-content style="background-color: #fff">
         <!-- Top -->
-        
-        <div class="row col-100">
-            <div class="item item-text-wrap" style="height:100%;width:100%;margin:2px;border:0px;padding-bottom: 10px;"><span style="font-size:12px; color:#be373b; margin-top:10px; padding-left:10px;">CURRENT WEEK</span>
-                <canvas id="bar" class="chart chart-bar" chart-data="data" chart-labels="labels" chart-series="series" chart-colours="colors" click="onClick" chart-options="options">
-                </canvas>
-            </div>
+        <div class="row col-100" style="background-color: #fff">
+                <div class="item item-text-wrap" style="height:100%;width:100%;margin:0px;border:0px;background-color: #fff;padding-bottom:0px;padding-top:0px;padding-left:0px;padding-right:0px;"><span style="font-size:12px; color:#666;"><b>CURRENT WEEK
+</b> </span>
+                    <canvas id="bar" class="chart chart-bar" chart-data="data" chart-labels="labels" chart-series="series" chart-colours="colors" click="onClick" chart-options="options" style="background-color:red;padding-top:0px;padding-left:0px;padding-right:0px;padding-bottom:0px;background-color:#ffffff;border-radius:0px;">
+                    </canvas>
+                </div>
         </div>
         <!--middle-->
-        <div class="row dash-middle">
+        <span style="font-size:12px; color:#666;padding-left:10px;"><b>CURRENT TOTAL</b></span>
+        <div class="row dash-middle" >
             <!--day-->
-            <div class="col col-33" id="day">
+            <div class="col col-33" id = "day" style="border-right:1px solid #f6f4f4;">
                 <div class="text-panel-33">
-                    <h1 class="text-center text-white">{{totalHrsDay}} <sup>hrs</sup></h1>
-                    <h3 class="text-center text-white" style="font-size:15px">Today</h3>
+                    <h1 class="text-center text-white"><b>{{totalHrsDay}}</b> <sup>hrs</sup></h1>
+                    <h3 class="text-center text-white" style="font-size:12px">Today</h3>
                 </div>
             </div>
             <!--week-->
-            <div class="col col-33 col-33-middle" id="week">
+            <div class="col col-33 col-33-middle" id="week" style="border-right:1px solid #f6f4f4;">
                 <div class="text-panel-33">
-                    <h1 class="text-center text-white">{{totalHrsWeekly}} <sup>hrs</sup></h1>
-                    <h3 class="text-center text-white" style="font-size:15px">Week</h3>
+                    <h1 class="text-center text-white"><b>{{totalHrsWeekly}}</b> <sup>hrs</sup></h1>
+                    <h3 class="text-center text-white" style="font-size:12px">Week</h3>
                 </div>
             </div>
             <!--month-->
             <div class="col col-33 col-33-middle" id="month">
                 <div class="text-panel-33">
-                    <h1 class="text-center text-white">{{totalHrsMonthly}} <sup>hrs</sup></h1>
-                    <h3 class="text-center text-white" style="font-size:15px">Month</h3>
+                    <h1 class="text-center text-white"><b>{{totalHrsMonthly}}</b> <sup>hrs</sup></h1>
+                    <h3 class="text-center text-white" style="font-size:12px">Month</h3>
                 </div>
             </div>
         </div>
         <!--bottom-->
+        
         <ion-list>
-            <div class="item item-divider">
-                Today {{selDate |date:'MMM dd, yyyy'}}
+            <div class="item item-divider" >
+                <span style="font-size:12px; color:#666;"><b>TODAY</b> {{selDate |date:'EEEE dd'}}<sup>th</sup></span>
             </div>
-            <ion-item class="item-avatar" collection-repeat="tc in todayTCS" ng-click="routeEditCard(tc.sys_id)">
-                <span class="day-display-sizing">{{tc.selDate|date:'dd'}}</span>
-                <h2>{{tc.selDate|date:'EEEE'}}</h2>
-                <p ng-if="tc.task"> Task: {{tc.task}}</p>
-                <p ng-if="tc.story">Story: {{tc.story}}</p>
+            <ion-item class="item-avatar" ng-repeat="tc in todayTCS" ng-click="routeEditCard(tc.sys_id)" style="background-color:#fff;border-left:3px solid #db4543;">
+                <span class="day-display-sizing" >{{tc.selDate|date:'dd'}}</span>
+                <!--<h2 style="font-size:13px;color: #666666">{{tc.selDate|date:'EEEE'}}</h2>-->
+                <p ng-if="tc.task"><span style="font-size:13px;font-weight: 400;color: #666666">Task: </span><span style="font-size:13px;color: #666666">{{tc.task}}</span></p>
+                <p ng-if="tc.story"><span style="font-size:13px;font-weight: 400;color: #666666">Story: </span><span style="font-size:13px;color: #666666">{{tc.story}}</span></p>
                 <span class="text-align-right">
                                             {{tc.hours}} hrs
                                             &nbsp;
                                             <i class="icon ion-ios-arrow-forward"></i>
                                       </span>
-                <p>Project: {{tc.project}}</p>
+                <p><span >Project: </span ><span style="font-size:13px;color: #666666">{{tc.project}}</span></p>
+
             </ion-item>
+            <br/><br/><br/>
         </ion-list>
+        
         <ion-list class="padding" ng-if="todayTCS.length == 0">
             <ion-item>
                 <h2 class="text-center"> '0' Timecards</h2>

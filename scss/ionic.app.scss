@@ -19,7 +19,7 @@ $dark:                            #444 !default;
 $ionicons-font-path: "../lib/ionic/fonts" !default;
 
 // custom volteo color named "soft red". 
-$positive:                        #ad2d2e !default;
+$positive:                        #be373b !default;
 
 // $positive (little gradiant)
 $energized:                       #f08080 !default;
@@ -27,3 +27,4 @@ $energized:                       #f08080 !default;
 // Include all of Ionic
 @import "www/lib/ionic/scss/ionic";
 
+//background: -webkit-radial-gradient(circle, #e62a25, #be373b);
