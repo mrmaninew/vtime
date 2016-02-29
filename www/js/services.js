@@ -707,7 +707,7 @@ angular.module('starter.services', [])
                         if (status == errorService.Unauthorized) {
                             $state.go('login');
                         } else if (status == errorService.Notfound) {
-                            defer.resolve("");
+                            defer.reject(error);
                         } else {
                             defer.reject(error);
                         }
