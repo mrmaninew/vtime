@@ -6,9 +6,6 @@
 
 /* login */
 .volteo-bgcolor{
-    /*background: -webkit-radial-gradient(circle, #be373b, #a22a2e);*/
-    /*background: -webkit-radial-gradient(circle, #be373b, #e62a25);*/
-   /* background: -webkit-radial-gradient(circle, #e62a25, #be373b); */
    background: -webkit-radial-gradient(circle, #FF0D0D, #be373b);
 }
 
@@ -36,11 +33,6 @@
 input[placeholder], [placeholder], *[placeholder] {
     color: #000;
 }
-
-
-
-
-
 
 /* home - Dashbboard */
 
@@ -125,7 +117,6 @@ input[placeholder], [placeholder], *[placeholder] {
 }
 
 
-
 /* side bar menu */
 
 .sbmenu {
@@ -137,7 +128,6 @@ input[placeholder], [placeholder], *[placeholder] {
 }
 
 /* side menu */
-
 .bar {
     background-color: #ad2d2e;
     /*height: 170;
@@ -167,7 +157,10 @@ input[placeholder], [placeholder], *[placeholder] {
 .profile-picture {
     border-radius: 50%;
 }
-
+.menu-name{
+    font-weight: 200;
+    font-size:15px;
+}
 /*.menu .has-header {
     top: 169px;
 }*/
