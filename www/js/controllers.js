@@ -67,8 +67,6 @@ angular.module('starter.controllers', [])
         $scope.todayTCS = []; // current day timecards (Today - List)
         $scope.hideSpinner = false;
 
-
-
         // get total hours for current day and week
         function getTotalHrsDayWeek() {
             if ($scope.selDay === 0) {
@@ -231,28 +229,26 @@ angular.module('starter.controllers', [])
     // Login View
     .controller('loginCtrl', function($scope, $state, $cordovaToast, $ionicSideMenuDelegate, $stateParams, $ionicSlideBoxDelegate, LoginService, snService, LocalStorageService, LogoutService) {
         $scope.loginData = {};
-        // clear all localStorage
-        if (LogoutService.clearAll()) {
-            // hide side menu
-            $ionicSideMenuDelegate.canDragContent(false);
-            // login function 
-            $scope.doLogin = function() {
-                // call login service "LoginService"
-                $scope.loginStatus = "Logging in";
-                LoginService.doLogin($scope.loginData.username, $scope.loginData.password)
-                    .then(function success(data) {
-                        if (data === 'success') {
-                            $state.go('app.home');
-                        } else {
-                            $scope.loginStatus = "Login";
-                            $scope.loginData = {};
-                            $cordovaToast.showLongTop("login failed, verify your credentials");
-                        }
-                    }, function error(error) {
-                        console.log(error);
-                    });
-            };
-        }
+        // hide side menu
+        $ionicSideMenuDelegate.canDragContent(false);
+        // login function 
+        $scope.doLogin = function() {
+            // call login service "LoginService"
+            $scope.loginStatus = "Logging in";
+            LoginService.doLogin($scope.loginData.username, $scope.loginData.password)
+                .then(function success(data) {
+                    if (data === 'success') {
+                        $state.go('app.home');
+                    } else {
+                        $scope.loginStatus = "Login";
+                        $scope.loginData = {};
+                        $cordovaToast.showLongTop("login failed, verify your credentials");
+                    }
+                }, function error(error) {
+                    console.log(error);
+                });
+        };
+
         // on ionic view leave enable sidemenu drag content
         $scope.$on('$ionicView.leave', function() {
             $ionicSideMenuDelegate.canDragContent(true);
@@ -264,8 +260,7 @@ angular.module('starter.controllers', [])
     })
     // Time tab for Today (or) Selected , this week (depending on current and selected date) 
     .controller('timeCardsPanelCtrl', function($scope, $cordovaToast, $ionicPlatform, $ionicHistory, $state, $stateParams, $ionicGesture, $ionicTabsDelegate, $ionicModal, moment, daysWeek, LocalStorageService) {
-        // on view enter
-        $scope.$on('$ionicView.enter', function(e) {
+            console.log("view loaded");
             // footer item-right varibles 
             $scope.totalHrsDay = 0;
             $scope.totalHrsWeekly = 0;
@@ -287,7 +282,7 @@ angular.module('starter.controllers', [])
             // ionic view state management
             getTimecardsDate();
             onDayChanged();
-        });
+        
         // on view leave
         $scope.$on('$ionicView.leave', function(e) {
             $scope.timecards = [];
@@ -732,7 +727,7 @@ angular.module('starter.controllers', [])
         $scope.getStoryNumberBySysID = function(sys_id) {
             return LocalStorageService.getStoryNumberBySysID(sys_id);
         };
-        $scope.getCustomerNameBySysID = function(sys_id){
+        $scope.getCustomerNameBySysID = function(sys_id) {
             return LocalStorageService.getCustomerNameBySysID(sys_id);
         };
         // submit timecard and refresh timecard local storage and current view
@@ -1184,7 +1179,7 @@ angular.module('starter.controllers', [])
         $scope.getTaskNumberBySysID = function(sys_id) {
             return LocalStorageService.getTaskNumberBySysID(sys_id);
         };
-        $scope.getCustomerNameBySysID = function(sys_id){
+        $scope.getCustomerNameBySysID = function(sys_id) {
             return LocalStorageService.getCustomerNameBySysID(sys_id);
         };
         // if given group is the selected group, deselect it, else select the given group

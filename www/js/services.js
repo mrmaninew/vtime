@@ -4,8 +4,8 @@ angular.module('starter.services', [])
         'Client_id': 'ac0dd3408c1031006907010c2cc6ef6d',
         'Client_secret': '1yihwfk2xbl686v45s8a',
         'grant_type': ['password', 'access'],
-        //'PRODURL': 'https://volteollcdemo1.service-now.com', // Servicenow Instance URL
-        'PRODURL': '/api', // Temp empty URL for development environment and this will changed when deploying PROD
+        'PRODURL': 'https://volteollcdemo1.service-now.com', // Servicenow Instance URL
+        //'PRODURL': '/api', // Temp empty URL for development environment and this will changed when deploying PROD
         'PrjTableName': 'pm_project', // Servicenow Project Table
         'TasksTableName': 'pm_project_task', // Servicenow Tasks Table
         'StoriesTableName': 'rm_story', // Servicenow Stories Table
@@ -58,7 +58,6 @@ angular.module('starter.services', [])
                 var url = snCred.PRODURL + '/api/now/table/' + snCred.PrjTableName;
                 var token = "Bearer " + TokenService.getToken();
                 var defer = $q.defer();
-                //$http.defaults.headers.common.Authorization = "Bearer" + TokenService.getToken();
                 $http({
                         method: 'GET',
                         url: url,
@@ -354,6 +353,40 @@ angular.module('starter.services', [])
                     });
                 return defer.promise;
             },
+            // get all approvals from servicenow 
+            getApprovals: function() {
+                var query = "?sysparm_query=source_table=time_card^state=requested^approver=" + UserService.getUser().sys_id;
+                var url = snCred.PRODURL + '/api/now/table/' + snCred.ApprovalsTable + query;
+                var token = "Bearer " + TokenService.getToken();
+                var defer = $q.defer();
+                $http({
+                        method: 'GET',
+                        url: url,
+                        headers: {
+                            'Authorization': token
+                        }
+                    })
+                    .success(function(data, status) {
+                        if (LocalStorageService.setApprovalsLocal(data.result)) {
+                            defer.resolve(data.result);
+                        }
+                    })
+                    .error(function(error, status) {
+                        if (status == errorService.Unauthorized) {
+                            $state.go('login');
+                        } else {
+                            // if some other errors store the empty array in localstorage 
+                            // for Approvals
+                            if (status == errorService.Notfound) {
+                                if (LocalStorageService.setApprovalsLocal([])) {
+                                    defer.resolve(error);
+                                }
+                            }
+                        }
+
+                    });
+                return defer.promise;
+            },
             //set (insert, update) functions 
             insertTimecard: function(timecard) {
                 var url = snCred.PRODURL + '/api/now/table/' + snCred.TimecardTable;
@@ -580,39 +613,6 @@ angular.module('starter.services', [])
                     });
                 return defer.promise;
             },
-            getApprovals: function() {
-                var query = "?sysparm_query=source_table=time_card^state=requested^approver=" + UserService.getUser().sys_id;
-                var url = snCred.PRODURL + '/api/now/table/' + snCred.ApprovalsTable + query;
-                var token = "Bearer " + TokenService.getToken();
-                var defer = $q.defer();
-                $http({
-                        method: 'GET',
-                        url: url,
-                        headers: {
-                            'Authorization': token
-                        }
-                    })
-                    .success(function(data, status) {
-                        if (LocalStorageService.setApprovalsLocal(data.result)) {
-                            defer.resolve(data.result);
-                        }
-                    })
-                    .error(function(error, status) {
-                        if (status == errorService.Unauthorized) {
-                            $state.go('login');
-                        } else {
-                            // if some other errors store the empty array in localstorage 
-                            // for Approvals
-                            if (status == errorService.Notfound) {
-                                if (LocalStorageService.setApprovalsLocal([])) {
-                                    defer.resolve(error);
-                                }
-                            }
-                        }
-
-                    });
-                return defer.promise;
-            },
             // approve timecard in approvals 
             approveApprovals: function(sys_id) {
                 var url = snCred.PRODURL + '/api/now/table/' + snCred.ApprovalsTable + '/' + sys_id;
@@ -753,22 +753,19 @@ angular.module('starter.services', [])
                 var defer = $q.defer();
                 snService.getProjects() // get Projects
                     .then(function(result) {
-                        //console.log(result);
                         snService.getTasks() // get Tasks
                             .then(function(result) {
-                                //console.log(result);
                                 snService.getStories() // get Stories
                                     .then(function(result) {
-                                        //console.log(result);
                                         snService.getTimecards() // get Timecards
                                             .then(function(result) {
-                                                //console.log(result);
                                                 snService.getApprovals() // get Approvals and final function to call 
                                                     .then(function(result) {
                                                         snService.getCustomers()
                                                             .then(function(result) {
                                                                 defer.resolve('true');
                                                             }, function(error) {
+                                                                defer.resolve('true');
                                                                 console.log(error);
                                                             });
                                                     }, function(error) {
@@ -820,6 +817,7 @@ angular.module('starter.services', [])
                                 .then(function(response) {
                                     preLoadDataService.loadAll()
                                         .then(function(data) {
+                                            console.log("success");
                                             defer.resolve('success');
                                         });
                                 }, function(error) {
@@ -836,12 +834,13 @@ angular.module('starter.services', [])
             }
         };
     })
+    // Logout Service (Clear users, tokens, projects, tasks, stories, timecards, approvals and other information from local storgae)
     .factory('LogoutService', function($q, TokenService, UserService, LocalStorageService) {
         return {
             clearAll: function() {
                 if (UserService.clearUser()) {
                     if (TokenService.clearToken()) {
-                        if (LocalStorageService.clearAllItems) {
+                        if (LocalStorageService.clearAllItems()) {
                             return true;
                         }
 
@@ -923,12 +922,12 @@ angular.module('starter.services', [])
             }
         }
 
-        function getCustomerNameBySysID(sys_id){
+        function getCustomerNameBySysID(sys_id) {
             var customer_name = "";
             var customers = getCustomersLocal();
-            if(customers !== null){
-                for(var i=0;i<customers.length;i++){
-                    if(customers[i].sys_id === sys_id){
+            if (customers !== null) {
+                for (var i = 0; i < customers.length; i++) {
+                    if (customers[i].sys_id === sys_id) {
                         customer_name = customers[i].name;
                     }
                 }
@@ -1228,18 +1227,13 @@ angular.module('starter.services', [])
         }
         // remove all items in localstorage (projects, tasks, stories, timecards, approvals)
         function clearAllItems() {
-            if (localStorage.removeItem('projects')) {
-                if (localStorage.removeItem('tasks')) {
-                    if (localStorage.removeItem('stories')) {
-                        if (localStorage.removeItem('timecards')) {
-                            if (localStorage.removeItem('approvals')) {
-                                return true;
-                            }
-                        }
-                    }
-                }
-            }
-
+            localStorage.removeItem('projects');
+            localStorage.removeItem('tasks');
+            localStorage.removeItem('stories');
+            localStorage.removeItem('timecards');
+            localStorage.removeItem('approvals');
+            localStorage.removeItem('customers');
+            return true;
         }
 
         return {
@@ -1335,9 +1329,9 @@ angular.module('starter.services', [])
                         content: "App running in offline mode"
                     })
                     .then(function(result) {
-                        // if (!result) {
-                        //     ionic.Platform.exitApp();
-                        // }
+                        if (!result) {
+                            ionic.Platform.exitApp();
+                        }
                     });
             }
         };

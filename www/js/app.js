@@ -90,7 +90,7 @@ angular.module('starter', ['ionic', 'ionic-datepicker', 'starter.controllers', '
                 url: '/timecardPanel',
                 views: {
                     'menuContent': {
-                        templateUrl: 'templates/timeCardPanel.html',
+                        templateUrl: 'templates/timecardPanel.html',
                         controller: 'timeCardsPanelCtrl',
                     }
                 }
@@ -100,7 +100,7 @@ angular.module('starter', ['ionic', 'ionic-datepicker', 'starter.controllers', '
                 url: '/timecardPanel/:param1',
                 views: {
                     'menuContent': {
-                        templateUrl: 'templates/timeCardPanel.html',
+                        templateUrl: 'templates/timecardPanel.html',
                         controller: 'timeCardsPanelCtrl'
                     }
                 }
