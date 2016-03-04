@@ -1,5 +1,5 @@
 <ion-view view-title="welcome to vTime" cache-view="false" hide-nav-bar="true">
-    <ion-content class = "volteo-bgcolor">
+    <ion-content class="volteo-bgcolor">
         <div class="row">
             <!-- volteo logo -->
             <div class="col-100 volteo-color" style="padding-top: 50px;">
@@ -8,30 +8,32 @@
                 <h3 style="color: #ffffff;text-align: center;font-size: 16px">Time Tracking Easy on-the-Go!</h3>
             </div>
         </div>
-            <!-- login form -->
-            <form class="col-100">
-                    <label class="item item-input item-floating-label" style="border-right:0px; border-left:0px; border-top:0px; padding-top:50px; margin-left:20px; margin-right:20px">
-                        <span class="input-label" style="color:white;">Username</span>
-                        <input style="color:white;" type="text" ng-model="loginData.username" ng-disabled="loginStatus == 'Logging in'" placeholder="Username" required>
-                    </label>
-                    <label class="item item-input item-floating-label" style="border-right:0px; border-left:0px; border-top:0px; margin-left:20px; margin-right:20px">
-                        <span class="input-label" style="color:white;">Password</span>
-                        <input style="color:white;" type="password" ng-model="loginData.password" ng-disabled="loginStatus == 'Logging in'" placeholder="Password" required >
-                    </label>
-
-                    <!-- <label class="item"> -->
-                        <!-- add more validations -->
-                        <a id="login-btn" class="button icon-left ion-log-in button-block"  type="submit" on-tap="doLogin()">
-                            <!--spinner-->
-                            <span ng-show="loginStatus == 'Logging in'">
-                            <ion-spinner class="spinner-positive" icon="dots"></ion-spinner>
-                            </span><span style="color:#FF0D0D">Sign In</span> 
-                        </a>
-                    <!-- </label> -->
-            </form>
-            <br/><br/></br>
+        <!-- login form -->
+        <form class="col-100">
+            <label class="item item-input item-floating-label" style="border-right:0px; border-left:0px; border-top:0px; padding-top:50px; margin-left:20px; margin-right:20px">
+                <span class="input-label" style="color:white;">Username</span>
+                <input style="color:white;" type="text" ng-model="loginData.username" placeholder="Username" required>
+            </label>
+            <label class="item item-input item-floating-label" style="border-right:0px; border-left:0px; border-top:0px; margin-left:20px; margin-right:20px">
+                <span class="input-label" style="color:white;">Password</span>
+                <input style="color:white;" type="password" ng-model="loginData.password" placeholder="Password" required>
+            </label>
+            <!-- <label class="item"> -->
+            <!-- add more validations -->
+            <a id="login-btn" class="button icon-left ion-log-in button-block" type="submit" on-tap="doLogin()">
+                <!--spinner-->
+                <span ng-show="loginStatus == 'Logging in'">
+                    <ion-spinner class="spinner-positive" icon="dots"></ion-spinner>
+                </span><span style="color:#FF0D0D">Sign In</span>
+            </a>
+            <!-- </label> -->
+        </form>
+        <br/>
+        <br/></br>
     </ion-content>
     <div class="bar bar-footer bar-light">
-        <div style="padding:5px;"><p>&copy; volteo.com, 2016</p></div>
+        <div style="padding:5px;">
+            <p>&copy; volteo.com, 2016</p>
+        </div>
     </div>
 </ion-view>
