@@ -260,7 +260,7 @@ angular.module('starter.controllers', [])
     })
     // Time tab for Today (or) Selected , this week (depending on current and selected date) 
     .controller('timeCardsPanelCtrl', function($scope, $cordovaToast, $ionicPlatform, $ionicHistory, $state, $stateParams, $ionicGesture, $ionicTabsDelegate, $ionicModal, moment, daysWeek, LocalStorageService) {
-            console.log("view loaded");
+        $scope.$on('$ionicView.enter', function(e) {
             // footer item-right varibles 
             $scope.totalHrsDay = 0;
             $scope.totalHrsWeekly = 0;
@@ -282,7 +282,8 @@ angular.module('starter.controllers', [])
             // ionic view state management
             getTimecardsDate();
             onDayChanged();
-        
+        });
+
         // on view leave
         $scope.$on('$ionicView.leave', function(e) {
             $scope.timecards = [];
