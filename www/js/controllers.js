@@ -242,7 +242,7 @@ angular.module('starter.controllers', [])
                     } else {
                         $scope.loginStatus = "Login";
                         $scope.loginData = {};
-                        $cordovaToast.showLongTop("login failed, verify your credentials");
+                        $cordovaToast.showLongTop("Login Failed, Verify Your Credentials");
                     }
                 }, function error(error) {
                     console.log(error);
