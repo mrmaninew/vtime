@@ -904,71 +904,45 @@ angular.module('starter.controllers', [])
                     app.sys_id = time.approval_id;
                     app.u_number = time.approval_number;
                 } else {
-                    app.sys_id = set.sys_id;
-                    app.u_number = set.u_number;
+                    app.sys_id = set.sys_id.value;
+                    app.u_number = set.u_number.value;
                 }
-                app.sys_created_on = time.sys_created_on;
-                app.tc_submitted_by = time.user;
-                app.tc_total = time.total;
-                app.tc_state = time.state;
+                app.sys_created_on = time.sys_created_on.value;
+                app.tc_submitted_by = time.user.display_value;
+                app.tc_total = time.total.display_value;
+                app.tc_state = time.state.display_value;
                 if (time.u_project.value) {
-                    var projectName = LocalStorageService.getProjectNameBySysID(time.u_project.value);
-                    if (projectName !== null && projectName.length > 0) {
-                        app.tc_project = projectName;
-                    } else {
-                        snService.getProjectNameBySysID(time.u_project.value)
-                            .then(function(data) {
-                                app.tc_project = data;
-                            });
-                    }
+                    app.tc_project = time.u_project.display_value;
                 }
                 if (time.task) {
-                    var taskName = LocalStorageService.getTaskNameBySysID(time.task.value);
-                    if (taskName !== null && taskName.length > 0) {
-                        app.tc_task = taskName;
-                    } else {
-                        snService.getTaskNameBySysID(time.task.value)
-                            .then(function(data) {
-                                app.tc_task = data;
-                            });
-                    }
+                    app.tc_task = time.task.display_value;
                 }
                 if (time.u_story) {
-                    var storyNumber = LocalStorageService.getStoryNameBySysID(time.u_story);
-                    if (storyNumber !== null && storyNumber.length > 0) {
-                        app.tc_story = storyNumber;
-                    } else {
-                        snService.getStoryNameBySysID(time.u_story.value)
-                            .then(function(data) {
-                                if (data) {
-                                    app.tc_story = data;
-                                }
-                            });
-                    }
+                    app.tc_story = time.u_story.display_value;
                 }
                 if (time.week_starts_on) {
-                    app.week_starts_on = time.week_starts_on;
+                    app.week_starts_on = time.week_starts_on.value;
                 }
                 if (time.category) {
-                    app.category = time.category;
+                    app.category = time.category.display_value;
                 }
                 if (time.u_billable) {
-                    app.u_billable = time.u_billable;
+                    app.u_billable = time.u_billable.value;
                 }
-                app.sunday = time.sunday;
-                app.u_sunday_work_notes = time.u_sunday_work_notes;
-                app.monday = time.monday;
-                app.u_monday_work_notes = time.u_monday_work_notes;
-                app.tuesday = time.tuesday;
-                app.u_tuesday_work_notes = time.u_tuesday_work_notes;
-                app.wednesday = time.wednesday;
-                app.u_wednesday_work_notes = time.u_wednesday_work_notes;
-                app.thursday = time.thursday;
-                app.u_thursday_work_notes = time.u_thursday_work_notes;
-                app.friday = time.friday;
-                app.u_friday_work_notes = time.u_friday_work_notes;
-                app.saturday = time.saturday;
-                app.u_saturday_work_notes = time.u_saturday_work_notes;
+                app.sunday = time.sunday.display_value;
+                app.u_sunday_work_notes = time.u_sunday_work_notes.display_value;
+                app.monday = time.monday.display_value;
+                app.u_monday_work_notes = time.u_monday_work_notes.display_value;
+                app.tuesday = time.tuesday.display_value;
+                app.u_tuesday_work_notes = time.u_tuesday_work_notes.display_value;
+                app.wednesday = time.wednesday.display_value;
+                app.u_wednesday_work_notes = time.u_wednesday_work_notes.display_value;
+                app.thursday = time.thursday.display_value;
+                app.u_thursday_work_notes = time.u_thursday_work_notes.display_value;
+                app.friday = time.friday.display_value;
+                app.u_friday_work_notes = time.u_friday_work_notes.display_value;
+                app.saturday = time.saturday.display_value;
+                app.u_saturday_work_notes = time.u_saturday_work_notes.display_value;
                 return app;
             }
             // approve timecard from approvals 

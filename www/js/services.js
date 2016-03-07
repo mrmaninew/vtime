@@ -325,8 +325,7 @@ angular.module('starter.services', [])
                 return defer.promise;
             },
             getTimecardBySysID: function(set) {
-                //'&sysparm_display_value=all'
-                var query = "?sysparm_query=sys_id=" + set.document_id.value;
+                var query = "?sysparm_query=sys_id=" + set.document_id.value + '&sysparm_display_value=all';
                 var url = snCred.PRODURL + '/api/now/table/' + snCred.TimecardTable + query;
                 var token = "Bearer " + TokenService.getToken();
                 var defer = $q.defer();
