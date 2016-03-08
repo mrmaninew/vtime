@@ -22,7 +22,7 @@
 
 
 
-.tabs-striped.tabs-custom .tab-item.tab-item-active,
+/*.tabs-striped.tabs-custom .tab-item.tab-item-active,
 .tabs-striped.tabs-custom .tab-item.active,
 .tabs-striped.tabs-positive .tab-item.activated {
     margin-top: 0px;
@@ -30,7 +30,7 @@
     border-style: solid;
     border-width: 2px 0 0 0;
     border-color: #00FFFF;
-}
+}*/
 
 
 /** Overridding Ionic Defaults */
@@ -146,17 +146,14 @@ h3 {
 
 #day {
     background-color: none;
-    /*background: -webkit-radial-gradient(circle, #e62a25, #be373b);*/
 }
 
 #week {
     background-color: none;
-    /*background: -webkit-radial-gradient(circle, #e62a25, #be373b);*/
 }
 
 #month {
     background-color: none;
-    /*background: -webkit-radial-gradient(circle, #e62a25, #be373b);*/
 }
 
 
@@ -174,9 +171,7 @@ h3 {
 /* side menu */
 
 .bar {
-    background-color: #ad2d2e;
-    /*height: 170;
-}*/
+    background-color: #f32b2b;
 }
 
 .bar .profile {
@@ -207,12 +202,6 @@ h3 {
     font-weight: 200;
     font-size: 15px;
 }
-
-
-/*.menu .has-header {
-    top: 169px;
-}*/
-
 
 /* timecards.html */
 

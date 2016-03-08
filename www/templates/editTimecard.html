@@ -20,9 +20,6 @@
                     <h3>Project</h3>
                 </div>
                 <select ng-model="tc.u_project" ng-options="project.sys_id as project.short_description for project in projects">
-                    <!-- <option ng-repeat="project in projects" value="{{project.sys_id}}">
-                        {{project.short_description}}
-                    </option> -->
                 </select>
             </label>
             <label class="item item-input item-select">
@@ -30,9 +27,6 @@
                     <h3>Story</h3>
                 </div>
                 <select ng-model="tc.story" ng-options="story.sys_id as story.number for story in stories">
-                    <!-- <option ng-repeat="story in stories" value="{{story.sys_id}}">
-                        {{story.number}}
-                    </option> -->
                 </select>
             </label>
             <label class="item item-input item-select">
