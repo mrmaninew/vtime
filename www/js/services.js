@@ -5,8 +5,8 @@ angular.module('starter.services', [])
         'Client_secret': '1yihwfk2xbl686v45s8a',
         'grant_type': ['password', 'access'],
         //'PRODURL':'', // Volteo ServiceNow Production Instance URL
-        'PRODURL': 'https://volteollcdemo1.service-now.com', // Volteo Servicenow development Instance URL
-        //'PRODURL': '/api', // Temp empty URL for development environment and this will changed when deploying PROD
+        //'PRODURL': 'https://volteollcdemo1.service-now.com', // Volteo Servicenow development Instance URL
+        'PRODURL': '/api', // Temp empty URL for development environment and this will changed when deploying PROD
         'PrjTableName': 'pm_project', // Servicenow Project Table
         'TasksTableName': 'pm_project_task', // Servicenow Tasks Table
         'StoriesTableName': 'rm_story', // Servicenow Stories Table
