@@ -491,12 +491,29 @@ angular.module('starter.controllers', [])
         $scope.tasks = LocalStorageService.getTasksLocal();
         $scope.stories = LocalStorageService.getStoriesLocal();
         $scope.customers = LocalStorageService.getCustomersLocal();
+        $scope.resource_plan = [];
         $scope.category = timeCardCategories;
+
+        // get Resource plans for selected project 
+        $scope.getResourcePlans = function(project_id){
+          // show loading icon 
+          $ionicLoading.show();
+          snService.getResourcePlans(project_id)
+            .then(function(data) {
+                $scope.resource_plan = data.result;
+                // hide loading icon 
+                $ionicLoading.hide();
+            },function(error){
+                $scope.resource_plan = [];
+                console.log(error);
+            });
+        };
         // timecard model
         $scope.tc = {
             'passDate': new Date($stateParams.param1),
             'task': '',
             'u_project': '',
+            'resource_plan':'',
             'u_customer': '',
             'category': '',
             'hours': '',
@@ -504,6 +521,7 @@ angular.module('starter.controllers', [])
             'comments': '',
             'story': ''
         };
+
         // footer buttons  (save,submit,reset)
         $scope.saveTC = function() {
             var dayNum = $scope.tc.passDate.getDay();
@@ -523,6 +541,7 @@ angular.module('starter.controllers', [])
             data[_dayNotesKey] = $scope.tc.comments; // day notes
             data.u_customer = $scope.tc.u_customer; // customer 
             data.u_project = $scope.tc.u_project; // project
+            data.resource_plan = $scope.tc.resource_plan; // resource plan
             data.u_billable = $scope.tc.u_billable; // billable
             data.category = $scope.tc.category; // category
             data.user = UserService.getUser().sys_id; // user sys_id
@@ -581,6 +600,7 @@ angular.module('starter.controllers', [])
                 'passDate': new Date($stateParams.param1),
                 'task': '',
                 'u_project': '',
+                'resource_plan':'',
                 'u_customer': '',
                 'category': '',
                 'hours': '',

@@ -728,12 +728,13 @@ angular.module('starter.services', [])
                     });
                 return defer.promise;
             },
-            // get all Resource plan for signed users
-            getResourcePlans: function(sys_id){
-                var query = "?sysparm_query=sys_id=" + sys_id;
-                var url = snCred.PRODURL + '/api/now/table' + snCred.ResourcePlan + query;
+            // get all Resource plan for signed users and project
+            getResourcePlans: function(project_id){
+                var user_id = UserService.getUser().sys_id;
+                var query = '?sysparm_query=members_listLIKE'+user_id+'^ORuser_resource='+user_id+'^task='+project_id+'^state=3';    
+                var url = snCred.PRODURL + '/api/now/table/' + snCred.ResourcePlan + query;
                 var token = "Bearer "+ TokenService.getToken();
-                var defer = $q.defer;
+                var defer = $q.defer();
                 $http({
                     method: 'GET',
                     url: url,
@@ -742,12 +743,15 @@ angular.module('starter.services', [])
                     }
                 })
                 .success(function(data,status){
-
+                    defer.resolve(data);
                 })
                 .error(function(error,status){
-
+                    if (status == errorService.Unauthorized) {
+                        $state.go('login');
+                    } else {
+                        defer.resolve(error);
+                    }
                 })
-
                return defer.promise;
             }
         };
@@ -890,6 +894,22 @@ angular.module('starter.services', [])
     // Timecard, Approval, User, objects and create their prototype methods (get,set,del)
     // and make code more reusable  
     .factory('LocalStorageService', function(moment) {
+        // Resource plans
+        function setResourcePlans(result){
+            if(result){
+                localStorage.setItem('resourceplans',JSON.stringify(result));
+            }else{
+                localStorage.setItem('resourceplans',[]);
+            }
+        }
+        function getResourcePlansLocal(){
+            var resourceplans = JSON.parse(localStorage.getItem('resourceplans'));
+            if(resourceplans != null){
+                return resourceplans;
+            } else {
+                return [];
+            }
+        }
         // Projects 
         function setProjectsLocal(result) {
             if (result) {
@@ -1273,6 +1293,9 @@ angular.module('starter.services', [])
         }
 
         return {
+            // Resource Plans
+            setResourcePlans:setResourcePlans,
+            getResourcePlansLocal:getResourcePlansLocal,
             // Projects 
             setProjectsLocal: setProjectsLocal,
             getProjectsLocal: getProjectsLocal,
