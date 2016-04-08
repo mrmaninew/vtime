@@ -6,16 +6,18 @@ angular.module('starter.services', [])
         'Client_id': 'ac0dd3408c1031006907010c2cc6ef6d', // "Development"
         'Client_secret': '1yihwfk2xbl686v45s8a',  // "Development"
         'grant_type': ['password', 'access'],
-        'PRODURL':'https://volteopsa.service-now.com', // "Production" Volteo ServiceNow Production Instance URL
+        //'PRODURL':'https://volteopsa.service-now.com', // "Production" Volteo ServiceNow Production Instance URL
         //'PRODURL': 'https://volteollcdemo1.service-now.com', // "Development" Volteo Servicenow development Instance URL
-        //'PRODURL': '/api', // Temp empty URL for development environment and this will changed when deploying PROD
+        'PRODURL': '/api', // Temp empty URL for development environment and this will changed when deploying PROD
         'PrjTableName': 'pm_project', // Servicenow Project Table
         'TasksTableName': 'pm_project_task', // Servicenow Tasks Table
         'StoriesTableName': 'rm_story', // Servicenow Stories Table
         'TimecardTable': 'time_card', // Servicenow Timecard Table
         'ApprovalsTable': 'sysapproval_approver', // Servicenow Approvals Table
         'CustomersTable': 'x_volt2_psa_customer',
-        'UserTable': 'sys_user' // Servicenow User Table (sys_user)
+        'UserTable': 'sys_user', // Servicenow User Table (sys_user)
+        'ResourcePlan':'resource_plan' // Resource plan Table
+
     })
     // status and error code for http response checks 
     .constant('errorService', {
@@ -92,6 +94,7 @@ angular.module('starter.services', [])
                     });
                 return defer.promise;
             },
+            // get Project Name by sys_id
             getProjectNameBySysID: function(sys_id) {
                 var query = "?sysparm_query=sys_id=" + sys_id;
                 var url = snCred.PRODURL + '/api/now/table/' + snCred.PrjTableName + query;
@@ -126,6 +129,7 @@ angular.module('starter.services', [])
                     });
                 return defer.promise;
             },
+            // get All tasks
             getTasks: function() {
                 // get all tasks assigned_to = user (and) state = open or pending or work in progress
                 var query = "?sysparm_query=state=2^ORstate=1^ORstate=-5^assigned_to=" + UserService.getUser().sys_id;
@@ -160,6 +164,7 @@ angular.module('starter.services', [])
                     });
                 return defer.promise;
             },
+            // get task name by sys_id
             getTaskNameBySysID: function(sys_id) {
                 var query = "?sysparm_query=sys_id+" + sys_id;
                 var url = snCred.PRODURL + '/api/now/table/' + snCred.TasksTableName + query;
@@ -194,6 +199,7 @@ angular.module('starter.services', [])
                     });
                 return defer.promise;
             },
+            // get all stories
             getStories: function() {
                 var query = "?sysparm_query=state!=3^ORstate!=4^ORstate!=20^ORstate!=-6^assigned_to=" + UserService.getUser().sys_id;
                 var url = snCred.PRODURL + '/api/now/table/' + snCred.StoriesTableName + query;
@@ -226,6 +232,7 @@ angular.module('starter.services', [])
                     });
                 return defer.promise;
             },
+            // get story name by sys_id
             getStoryNameBySysID: function(sys_id) {
                 var query = "?sysparm_query=sys_id=" + sys_id;
                 var url = snCred.PRODURL + '/api/now/table/' + snCred.StoriesTableName + query;
@@ -260,6 +267,7 @@ angular.module('starter.services', [])
                     });
                 return defer.promise;
             },
+            // get all customers
             getCustomers: function() {
                 var query = "";
                 var url = snCred.PRODURL + '/api/now/table/' + snCred.CustomersTable;
@@ -293,6 +301,7 @@ angular.module('starter.services', [])
                     });
                 return defer.promise;
             },
+            // get all timecards
             getTimecards: function() {
                 var query = "?sysparm_query=user=" + UserService.getUser().sys_id;
                 var url = snCred.PRODURL + '/api/now/table/' + snCred.TimecardTable + query;
@@ -326,6 +335,7 @@ angular.module('starter.services', [])
                     });
                 return defer.promise;
             },
+            // get timecard by sys_id
             getTimecardBySysID: function(set) {
                 var query = "?sysparm_query=sys_id=" + set.document_id.value + '&sysparm_display_value=all';
                 var url = snCred.PRODURL + '/api/now/table/' + snCred.TimecardTable + query;
@@ -390,7 +400,7 @@ angular.module('starter.services', [])
                     });
                 return defer.promise;
             },
-            //set (insert, update) functions 
+            // set (insert, update) functions 
             insertTimecard: function(timecard) {
                 var url = snCred.PRODURL + '/api/now/table/' + snCred.TimecardTable;
                 var token = "Bearer " + TokenService.getToken();
@@ -421,6 +431,7 @@ angular.module('starter.services', [])
                     });
                 return defer.promise;
             },
+            // update timecard by sys_id
             updateTimecard: function(sys_id, timecard) {
                 var url = snCred.PRODURL + '/api/now/table/' + snCred.TimecardTable + '/' + sys_id;
                 var token = "Bearer " + TokenService.getToken();
@@ -451,7 +462,7 @@ angular.module('starter.services', [])
                     });
                 return defer.promise;
             },
-            //  verify timecard if all ready exists for same day 
+            // verify timecard if all ready exists for same day 
             verifyTimecard: function(tc, week) {
                 // var query = "?sysparm_query=user="+tc.user+"^u_billable="+tc.u_billable+"^u_project="+tc.u_project+"^task="+tc.task+"^category="+tc.category+"^state=pending^week_starts_onON"+week+"@javascript:gs.dateGenerate('"+week+"','start')@javascript:gs.dateGenerate('"+week+"','end')";
                 var query = "?sysparm_query=user=" + tc.user + "^state=pending";
@@ -716,6 +727,28 @@ angular.module('starter.services', [])
                         }
                     });
                 return defer.promise;
+            },
+            // get all Resource plan for signed users
+            getResourcePlans: function(sys_id){
+                var query = "?sysparm_query=sys_id=" + sys_id;
+                var url = snCred.PRODURL + '/api/now/table' + snCred.ResourcePlan + query;
+                var token = "Bearer "+ TokenService.getToken();
+                var defer = $q.defer;
+                $http({
+                    method: 'GET',
+                    url: url,
+                    headers: {
+                        'Authorization':token
+                    }
+                })
+                .success(function(data,status){
+
+                })
+                .error(function(error,status){
+
+                })
+
+               return defer.promise;
             }
         };
     })

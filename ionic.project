@@ -4,7 +4,7 @@
   "proxies": [
     {
       "path": "/api",
-      "proxyUrl": "https://volteollcdemo1.service-now.com/"
+      "proxyUrl": "https://volteollcdemo1.service-now.com"
     }
   ],
   "gulpStartupTasks": [
