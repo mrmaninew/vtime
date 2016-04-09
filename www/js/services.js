@@ -4,7 +4,7 @@ angular.module('starter.services', [])
         //'Client_id':'ac0dd3408c1031006907010c2cc6ef6d', // Production Client ID
         //'Client_secret':'a3kw6fydcqb3jum30opg', // Production Client Secret
         'Client_id': 'ac0dd3408c1031006907010c2cc6ef6d', // "Development"
-        'Client_secret': '1yihwfk2xbl686v45s8a',  // "Development"
+        'Client_secret': '1yihwfk2xbl686v45s8a', // "Development"
         'grant_type': ['password', 'access'],
         //'PRODURL':'https://volteopsa.service-now.com', // "Production" Volteo ServiceNow Production Instance URL
         //'PRODURL': 'https://volteollcdemo1.service-now.com', // "Development" Volteo Servicenow development Instance URL
@@ -16,8 +16,7 @@ angular.module('starter.services', [])
         'ApprovalsTable': 'sysapproval_approver', // Servicenow Approvals Table
         'CustomersTable': 'x_volt2_psa_customer',
         'UserTable': 'sys_user', // Servicenow User Table (sys_user)
-        'ResourcePlan':'resource_plan' // Resource plan Table
-
+        'ResourcePlan': 'resource_plan' // Resource plan Table
     })
     // status and error code for http response checks 
     .constant('errorService', {
@@ -728,31 +727,60 @@ angular.module('starter.services', [])
                     });
                 return defer.promise;
             },
-            // get all Resource plan for signed users and project
-            getResourcePlans: function(project_id){
+            // get Resource plan for specified project and signed user
+            getResourcePlans: function(project_id) {
                 var user_id = UserService.getUser().sys_id;
-                var query = '?sysparm_query=members_listLIKE'+user_id+'^ORuser_resource='+user_id+'^task='+project_id+'^state=3';    
+                var query = '?sysparm_query=members_listLIKE' + user_id + '^ORuser_resource=' + user_id + '^task=' + project_id + '^state=3';
                 var url = snCred.PRODURL + '/api/now/table/' + snCred.ResourcePlan + query;
-                var token = "Bearer "+ TokenService.getToken();
+                var token = "Bearer " + TokenService.getToken();
                 var defer = $q.defer();
                 $http({
-                    method: 'GET',
-                    url: url,
-                    headers: {
-                        'Authorization':token
-                    }
-                })
-                .success(function(data,status){
-                    defer.resolve(data);
-                })
-                .error(function(error,status){
-                    if (status == errorService.Unauthorized) {
-                        $state.go('login');
-                    } else {
-                        defer.resolve(error);
-                    }
-                })
-               return defer.promise;
+                        method: 'GET',
+                        url: url,
+                        headers: {
+                            'Authorization': token
+                        }
+                    })
+                    .success(function(data, status) {
+                        defer.resolve(data);
+                    })
+                    .error(function(error, status) {
+                        if (status == errorService.Unauthorized) {
+                            $state.go('login');
+                        } else {
+                            defer.resolve(error);
+                        }
+                    })
+                return defer.promise;
+            },
+            // get all Resource plans for signed user
+            getUserResourcePlans: function() {
+                var user_id = UserService.getUser().sys_id;
+                var query = '?sysparm_query=members_listLIKE' + user_id + '^ORuser_resource=' + user_id + '^state=3';
+                var url = snCred.PRODURL + '/api/now/table/' + snCred.ResourcePlan + query;
+                var token = "Bearer " + TokenService.getToken();
+                var defer = $q.defer();
+                $http({
+                        method: 'GET',
+                        url: url,
+                        headers: {
+                            'Authorization': token
+                        }
+                    })
+                    .success(function(data, status) {
+                        if (LocalStorageService.setResourcePlans(data.result)) {
+                            console.log(data);
+                            defer.resolve(data.result);
+                        }
+                    })
+                    .error(function(error, status) {
+                        if (status == errorService.Unauthorized) {
+                            $state.go('login');
+                        } else {
+                            defer.resolve(error);
+                        }
+                    })
+                return defer.promise;
             }
         };
     })
@@ -801,15 +829,19 @@ angular.module('starter.services', [])
                                             .then(function(result) {
                                                 snService.getApprovals() // get Approvals and final function to call 
                                                     .then(function(result) {
-                                                        snService.getCustomers()
+                                                        snService.getUserResourcePlans()
                                                             .then(function(result) {
-                                                                defer.resolve('true');
+                                                                snService.getCustomers()
+                                                                    .then(function(result) {
+                                                                        defer.resolve('true');
+                                                                    }, function(error) {
+                                                                        defer.resolve('true');
+                                                                        console.log(error);
+                                                                    });
                                                             }, function(error) {
-                                                                defer.resolve('true');
                                                                 console.log(error);
                                                             });
                                                     }, function(error) {
-                                                        //console.log(error);
                                                         LocalStorageService.setApprovalsLocal([]);
                                                     });
                                             }, function(error) {
@@ -883,7 +915,6 @@ angular.module('starter.services', [])
                         if (LocalStorageService.clearAllItems()) {
                             return true;
                         }
-
                     }
                 }
             }
@@ -895,16 +926,17 @@ angular.module('starter.services', [])
     // and make code more reusable  
     .factory('LocalStorageService', function(moment) {
         // Resource plans
-        function setResourcePlans(result){
-            if(result){
-                localStorage.setItem('resourceplans',JSON.stringify(result));
-            }else{
-                localStorage.setItem('resourceplans',[]);
+        function setResourcePlans(result) {
+            if (result) {
+                localStorage.setItem('resourceplans', JSON.stringify(result));
+            } else {
+                localStorage.setItem('resourceplans', []);
             }
+            return true;
         }
-        function getResourcePlansLocal(){
+        function getResourcePlansLocal() {
             var resourceplans = JSON.parse(localStorage.getItem('resourceplans'));
-            if(resourceplans != null){
+            if (resourceplans != null) {
                 return resourceplans;
             } else {
                 return [];
@@ -1289,13 +1321,14 @@ angular.module('starter.services', [])
             localStorage.removeItem('timecards');
             localStorage.removeItem('approvals');
             localStorage.removeItem('customers');
+            localStorage.removeItem('resourceplans');
             return true;
         }
-
+        // return function api 
         return {
             // Resource Plans
-            setResourcePlans:setResourcePlans,
-            getResourcePlansLocal:getResourcePlansLocal,
+            setResourcePlans: setResourcePlans,
+            getResourcePlansLocal: getResourcePlansLocal,
             // Projects 
             setProjectsLocal: setProjectsLocal,
             getProjectsLocal: getProjectsLocal,

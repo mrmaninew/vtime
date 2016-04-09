@@ -620,9 +620,10 @@ angular.module('starter.controllers', [])
         $scope.customers = LocalStorageService.getCustomersLocal();
         $scope.category = timeCardCategories;
         $scope.states = timeCardStates;
+        $scope.resource_plan = LocalStorageService.getResourcePlansLocal();
         // current timecard model 
         $scope.tc = {};
-
+        // get Timecard details by param 
         function getTimecardDetails() {
             var tc = LocalStorageService.getTimecardByID($stateParams.param1); // param1: sys_id
             var paramDate = $stateParams.param2; // param2: passed date (Thu Jan 14 2016 00:00:00 GMT+0530 (IST))
@@ -632,11 +633,13 @@ angular.module('starter.controllers', [])
 
         function processTimecard(tc, paramDate, sys_id) {
             var set = {};
+            console.log(tc);
             if (tc) {
                 set.passDate = new Date(paramDate);
                 if (tc[daysWeek.weekDays[set.passDate.getDay()]]) set.hours = tc[daysWeek.weekDays[set.passDate.getDay()]];
                 if (tc.u_customer) set.u_customer = tc.u_customer.value;
                 if (tc.u_project) set.u_project = tc.u_project.value;
+                if (tc.resource_plan) set.resource_plan = tc.resource_plan.value;
                 if (tc.task) set.task = tc.task.value;
                 if (tc.u_story) set.story = tc.u_story.value;
                 if (tc.category) set.category = tc.category;
@@ -652,6 +655,7 @@ angular.module('starter.controllers', [])
         $scope.changeBillable = function() {
             $scope.tc.u_billable = !$scope.tc.u_billable;
         };
+        // update timecard  with updated fields 
         $scope.updateTC = function() {
             var notes = "u_" + $scope.tc.day + "_work_notes";
             var timecard = {};
@@ -681,6 +685,7 @@ angular.module('starter.controllers', [])
                     console.log(error);
                 });
         };
+        // reset timecard
         $scope.resetTC = function() {
             $scope.tc = {};
         };
