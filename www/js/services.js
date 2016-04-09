@@ -471,7 +471,7 @@ angular.module('starter.services', [])
                 if (tc.u_project) {
                     query += "^u_project=" + tc.u_project;
                 }
-                if(tc.resource_plan){
+                if (tc.resource_plan) {
                     query += "^resource_plan=" + tc.resource_plan;
                 }
                 if (tc.task) {
@@ -937,6 +937,7 @@ angular.module('starter.services', [])
             }
             return true;
         }
+
         function getResourcePlansLocal() {
             var resourceplans = JSON.parse(localStorage.getItem('resourceplans'));
             if (resourceplans != null) {
