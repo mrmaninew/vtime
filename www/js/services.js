@@ -1,10 +1,10 @@
 angular.module('starter.services', [])
     // Required global variables
     .constant('snCred', {
-        //'Client_id':'ac0dd3408c1031006907010c2cc6ef6d', // Production Client ID
-        //'Client_secret':'a3kw6fydcqb3jum30opg', // Production Client Secret
-        'Client_id': 'ac0dd3408c1031006907010c2cc6ef6d', // "Development"
-        'Client_secret': '1yihwfk2xbl686v45s8a', // "Development"
+        //'Client_id':'ac0dd3408c1031006907010c2cc6ef6d', // Production Instance Client ID
+        //'Client_secret':'a3kw6fydcqb3jum30opg', // Production Instance Client Secret
+        'Client_id': 'ac0dd3408c1031006907010c2cc6ef6d', // "Development Instance Client ID"
+        'Client_secret': '1yihwfk2xbl686v45s8a', // "Development Instance Client ID"
         'grant_type': ['password', 'access'],
         //'PRODURL':'https://volteopsa.service-now.com', // "Production" Volteo ServiceNow Production Instance URL
         //'PRODURL': 'https://volteollcdemo1.service-now.com', // "Development" Volteo Servicenow development Instance URL
@@ -470,6 +470,9 @@ angular.module('starter.services', [])
                 }
                 if (tc.u_project) {
                     query += "^u_project=" + tc.u_project;
+                }
+                if(tc.resource_plan){
+                    query += "^resource_plan=" + tc.resource_plan;
                 }
                 if (tc.task) {
                     query += "^task=" + tc.task;

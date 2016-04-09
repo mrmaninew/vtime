@@ -495,25 +495,25 @@ angular.module('starter.controllers', [])
         $scope.category = timeCardCategories;
 
         // get Resource plans for selected project 
-        $scope.getResourcePlans = function(project_id){
-          // show loading icon 
-          $ionicLoading.show();
-          snService.getResourcePlans(project_id)
-            .then(function(data) {
-                $scope.resource_plan = data.result;
-                // hide loading icon 
-                $ionicLoading.hide();
-            },function(error){
-                $scope.resource_plan = [];
-                console.log(error);
-            });
+        $scope.getResourcePlans = function(project_id) {
+            // show loading icon 
+            $ionicLoading.show();
+            snService.getResourcePlans(project_id)
+                .then(function(data) {
+                    $scope.resource_plan = data.result;
+                    // hide loading icon 
+                    $ionicLoading.hide();
+                }, function(error) {
+                    $scope.resource_plan = [];
+                    console.log(error);
+                });
         };
         // timecard model
         $scope.tc = {
             'passDate': new Date($stateParams.param1),
             'task': '',
             'u_project': '',
-            'resource_plan':'',
+            'resource_plan': '',
             'u_customer': '',
             'category': '',
             'hours': '',
@@ -600,7 +600,7 @@ angular.module('starter.controllers', [])
                 'passDate': new Date($stateParams.param1),
                 'task': '',
                 'u_project': '',
-                'resource_plan':'',
+                'resource_plan': '',
                 'u_customer': '',
                 'category': '',
                 'hours': '',
@@ -633,7 +633,6 @@ angular.module('starter.controllers', [])
 
         function processTimecard(tc, paramDate, sys_id) {
             var set = {};
-            console.log(tc);
             if (tc) {
                 set.passDate = new Date(paramDate);
                 if (tc[daysWeek.weekDays[set.passDate.getDay()]]) set.hours = tc[daysWeek.weekDays[set.passDate.getDay()]];
@@ -663,6 +662,7 @@ angular.module('starter.controllers', [])
             $ionicLoading.show();
             if ($scope.tc.u_customer) timecard.u_customer = $scope.tc.u_customer;
             if ($scope.tc.u_project) timecard.u_project = $scope.tc.u_project;
+            if ($scope.tc.resource_plan) timecard.resource_plan = $scope.tc.resource_plan.value;
             if ($scope.tc.task) timecard.task = $scope.tc.task;
             if ($scope.tc.story) timecard.u_story = $scope.tc.story;
             if ($scope.tc.category) timecard.category = $scope.tc.category;
