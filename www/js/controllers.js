@@ -635,7 +635,7 @@ angular.module('starter.controllers', [])
             var set = {};
             if (tc) {
                 set.passDate = new Date(paramDate);
-                if (tc[daysWeek.weekDays[set.passDate.getDay()]]) set.hours = tc[daysWeek.weekDays[set.passDate.getDay()]];
+                if (tc[daysWeek.weekDays[set.passDate.getDay()]]) set.hours = Number(tc[daysWeek.weekDays[set.passDate.getDay()]]);
                 if (tc.u_customer) set.u_customer = tc.u_customer.value;
                 if (tc.u_project) set.u_project = tc.u_project.value;
                 if (tc.resource_plan) set.resource_plan = tc.resource_plan.value;

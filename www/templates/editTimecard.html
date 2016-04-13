@@ -6,7 +6,7 @@
             </label>
             <label class="item item-input item-floating-label">
                 <span class="input-label">Hours</span>
-                <input type="text" placeholder="Hours" ng-model="tc.hours">
+                <input type="number" placeholder="Hours" ng-model="tc.hours" min="0" max="24" required ng-required="true">
             </label>
             <label class="item item-input item-select">
                 <span class="input-label">
@@ -47,15 +47,15 @@
                 <div class="input-label">
                     <h3>Category</h3>
                 </div>
-                <select ng-model="tc.category" ng-options="item.value as item.name for item in category">
+                <select ng-model="tc.category" ng-options="item.value as item.name for item in category" ng-required="true">
                 </select>
             </label>
             <label class="item item-input item-select">
                 <div class="input-label">
                     <h3>State</h3>
                 </div>
-                <select ng-model="tc.state">
-                    <option ng-repeat="state in states" value="{{state}}"> {{state}}
+                <select disabled>
+                    <option ng-repeat="state in states" ng-model="tc.state">{{state}}
                     </option>
                 </select>
             </label>
@@ -67,7 +67,7 @@
     </ion-content>
     <ion-footer-bar class="bar bar-dark">
         <div class="button-bar">
-            <button class="button" ng-click="updateTC()" ng-disabled="!tc.hours && !tc.u_project && (tc.task || tc.story)">Update</button>
+            <button class="button" ng-click="updateTC()" ng-disabled="!tc.hours||!tc.u_project||!tc.category">Update</button>
             <button class="button" ng-click="resetTC()">Reset</button>
         </div>
     </ion-footer-bar>
