@@ -774,7 +774,6 @@ angular.module('starter.services', [])
                     })
                     .success(function(data, status) {
                         if (LocalStorageService.setResourcePlans(data.result)) {
-                            console.log(data);
                             defer.resolve(data.result);
                         }
                     })

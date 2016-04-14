@@ -494,8 +494,6 @@ angular.module('starter.controllers', [])
         $scope.resource_plan = []; // resource plans will load only after project selection 
         $scope.category = timeCardCategories; // hardcoded 
 
-        
-
         //get Selected projects for customers 
         $scope.getProjectsForCustomer = function(customer_id){
            // show loading icon
@@ -504,7 +502,7 @@ angular.module('starter.controllers', [])
            $scope.projects = $scope.projects.filter(x => 
                 (x.x_volt2_psa_customer.value == customer_id) == true
            );
-           console.log($scope.projects);
+           // hide loading icon 
            $ionicLoading.hide();
         };
 
@@ -664,6 +662,43 @@ angular.module('starter.controllers', [])
         $scope.resource_plan = LocalStorageService.getResourcePlansLocal();
         // current timecard model 
         $scope.tc = {};
+         //get Selected projects for customers 
+        $scope.getProjectsForCustomer = function(customer_id){
+           // filter projects using customer sys_id
+           $scope.projects = $scope.projects.filter(x => 
+                (x.x_volt2_psa_customer.value == customer_id) == true
+           );
+        };
+        // get Resource plans for selected project 
+        $scope.getResourcePlans = function(project_id) {
+            snService.getResourcePlans(project_id)
+                .then(function(data) {
+                    $scope.resource_plan = data.result;
+                    // get Stories and Tasks
+                    $scope.getStoriesForProject(project_id);
+                    $scope.getTasksForProject(project_id);
+                }, function(error) {
+                    $scope.resource_plan = [];
+                    // get Stories and Tasks
+                    $scope.getStoriesForProject(project_id);
+                    $scope.getTasksForProject(project_id);
+                    console.log(error);
+                });
+        };
+        //get Selected Stories for project
+        $scope.getStoriesForProject = function(project_id){
+            //filter stories
+            $scope.stories = $scope.stories.filter(x => 
+                (x.project.value == project_id) == true
+            );
+        };
+        // get Selected tasks for project
+        $scope.getTasksForProject = function(project_id){
+            //filter tasks
+            $scope.tasks = $scope.tasks.filter(x =>
+                (x.parent.value == project_id) == true
+                );
+        }; 
         // get Timecard details by param 
         function getTimecardDetails() {
             var tc = LocalStorageService.getTimecardByID($stateParams.param1); // param1: sys_id
@@ -691,6 +726,8 @@ angular.module('starter.controllers', [])
                 set.sys_id = sys_id;
             }
             $scope.tc = set;
+            $scope.getProjectsForCustomer($scope.tc.u_customer);
+            $scope.getResourcePlans($scope.tc.u_project);
         }
         $scope.changeBillable = function() {
             $scope.tc.u_billable = !$scope.tc.u_billable;
@@ -1258,20 +1295,15 @@ angular.module('starter.controllers', [])
             // get Projects, Tasks, Stories, Timecards, Approvals 
             snService.getProjects() // projects 
                 .then(function(result) {
-                    //console.log(result);
                     snService.getTasks() // tasks
                         .then(function(result) {
-                            //console.log(result);
                             snService.getStories() // stories 
                                 .then(function(result) {
-                                    //console.log(result);
                                     snService.getTimecards() // timecards
                                         .then(function(result) {
-                                            //console.log(result);
                                             snService.getApprovals() // approvals 
                                                 .then(function(result) {
                                                     var msg = "Sync Successful";
-                                                    // console.log(result);
                                                     // hide loading
                                                     $ionicLoading.hide();
                                                     // show toast nofications and navigate

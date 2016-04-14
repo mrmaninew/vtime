@@ -12,14 +12,14 @@
                 <span class="input-label">
                     <h3>Customer</h3>
                 </span>
-                <select ng-model="tc.u_customer" ng-options="customer.sys_id as customer.name for customer in customers">
+                <select ng-model="tc.u_customer" ng-options="customer.sys_id as customer.name for customer in customers" ng-change="getProjectsForCustomer(tc.u_customer)">
                 </select>
             </label>
             <label class="item item-input item-select">
                 <div class="input-label">
                     <h3>Project</h3>
                 </div>
-                <select ng-model="tc.u_project" ng-options="project.sys_id as project.short_description for project in projects">
+                <select ng-model="tc.u_project" ng-options="project.sys_id as project.short_description for project in projects" ng-change="getResourcePlans(tc.u_project)">
                 </select>
             </label>
             <label class="item item-input item-select">
@@ -27,7 +27,7 @@
                     <h3>Resource Plan</h3>
                 </div>
                 <select ng-model="tc.resource_plan" ng-options="rplan.sys_id as rplan.number for rplan in resource_plan">
-                </select>
+                </select ng-change="">
             </label>
             <label class="item item-input item-select">
                 <div class="input-label">
