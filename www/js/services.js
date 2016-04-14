@@ -2,7 +2,7 @@ angular.module('starter.services', [])
     // Required global variables
     .constant('snCred', {
         //'Client_id':'ac0dd3408c1031006907010c2cc6ef6d', // Production Instance Client ID
-        //'Client_secret':'a3kw6fydcqb3jum30opg', // Production Instance Client Secret
+        //'Client_secret':'1yihwfk2xbl686v45s8a', // Production Instance Client Secret
         'Client_id': 'ac0dd3408c1031006907010c2cc6ef6d', // "Development Instance Client ID"
         'Client_secret': '1yihwfk2xbl686v45s8a', // "Development Instance Client ID"
         'grant_type': ['password', 'access'],
@@ -295,7 +295,7 @@ angular.module('starter.services', [])
                                 if (LocalStorageService.setStoriesLocal([])) {
                                     defer.resolve(error);
                                 }
-                            }
+                            } 
                         }
                     });
                 return defer.promise;
@@ -485,6 +485,7 @@ angular.module('starter.services', [])
                 }
                 query += "^week_starts_onON" + week + "@javascript:gs.dateGenerate('" + week + "','start')@javascript:gs.dateGenerate('" + week + "','end')";
                 var url = snCred.PRODURL + '/api/now/table/' + snCred.TimecardTable + query;
+                console.log(url);
                 var token = "Bearer " + TokenService.getToken();
                 var defer = $q.defer();
                 $http({
@@ -497,6 +498,7 @@ angular.module('starter.services', [])
                     .success(function(data, status) {
                         if (status == errorService.Success) {
                             // response to promise - callback
+                            console.log(data.result);
                             defer.resolve(data.result);
                         }
                     })
@@ -504,7 +506,7 @@ angular.module('starter.services', [])
                         if (status == errorService.Unauthorized) {
                             $state.go('login');
                         } else if (status == errorService.Notfound) {
-                            defer.resolve("");
+                            defer.resolve([]);
                         } else {
                             defer.resolve(error);
                         }
@@ -838,25 +840,29 @@ angular.module('starter.services', [])
                                                                     .then(function(result) {
                                                                         defer.resolve('true');
                                                                     }, function(error) {
+                                                                        LocalStorageService.setCustomersLocal([]);
                                                                         defer.resolve('true');
-                                                                        console.log(error);
                                                                     });
                                                             }, function(error) {
-                                                                console.log(error);
+                                                                LocalStorageService.setResourcePlans([]);
                                                             });
                                                     }, function(error) {
                                                         LocalStorageService.setApprovalsLocal([]);
                                                     });
                                             }, function(error) {
+                                                LocalStorageService.setTimecardsLocal([]);
                                                 console.log(error);
                                             });
                                     }, function(error) {
+                                        LocalStorageService.setStoriesLocal([]);
                                         console.log(error);
                                     });
                             }, function(error) {
+                                LocalStorageService.setTasksLocal([]);
                                 console.log(error);
                             });
                     }, function(error) {
+                        LocalStorageService.setProjectsLocal([]);
                         console.log(error);
                     });
                 return defer.promise;

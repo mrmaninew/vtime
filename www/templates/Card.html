@@ -12,7 +12,7 @@
                 <span class="input-label">
                     <h3>Customer</h3>
                 </span>
-                <select ng-model="tc.u_customer">
+                <select ng-model="tc.u_customer" ng-change="getProjectsForCustomer(tc.u_customer)">
                     <option ng-repeat="customer in customers" value="{{customer.sys_id}}">
                         {{customer.name}}
                     </option>

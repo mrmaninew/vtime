@@ -1,7 +1,7 @@
 angular.module('starter.controllers', [])
     .constant('daysWeek', {
-        'weekDays': ['sunday', 'monday', 'tuesday', 'wednesday', 'thursday', 'friday', 'saturday'],
-        'weekDaysShort': ['sun', 'mon', 'tue', 'wed', 'thu', 'fri', 'sat'],
+        'weekDays': ['sunday', 'monday', 'tuesday', 'wednesday', 'thursday', 'friday', 'saturday'], // weekdays 
+        'weekDaysShort': ['sun', 'mon', 'tue', 'wed', 'thu', 'fri', 'sat'], // weekdays in short
         'weekStart': 0, // sunday 
         'weekEnd': 6 // saturday
     })
@@ -491,8 +491,22 @@ angular.module('starter.controllers', [])
         $scope.tasks = LocalStorageService.getTasksLocal();
         $scope.stories = LocalStorageService.getStoriesLocal();
         $scope.customers = LocalStorageService.getCustomersLocal();
-        $scope.resource_plan = [];
-        $scope.category = timeCardCategories;
+        $scope.resource_plan = []; // resource plans will load only after project selection 
+        $scope.category = timeCardCategories; // hardcoded 
+
+        
+
+        //get Selected projects for customers 
+        $scope.getProjectsForCustomer = function(customer_id){
+           // show loading icon
+           $ionicLoading.show();
+           // filter projects using customer sys_id
+           $scope.projects = $scope.projects.filter(x => 
+                (x.x_volt2_psa_customer.value == customer_id) == true
+           );
+           console.log($scope.projects);
+           $ionicLoading.hide();
+        };
 
         // get Resource plans for selected project 
         $scope.getResourcePlans = function(project_id) {
@@ -501,13 +515,35 @@ angular.module('starter.controllers', [])
             snService.getResourcePlans(project_id)
                 .then(function(data) {
                     $scope.resource_plan = data.result;
+                    // get Stories and Tasks
+                    $scope.getStoriesForProject(project_id);
+                    $scope.getTasksForProject(project_id);
                     // hide loading icon 
                     $ionicLoading.hide();
                 }, function(error) {
                     $scope.resource_plan = [];
+                    // get Stories and Tasks
+                    $scope.getStoriesForProject(project_id);
+                    $scope.getTasksForProject(project_id);
+                    // hide loading icon
+                    $ionicLoading.hide();
                     console.log(error);
                 });
         };
+        //get Selected Stories for project
+        $scope.getStoriesForProject = function(project_id){
+            //filter stories
+            $scope.stories = $scope.stories.filter(x => 
+                (x.project.value == project_id) == true
+            );
+        };
+        // get Selected tasks for project
+        $scope.getTasksForProject = function(project_id){
+            //filter tasks
+            $scope.tasks = $scope.tasks.filter(x =>
+                (x.parent.value == project_id) == true
+                );
+        }; 
         // timecard model
         $scope.tc = {
             'passDate': new Date($stateParams.param1),
@@ -551,7 +587,8 @@ angular.module('starter.controllers', [])
             //  verify timecard first 
             snService.verifyTimecard(data, weekon)
                 .then(function(result) {
-                    if (result) {
+                    console.log(result.length);
+                    if (result.length > 0) {
                         $ionicLoading.hide();
                         $ionicPopup.confirm({
                             title: 'Confirm Insert',
@@ -609,6 +646,10 @@ angular.module('starter.controllers', [])
                 'story': ''
             };
         };
+        // on state leave view
+        $scope.$on('$ionicView.leave', function(e) {
+            $scope.tc = {};
+        });
     })
     // edit existing Timecard 
     .controller('editCardCtrl', function($scope, $state, $stateParams, $ionicLoading, $ionicHistory, $cordovaToast, moment, daysWeek, snService, timeCardCategories, timeCardStates, LocalStorageService, UserService) {
