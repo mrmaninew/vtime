@@ -1,5 +1,5 @@
 angular.module('starter', ['ionic', 'ionic-datepicker', 'starter.controllers', 'starter.services', 'angularMoment', 'ngCordova', 'chart.js'])
-    .run(function($ionicPlatform, $cordovaNetwork, $cordovaToast, $state, $rootScope, $cordovaStatusbar, snService, connectivityMonitorService, $ionicPopup, TokenService, LocalStorageService) {
+    .run(function($ionicPlatform, $cordovaNetwork,$cordovaToast,$state, $rootScope, $cordovaStatusbar, snService, connectivityMonitorService, $ionicPopup, TokenService, LocalStorageService) {
         $ionicPlatform.ready(function() {
             // Hide the accessory bar by default (remove this to show the accessory bar above the keyboard
             // for form inputs)
@@ -24,8 +24,12 @@ angular.module('starter', ['ionic', 'ionic-datepicker', 'starter.controllers', '
             // Then token information, check the token value if its have some value go the home view else, redirect
             // to login page 
             if (TokenService.getToken() === null) {
+                navigator.splashscreen.hide();
+                //$cordovaSplashscreen.hide().
                 $state.go('login');
             } else {
+                navigator.splashscreen.hide();
+                //$cordovaSplashscreen.hide().
                 $state.go('app.home');
             }
         });

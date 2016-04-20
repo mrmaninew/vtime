@@ -3,10 +3,10 @@ angular.module('starter.services', [])
     .constant('snCred', {
         //'Client_id':'ac0dd3408c1031006907010c2cc6ef6d', // Production Instance Client ID
         //'Client_secret':'1yihwfk2xbl686v45s8a', // Production Instance Client Secret
+        //'PRODURL':'https://volteopsa.service-now.com', // "Production" Volteo ServiceNow Production Instance URL
         'Client_id': 'ac0dd3408c1031006907010c2cc6ef6d', // "Development Instance Client ID"
         'Client_secret': '1yihwfk2xbl686v45s8a', // "Development Instance Client ID"
         'grant_type': ['password', 'access'],
-        //'PRODURL':'https://volteopsa.service-now.com', // "Production" Volteo ServiceNow Production Instance URL
         //'PRODURL': 'https://volteollcdemo1.service-now.com', // "Development" Volteo Servicenow development Instance URL
         'PRODURL': '/api', // Temp empty URL for development environment and this will changed when deploying PROD
         'PrjTableName': 'pm_project', // Servicenow Project Table
@@ -59,7 +59,8 @@ angular.module('starter.services', [])
         return {
             //get functions
             getProjects: function() {
-                var url = snCred.PRODURL + '/api/now/table/' + snCred.PrjTableName;
+                var query = "?sysparm_query=state=2";
+                var url = snCred.PRODURL + '/api/now/table/' + snCred.PrjTableName + query; 
                 var token = "Bearer " + TokenService.getToken();
                 var defer = $q.defer();
                 $http({
@@ -131,7 +132,7 @@ angular.module('starter.services', [])
             // get All tasks
             getTasks: function() {
                 // get all tasks assigned_to = user (and) state = open or pending or work in progress
-                var query = "?sysparm_query=state=2^ORstate=1^ORstate=-5^assigned_to=" + UserService.getUser().sys_id;
+                var query = "?sysparm_query=state=2^ORstate=1^ORstate=-5^assigned_to=" + UserService.getUserID();
                 var url = snCred.PRODURL + '/api/now/table/' + snCred.TasksTableName + query;
                 var token = "Bearer " + TokenService.getToken();
                 var defer = $q.defer();
@@ -200,7 +201,7 @@ angular.module('starter.services', [])
             },
             // get all stories
             getStories: function() {
-                var query = "?sysparm_query=state!=3^ORstate!=4^ORstate!=20^ORstate!=-6^assigned_to=" + UserService.getUser().sys_id;
+                var query = "?sysparm_query=state!=3^ORstate!=4^ORstate!=20^ORstate!=-6^assigned_to=" + UserService.getUserID();
                 var url = snCred.PRODURL + '/api/now/table/' + snCred.StoriesTableName + query;
                 var token = "Bearer " + TokenService.getToken();
                 var defer = $q.defer();
@@ -302,7 +303,7 @@ angular.module('starter.services', [])
             },
             // get all timecards
             getTimecards: function() {
-                var query = "?sysparm_query=user=" + UserService.getUser().sys_id;
+                var query = "?sysparm_query=user=" + UserService.getUserID();
                 var url = snCred.PRODURL + '/api/now/table/' + snCred.TimecardTable + query;
                 var token = "Bearer " + TokenService.getToken();
                 var defer = $q.defer();
@@ -367,7 +368,7 @@ angular.module('starter.services', [])
             },
             // get all approvals from servicenow 
             getApprovals: function() {
-                var query = "?sysparm_query=source_table=time_card^state=requested^approver=" + UserService.getUser().sys_id;
+                var query = "?sysparm_query=source_table=time_card^state=requested^approver=" + UserService.getUserID();
                 var url = snCred.PRODURL + '/api/now/table/' + snCred.ApprovalsTable + query;
                 var token = "Bearer " + TokenService.getToken();
                 var defer = $q.defer();
@@ -578,7 +579,6 @@ angular.module('starter.services', [])
             },
             // get username by sys_id passed by
             getUsernameBySysID: function(sys_id) {
-                //console.log(sys_id);
                 var query = "?sysparm_query=sys_id=" + sys_id;
                 var url = snCred.PRODURL + '/api/now/table/' + snCred.UserTable + query;
                 var token = "Bearer " + TokenService.getToken();
@@ -704,7 +704,7 @@ angular.module('starter.services', [])
             getTimecardMonthlyHours: function(monStartDate, monEndDate) {
                 var query = "?sysparm_sum_fields=total&sysparm_query=" +
                     "^week_starts_onBETWEENjavascript:gs.dateGenerate('" + monStartDate + "','start')@javascript:gs.dateGenerate('" + monEndDate + "','end')" +
-                    "^user=" + UserService.getUser().sys_id;
+                    "^user=" + UserService.getUserID();
                 var url = snCred.PRODURL + '/api/now/stats/' + snCred.TimecardTable + query;
                 var token = "Bearer " + TokenService.getToken();
                 var defer = $q.defer();
@@ -734,7 +734,7 @@ angular.module('starter.services', [])
             },
             // get Resource plan for specified project and signed user
             getResourcePlans: function(project_id) {
-                var user_id = UserService.getUser().sys_id;
+                var user_id = UserService.getUserID();
                 var query = '?sysparm_query=members_listLIKE' + user_id + '^ORuser_resource=' + user_id + '^task=' + project_id + '^state=3';
                 var url = snCred.PRODURL + '/api/now/table/' + snCred.ResourcePlan + query;
                 var token = "Bearer " + TokenService.getToken();
@@ -760,7 +760,7 @@ angular.module('starter.services', [])
             },
             // get all Resource plans for signed user
             getUserResourcePlans: function() {
-                var user_id = UserService.getUser().sys_id;
+                var user_id = UserService.getUserID();
                 var query = '?sysparm_query=members_listLIKE' + user_id + '^ORuser_resource=' + user_id + '^state=3';
                 var url = snCred.PRODURL + '/api/now/table/' + snCred.ResourcePlan + query;
                 var token = "Bearer " + TokenService.getToken();
@@ -802,11 +802,20 @@ angular.module('starter.services', [])
         // retrieve user 
         function getUser() {
             var user = JSON.parse(localStorage.getItem('user'));
-            if (user !== null) {
+            if (user !== null || undefined) {
                 return user;
             } else {
                 $state.go('login');
             }
+        }
+        // retrieve user_id
+        function getUserID(){
+            var user = JSON.parse(localStorage.getItem('user'));
+            if (user !== null || undefined) {
+                return user.sys_id;
+            } else {
+                $state.go('login');
+            }  
         }
         // remove user
         function clearUser() {
@@ -816,7 +825,8 @@ angular.module('starter.services', [])
         return {
             setUser: setUser,
             getUser: getUser,
-            clearUser: clearUser
+            clearUser: clearUser,
+            getUserID: getUserID
         };
     })
     .factory('preLoadDataService', function($http, $q, $state, snService) {
@@ -897,7 +907,6 @@ angular.module('starter.services', [])
                                 .then(function(response) {
                                     preLoadDataService.loadAll()
                                         .then(function(data) {
-                                            console.log("success");
                                             defer.resolve('success');
                                         });
                                 }, function(error) {
@@ -945,7 +954,7 @@ angular.module('starter.services', [])
 
         function getResourcePlansLocal() {
             var resourceplans = JSON.parse(localStorage.getItem('resourceplans'));
-            if (resourceplans != null) {
+            if (resourceplans != null || undefined) {
                 return resourceplans;
             } else {
                 return [];
@@ -963,7 +972,7 @@ angular.module('starter.services', [])
 
         function getProjectsLocal() {
             var projects = JSON.parse(localStorage.getItem('projects'));
-            if (projects !== null) {
+            if (projects !== null || undefined) {
                 return projects;
             } else {
                 return [];
@@ -983,7 +992,7 @@ angular.module('starter.services', [])
 
         function getProjectsLengthLocal() {
             var projects = getProjectsLocal();
-            if (projects !== null) {
+            if (projects !== null || undefined) {
                 return projects.length;
             } else {
                 return 0;
@@ -1012,7 +1021,7 @@ angular.module('starter.services', [])
 
         function getCustomersLocal() {
             var customers = JSON.parse(localStorage.getItem('customers'));
-            if (customers !== null) {
+            if (customers !== null || undefined) {
                 return customers;
             } else {
                 return [];
@@ -1022,7 +1031,7 @@ angular.module('starter.services', [])
         function getCustomerNameBySysID(sys_id) {
             var customer_name = "";
             var customers = getCustomersLocal();
-            if (customers !== null) {
+            if (customers !== null || undefined) {
                 for (var i = 0; i < customers.length; i++) {
                     if (customers[i].sys_id === sys_id) {
                         customer_name = customers[i].name;
@@ -1045,7 +1054,7 @@ angular.module('starter.services', [])
 
         function getTasksLocal() {
             var tasks = JSON.parse(localStorage.getItem('tasks'));
-            if (tasks !== null) {
+            if (tasks !== null || undefined) {
                 return tasks;
             } else {
                 return [];
@@ -1055,7 +1064,7 @@ angular.module('starter.services', [])
         function getTaskNumberBySysID(id) {
             var taskNumber = "";
             var tasks = getTasksLocal();
-            if (tasks !== null) {
+            if (tasks !== null || undefined) {
                 for (var i = 0; i < tasks.length; i++) {
                     if (tasks[i].sys_id === id) {
                         taskNumber = tasks[i].number;
@@ -1070,7 +1079,7 @@ angular.module('starter.services', [])
         function getTaskNameBySysID(id) {
             var taskName = "";
             var tasks = getTasksLocal();
-            if (tasks !== null) {
+            if (tasks !== null || undefined) {
                 for (var i = 0; i < tasks.length; i++) {
                     if (tasks[i].sys_id === id) {
                         taskName = tasks[i].short_description;
@@ -1084,7 +1093,7 @@ angular.module('starter.services', [])
 
         function getTasksLengthLocal() {
             var tasks = getTasksLocal();
-            if (tasks !== null) {
+            if (tasks !== null || undefined) {
                 return tasks.length;
             } else {
                 return 0;
@@ -1128,7 +1137,7 @@ angular.module('starter.services', [])
 
         function getStoriesLengthLocal() {
             var stories = getStoriesLocal();
-            if (stories !== null) {
+            if (stories !== null || undefined) {
                 return stories.length;
             } else {
                 return 0;
@@ -1170,7 +1179,7 @@ angular.module('starter.services', [])
         function getTimecardsByDateLocal(seldate) {
             var timecards = JSON.parse(localStorage.getItem('timecards'));
             var selTimecards = [];
-            if (timecards !== null) {
+            if (timecards !== null || undefined) {
                 for (var i = 0; i < timecards.length; i++) {
                     if (seldate == timecards[i].week_starts_on && timecards[i].state == 'Pending') {
                         selTimecards.push(timecards[i]);
@@ -1186,7 +1195,7 @@ angular.module('starter.services', [])
         function getTimecardsByDateLocalForCharts(seldate) {
             var timecards = JSON.parse(localStorage.getItem('timecards'));
             var selTimecards = [];
-            if (timecards !== null) {
+            if (timecards !== null || undefined){
                 for (var i = 0; i < timecards.length; i++) {
                     if (seldate == timecards[i].week_starts_on) {
                         selTimecards.push(timecards[i]);
@@ -1205,7 +1214,7 @@ angular.module('starter.services', [])
             // start date and end date 
             var startDate = passDate.clone().startOf('month');
             var endDate = passDate.clone().endOf('month');
-            if (timecards !== null) {
+            if (timecards !== null || undefined) {
                 for (var i = 0; i < timecards.length; i++) {
                     if (moment(new Date(timecards[i].week_starts_on)).isBetween(startDate, endDate)) {
                         selTimecards.push(timecards[i]);
@@ -1220,7 +1229,7 @@ angular.module('starter.services', [])
         function getTimecardByID(id) {
             var timecards = JSON.parse(localStorage.getItem('timecards'));
             var selTimecard = {};
-            if (timecards !== null) {
+            if (timecards !== null || undefined) {
                 for (var i = 0; i < timecards.length; i++) {
                     if (timecards[i].sys_id === id) {
                         selTimecard = timecards[i];
@@ -1236,7 +1245,7 @@ angular.module('starter.services', [])
             var timecards = JSON.parse(localStorage.getItem('timecards'));
             var dt = new Date("Time Card: Created 2016-01-05 19:58:34");
             var selTimecards = "";
-            if (timecards !== null) {
+            if (timecards !== null || undefined) {
                 for (var i = 0; i < timecards.length; i++) {
                     console.log((new Date(timecards[i].sys_created_on)));
                 }
@@ -1248,7 +1257,7 @@ angular.module('starter.services', [])
 
         function getTimecardsLengthLocal() {
             var timecards = getTimecardsLocal();
-            if (timecards !== null) {
+            if (timecards !== null || undefined) {
                 return timecards.length;
             } else {
                 return 0;
@@ -1258,7 +1267,7 @@ angular.module('starter.services', [])
         function getTimecardNumberByID(sys_id) {
             var timecardNumber = "";
             var timecards = getTimecardsLocal();
-            if (timecards !== null) {
+            if (timecards !== null || undefined) {
                 for (var i = 0; i < timecards.length; i++) {
                     if (timecards[i].sys_id == sys_id) {
                         timecardNumber = timecards[i].u_number;
@@ -1296,7 +1305,7 @@ angular.module('starter.services', [])
 
         function getApprovalsLocal() {
             var approvals = JSON.parse(localStorage.getItem('approvals'));
-            if (approvals !== null) {
+            if (approvals !== null || undefined) {
                 return approvals;
             } else {
                 return [];
@@ -1305,7 +1314,7 @@ angular.module('starter.services', [])
 
         function getApprovalsLengthLocal() {
             var approvals = getApprovalsLocal();
-            if (approvals !== null) {
+            if (approvals !== null || undefined) {
                 return approvals.length;
             } else {
                 return 0;

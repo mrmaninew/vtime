@@ -499,9 +499,13 @@ angular.module('starter.controllers', [])
            // show loading icon
            $ionicLoading.show();
            // filter projects using customer sys_id
-           $scope.projects = $scope.projects.filter(x => 
-                (x.x_volt2_psa_customer.value == customer_id) == true
-           );
+           // $scope.projects = $scope.projects.filter(x => 
+           //      (x.x_volt2_psa_customer.value == customer_id) == true
+           // );
+           function verifyExists(x){
+             return x.x_volt2_psa_customer.value == customer_id;
+           }
+           $scope.projects = $scope.projects.filter(verifyExists);
            // hide loading icon 
            $ionicLoading.hide();
         };
@@ -531,16 +535,18 @@ angular.module('starter.controllers', [])
         //get Selected Stories for project
         $scope.getStoriesForProject = function(project_id){
             //filter stories
-            $scope.stories = $scope.stories.filter(x => 
-                (x.project.value == project_id) == true
-            );
+            function verifyExists(x){
+                return x.project.value == project_id;
+            }
+            $scope.stories = $scope.stories.filter(verifyExists);
         };
         // get Selected tasks for project
         $scope.getTasksForProject = function(project_id){
             //filter tasks
-            $scope.tasks = $scope.tasks.filter(x =>
-                (x.parent.value == project_id) == true
-                );
+            function verifyExists(x){
+                return x.parent.value == project_id;
+            }
+            $scope.tasks = $scope.tasks.filter(verifyExists);
         }; 
         // timecard model
         $scope.tc = {
@@ -665,9 +671,14 @@ angular.module('starter.controllers', [])
          //get Selected projects for customers 
         $scope.getProjectsForCustomer = function(customer_id){
            // filter projects using customer sys_id
-           $scope.projects = $scope.projects.filter(x => 
-                (x.x_volt2_psa_customer.value == customer_id) == true
-           );
+           function verifyExists(x){
+             return x.x_volt2_psa_customer.value == customer_id;
+           }
+           // $scope.projects = $scope.projects.filter(x => 
+           //      (x.x_volt2_psa_customer.value == customer_id) == true
+           // );
+           $scope.projects = $scope.projects.filter(verifyExists);
+
         };
         // get Resource plans for selected project 
         $scope.getResourcePlans = function(project_id) {
@@ -688,16 +699,18 @@ angular.module('starter.controllers', [])
         //get Selected Stories for project
         $scope.getStoriesForProject = function(project_id){
             //filter stories
-            $scope.stories = $scope.stories.filter(x => 
-                (x.project.value == project_id) == true
-            );
+            function verifyExists(x){
+                return  x.project.value == project_id;
+            }
+            $scope.stories = $scope.stories.filter(verifyExists);
         };
         // get Selected tasks for project
         $scope.getTasksForProject = function(project_id){
             //filter tasks
-            $scope.tasks = $scope.tasks.filter(x =>
-                (x.parent.value == project_id) == true
-                );
+            function verifyExists(x){
+                return x.parent.value == project_id;
+            }
+            $scope.tasks = $scope.tasks.filter(verifyExists);
         }; 
         // get Timecard details by param 
         function getTimecardDetails() {
