@@ -259,7 +259,7 @@ angular.module('starter.controllers', [])
         console.log('no network');
     })
     // Time tab for Today (or) Selected , this week (depending on current and selected date) 
-    .controller('timeCardsPanelCtrl', function($scope, $cordovaToast, $ionicPlatform, $ionicHistory, $state, $stateParams, $ionicGesture, $ionicTabsDelegate, $ionicModal, moment, daysWeek, LocalStorageService) {
+    .controller('timeCardsPanelCtrl', function($scope, $cordovaToast, $ionicPlatform, $ionicHistory, $state, $stateParams, $ionicGesture, $ionicTabsDelegate, $ionicModal, moment, daysWeek, LocalStorageService, timeCardCategories) {
         $scope.$on('$ionicView.enter', function(e) {
             // footer item-right varibles 
             $scope.totalHrsDay = 0;
@@ -484,7 +484,7 @@ angular.module('starter.controllers', [])
         };
     })
     // create new Timecard 
-    .controller('cardCtrl', function($scope, $state, $filter, $ionicPopup, $ionicLoading, $stateParams, $cordovaToast, moment, daysWeek, snService, timeCardCategories, LocalStorageService, UserService) {
+    .controller('cardCtrl', function($scope, $state, $filter, $ionicPopup, $ionicLoading, $stateParams, $cordovaToast, moment, daysWeek, snService, timeCardCategories, LocalStorageService, UserService, timeCardCategories) {
         // varibles
         $scope.cards = [];
         $scope.projects = LocalStorageService.getProjectsLocal();
@@ -656,7 +656,7 @@ angular.module('starter.controllers', [])
         });
     })
     // edit existing Timecard 
-    .controller('editCardCtrl', function($scope, $state, $stateParams, $ionicLoading, $ionicHistory, $cordovaToast, moment, daysWeek, snService, timeCardCategories, timeCardStates, LocalStorageService, UserService) {
+    .controller('editCardCtrl', function($scope, $state, $stateParams, $ionicLoading, $ionicHistory, $cordovaToast, moment, daysWeek, snService, timeCardCategories, timeCardStates, LocalStorageService, UserService, timeCardCategories) {
         // controller for edit Timecard
         // scoped variables 
         $scope.projects = LocalStorageService.getProjectsLocal();
@@ -786,7 +786,7 @@ angular.module('starter.controllers', [])
         });
     })
     // Status Tab
-    .controller('statusCtrl', function($scope, $state, $ionicTabsDelegate, $ionicLoading, $ionicPopup, $cordovaToast, $timeout, moment, snService, LocalStorageService) {
+    .controller('statusCtrl', function($scope, $state, $ionicTabsDelegate, $ionicLoading, $ionicPopup, $cordovaToast, $timeout, moment, snService, LocalStorageService, timeCardCategories) {
         $scope.rejected = 0;
         $scope.pending = 0;
         $scope.submitted = 0;
@@ -816,7 +816,14 @@ angular.module('starter.controllers', [])
             $scope.showTimecardDetails = function() {
                 $scope.showDetailsToggle = !$scope.showDetailsToggle;
             };
-            //
+            // Category Name for value 
+            $scope.getCategoryDisplayValue = function(category){
+                for(var i=0;i<timeCardCategories.length;i++){
+                    if(timeCardCategories[i].value == category){
+                        return timeCardCategories[i].name;
+                    }
+                }
+            };
             $scope.pendingTab = function() {
                 $scope.showDetailsToggle = false;
             };
@@ -983,7 +990,7 @@ angular.module('starter.controllers', [])
         };
     })
     // approvals Tab  
-    .controller('approvalsCtrl', function($scope, $state, $ionicPopup, $timeout, $ionicLoading, $cordovaToast, moment, snService, LocalStorageService) {
+    .controller('approvalsCtrl', function($scope, $state, $ionicPopup, $timeout, $ionicLoading, $cordovaToast, moment, snService, LocalStorageService, timeCardCategories) {
         // on state enter
         $scope.$on('$ionicView.enter', function(e) {
             var set = LocalStorageService.getApprovalsLocal();
@@ -1011,7 +1018,6 @@ angular.module('starter.controllers', [])
             } else {
                 $ionicLoading.hide();
             }
-
 
             // process and return timecard sets 
             function processAndReturn(time, set) {
@@ -1146,6 +1152,14 @@ angular.module('starter.controllers', [])
             $scope.showTimecardDetails = function() {
                 $scope.showDetailsToggle = !$scope.showDetailsToggle;
             };
+            // Category Name for value
+            $scope.getCategoryDisplayValue = function(category){
+                for(var i=0;i<timeCardCategories.length;i++){
+                    if(timeCardCategories[i].value == category){
+                        return timeCardCategories[i].name;
+                    }
+                }
+            };
             // if given group is the selected group, deselect it, else select the given group
             $scope.toggleGroup = function(approval) {
                 if ($scope.isGroupShown(approval)) {
@@ -1243,7 +1257,7 @@ angular.module('starter.controllers', [])
         };
     })
     // sidemmenu (Timecards)
-    .controller('timecardsCtrl', function($scope, $state, snService, LocalStorageService) {
+    .controller('timecardsCtrl', function($scope, $state, snService, LocalStorageService,timeCardCategories) {
         $scope.$on('$ionicView.enter', function(e) {
             var timecards = LocalStorageService.getTimecardsLocal();
             if (timecards !== null || timecards.length > 0) {
@@ -1272,6 +1286,13 @@ angular.module('starter.controllers', [])
         };
         $scope.getCustomerNameBySysID = function(sys_id) {
             return LocalStorageService.getCustomerNameBySysID(sys_id);
+        };
+        $scope.getCategoryDisplayValue = function(category){
+            for(var i=0;i<timeCardCategories.length;i++){
+                if(timeCardCategories[i].value == category){
+                    return timeCardCategories[i].name;
+                }
+            }
         };
         // if given group is the selected group, deselect it, else select the given group
         $scope.toggleGroup = function(timecard) {

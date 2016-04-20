@@ -18,7 +18,7 @@
                                     <p ng-if="timecard.task ">Task:&nbsp;{{getTaskNumberBySysID(timecard.task.value)}}</p>
                                     <p ng-if="timecard.u_story ">Story:&nbsp;{{getStoryNumberBySysID(timecard.u_story.value)}}</p>
                                     <p>Total Hours:&nbsp;{{timecard.total}}</p>
-                                    <p>Category:&nbsp;{{timecard.category}}</p>
+                                    <p>Category:&nbsp;{{getCategoryDisplayValue(timecard.category)}}</p>
                                     <p>Billable:&nbsp;{{timecard.u_billable}}</p>
                                     <p>Week starts on:&nbsp;{{timecard.week_starts_on}} <i class="icon ion-more text-align-right" ng-click="showTimecardDetails()">&nbsp; more details</i></p>
                                     <timecard></timecard>
@@ -54,7 +54,7 @@
                                     <p ng-if="timecard.task ">Task:&nbsp;{{getTaskNumberBySysID(timecard.task.value)}}</p>
                                     <p ng-if="timecard.u_story ">Story:&nbsp;{{getStoryNumberBySysID(timecard.u_story.value)}}</p>
                                     <p>Total Hours:&nbsp;{{timecard.total}}</p>
-                                    <p>Category:&nbsp;{{timecard.category}}</p>
+                                    <p>Category:&nbsp;{{getCategoryDisplayValue(timecard.category)}}</p>
                                     <p>Billable:&nbsp;{{timecard.u_billable}}</p>
                                     <p>Week starts on:&nbsp;{{timecard.week_starts_on}} <i
                                     class="icon ion-more text-align-right" ng-click="showTimecardDetails()">&nbsp; more details</i></p>
@@ -87,7 +87,7 @@
                                     <p ng-if="timecard.task ">Task:&nbsp;{{getTaskNumberBySysID(timecard.task.value)}}</p>
                                     <p ng-if="timecard.u_story ">Story:&nbsp;{{getStoryNumberBySysID(timecard.u_story.value)}}</p>
                                     <p>Total Hours:&nbsp;{{timecard.total}}</p>
-                                    <p>Category:&nbsp;{{timecard.category}}</p>
+                                    <p>Category:&nbsp;{{getCategoryDisplayValue(timecard.category)}}</p>
                                     <p>Billable:&nbsp;{{timecard.u_billable}}</p>
                                     <p>Week starts on:&nbsp;{{timecard.week_starts_on}} <i
                                     class="icon ion-more text-align-right" ng-click="showTimecardDetails()">&nbsp; more details</i></p>
@@ -120,7 +120,7 @@
                                     <p ng-if="timecard.task">Task:&nbsp;{{getTaskNumberBySysID(timecard.task.value)}}</p>
                                     <p ng-if="timecard.u_story ">Story:&nbsp;{{getStoryNumberBySysID(timecard.u_story.value)}}</p>
                                     <p>Total Hours:&nbsp;{{timecard.total}}</p>
-                                    <p>Category:&nbsp;{{timecard.category}}</p>
+                                    <p>Category:&nbsp;{{getCategoryDisplayValue(timecard.category)}}</p>
                                     <p>Billable:&nbsp;{{timecard.u_billable}}</p>
                                     <p>Week starts on:&nbsp;{{timecard.week_starts_on}} <i
                                     class="icon ion-more text-align-right" ng-click="showTimecardDetails()">&nbsp; more details</i></p>
